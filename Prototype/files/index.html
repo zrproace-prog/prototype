@@ -2292,7 +2292,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       <button class="nav-back" onclick="openSupportSheet()">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <span class="nav-title">Xác minh danh tính</span>
+      <span class="nav-title">Xác thực tài khoản</span>
       <div class="nav-right">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#666" stroke-width="1.8"/></svg>
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#666" stroke-width="1.8"/></svg>
@@ -2302,67 +2302,53 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
 
   <div class="scroll">
     <!-- Hero -->
-    <div style="text-align:center;padding:20px 16px 12px;">
+    <div style="text-align:center;padding:24px 24px 16px;">
       <div style="position:relative;display:inline-block;">
-        <div style="width:88px;height:88px;border-radius:44px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto;">
-          <!-- ID card + shield icon -->
-          <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
-            <rect x="4" y="10" width="30" height="20" rx="3" fill="#E91E8C" opacity="0.15" stroke="#E91E8C" stroke-width="1.5"/>
-            <circle cx="12" cy="18" r="4" fill="#E91E8C" opacity="0.5"/>
-            <rect x="18" y="14" width="12" height="2.5" rx="1.2" fill="#E91E8C" opacity="0.6"/>
-            <rect x="18" y="19" width="9" height="2" rx="1" fill="#E91E8C" opacity="0.4"/>
-            <path d="M28 24L24 26v4c0 3 2.2 5.8 4 6.8C29.8 35.8 32 33 32 30v-4L28 24z" fill="#E91E8C" opacity="0.8"/>
-            <path d="M26.5 29l1.2 1.2 2.8-2.8" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <div style="width:90px;height:90px;border-radius:45px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin:0 auto;">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <circle cx="26" cy="18" r="11" fill="#5B9BD5"/>
+            <path d="M8 46c0-9.9 8.1-18 18-18s18 8.1 18 18" fill="#5B9BD5"/>
           </svg>
         </div>
-        <div style="position:absolute;top:-4px;right:-4px;width:26px;height:26px;border-radius:13px;background:#E91E8C;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;bottom:0;right:0;width:28px;height:28px;border-radius:14px;background:#4CAF50;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
-      <div style="font-size:19px;font-weight:800;color:#1A1A1A;margin-top:14px;">Xác minh danh tính</div>
-      <div style="font-size:13px;color:#666;margin-top:6px;line-height:1.5;">Xác thực sinh trắc học theo <strong style="color:#1A1A1A;">Thông Tư 41</strong><br/>để giao dịch an toàn trên MoMo.</div>
+      <div style="font-size:19px;font-weight:800;color:#1A1A1A;margin-top:16px;">Xác minh danh tính của bạn</div>
+      <div style="font-size:13px;color:#666;margin-top:8px;line-height:1.6;padding:0 8px;">Vui lòng chọn phương thức xác thực phù hợp với bạn để hoàn tất định danh tài khoản</div>
     </div>
-
-    <!-- Warning notice -->
-    <div style="margin:0 12px 14px;background:#FFF8E1;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;border:1px solid #FFE082;">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path d="M12 2L2 20h20L12 2z" fill="#FFB300" opacity="0.2" stroke="#FFB300" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9v5M12 16.5h.01" stroke="#F57C00" stroke-width="2" stroke-linecap="round"/></svg>
-      <div style="font-size:13px;color:#666;line-height:1.55;">Vui lòng chọn phương thức xác thực phù hợp với bạn để hoàn tất định danh tài khoản.</div>
-    </div>
-
-    <!-- Section label -->
-    <div class="section-label">Chọn phương thức xác thực:</div>
 
     <!-- Option 1: Chụp CCCD -->
     <div id="idm-cccd" class="sel-card" onclick="selectIdMethod('cccd')" style="display:flex;align-items:center;gap:14px;padding:18px 16px;">
-      <!-- Radio -->
-      <div id="idm-cccd-radio" style="width:22px;height:22px;border-radius:11px;border:2px solid #E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#E91E8C;">
-        <div style="width:10px;height:10px;border-radius:5px;background:#fff;"></div>
-      </div>
       <!-- Icon -->
-      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M7 9h4M7 12h6M7 15h3" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="9" r="2" fill="#E91E8C"/></svg>
+      <div style="width:44px;height:44px;border-radius:10px;background:#E8F0FE;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="26" height="20" fill="none" viewBox="0 0 26 20"><rect x="1" y="1" width="24" height="18" rx="2.5" stroke="#4A90D9" stroke-width="1.8"/><circle cx="8" cy="8" r="3" fill="#4A90D9" opacity="0.6"/><rect x="13" y="6" width="8" height="2" rx="1" fill="#4A90D9" opacity="0.7"/><rect x="13" y="10" width="6" height="2" rx="1" fill="#4A90D9" opacity="0.5"/><rect x="2" y="14" width="22" height="3" rx="1" fill="#4A90D9" opacity="0.2"/></svg>
       </div>
       <!-- Text -->
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:700;color:#1A1A1A;line-height:1.3;">Chụp ảnh CCCD</div>
-        <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Chụp mặt trước &amp; sau căn cước công dân</div>
+        <div style="font-size:15px;font-weight:700;color:#1A1A1A;line-height:1.3;">Chụp ảnh CCCD 2 mặt</div>
+        <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Sử dụng CCCD bản gốc, còn hạn và đảm bảo ảnh sáng đầy đủ</div>
+      </div>
+      <!-- Radio -->
+      <div id="idm-cccd-radio" style="width:22px;height:22px;border-radius:11px;border:2px solid #E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#E91E8C;">
+        <div style="width:10px;height:10px;border-radius:5px;background:#fff;"></div>
       </div>
     </div>
 
     <!-- Option 2: VNeID -->
     <div id="idm-vneid" class="sel-card" onclick="selectIdMethod('vneid')" style="display:flex;align-items:center;gap:14px;padding:18px 16px;">
-      <!-- Radio -->
-      <div id="idm-vneid-radio" style="width:22px;height:22px;border-radius:11px;border:2px solid #E0E0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;">
-        <div style="width:10px;height:10px;border-radius:5px;background:transparent;"></div>
-      </div>
       <!-- Icon -->
-      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#E8EAF6,#C5CAE9);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#1A237E" opacity="0.9"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div style="width:44px;height:44px;border-radius:10px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="28" height="28" fill="none" viewBox="0 0 28 28"><path d="M14 3L4 7v7c0 6.5 4.5 12.6 10 14 5.5-1.4 10-7.5 10-14V7L14 3z" fill="#4CAF50" opacity="0.25" stroke="#388E3C" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 14l2.5 2.5L18 11" stroke="#388E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <!-- Text -->
       <div style="flex:1;">
         <div style="font-size:15px;font-weight:700;color:#1A1A1A;line-height:1.3;">Xác thực qua VNeID</div>
-        <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Cần định danh VNeID mức 2</div>
+        <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Định danh VNeID mức 2</div>
+      </div>
+      <!-- Radio -->
+      <div id="idm-vneid-radio" style="width:22px;height:22px;border-radius:11px;border:2px solid #E0E0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;">
+        <div style="width:10px;height:10px;border-radius:5px;background:transparent;"></div>
       </div>
     </div>
 
