@@ -1,6 +1,6 @@
-/* MoMo Prototype — Service Worker v2 */
+/* MoMo Prototype — Service Worker v3 */
 'use strict';
-var CACHE_NAME = 'momo-prototype-v2';
+var CACHE_NAME = 'momo-prototype-v3';
 var ASSETS = [
   './index.html',
   './manifest.json',
