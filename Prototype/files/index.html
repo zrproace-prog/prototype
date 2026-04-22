@@ -937,7 +937,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       <button class="nav-back" onclick="goTo(8)">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <span class="nav-title">Nhập thông tin</span>
+      <span class="nav-title">Nhập thông tin CCCD</span>
       <div class="nav-right">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#666" stroke-width="1.8"/></svg>
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#666" stroke-width="1.8"/></svg>
@@ -945,64 +945,40 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     </div>
   </div>
   <div class="scroll">
-    <!-- Step badge -->
-    <div style="padding:12px 16px 4px;">
-      <div style="display:inline-flex;align-items:center;gap:5px;background:#FFF0F7;border-radius:20px;padding:5px 12px;">
-        <div style="width:18px;height:18px;border-radius:9px;background:#E91E8C;display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:10px;font-weight:800;color:#fff;">1</span>
-        </div>
-        <span style="font-size:12px;font-weight:700;color:#E91E8C;">Bước 1/3 — Thực hiện trong MoMo</span>
-      </div>
-    </div>
-    <!-- Hero -->
-    <div style="text-align:center;padding:12px 16px 14px;">
-      <div style="width:72px;height:72px;border-radius:36px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
-        <svg width="36" height="36" fill="none" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M6 9h4M6 12h8M6 15h4" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </div>
-      <div style="font-size:18px;font-weight:800;color:#1A1A1A;">Nhập thông tin của bạn</div>
-      <div style="font-size:13px;color:#666;margin-top:6px;line-height:1.5;">Nhập đúng thông tin trên Căn cước công dân gắn chip</div>
+    <!-- Section heading -->
+    <div style="padding:16px 16px 10px;">
+      <div style="font-size:16px;font-weight:800;color:#1A1A1A;">Thông tin CCCD của bạn</div>
     </div>
     <!-- Input card -->
     <div class="card">
-      <!-- CCCD field -->
+      <!-- Số CCCD field -->
       <div id="cccd-wrap" class="input-wrap" style="border-radius:12px;">
-        <label class="input-label">Số CCCD / Căn cước công dân</label>
+        <label class="input-label">Số CCCD<span style="color:#FF5722;margin-left:2px;">*</span></label>
         <div class="input-row">
-          <input id="cccd-inp" class="input-field" type="tel" inputmode="numeric" maxlength="12" placeholder="Nhập 12 chữ số"
+          <input id="cccd-inp" class="input-field" type="tel" inputmode="numeric" maxlength="12" placeholder="Nhập số CCCD"
             onfocus="focusWrap('cccd-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-wrap');scheduleHideKbCta()"
             oninput="onCCCDInput()"/>
         </div>
       </div>
       <!-- Họ tên field -->
       <div id="cccd-name-wrap" class="input-wrap" style="border-radius:12px;">
-        <label class="input-label">Họ và tên</label>
-        <input id="cccd-name-inp" class="input-field" type="text" placeholder="Nhập họ và tên đầy đủ"
-          onfocus="focusWrap('cccd-name-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-name-wrap');scheduleHideKbCta()"
-          oninput="onCCCDInput()"/>
+        <label class="input-label">Họ và tên<span style="color:#FF5722;margin-left:2px;">*</span></label>
+        <input id="cccd-name-inp" class="input-field" type="text" placeholder="Nhập họ và tên"
+          onfocus="focusWrap('cccd-name-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-name-wrap');scheduleHideKbCta()"/>
       </div>
       <!-- Ngày sinh field -->
-      <div id="cccd-dob-wrap" class="input-wrap" style="border-radius:12px;margin-bottom:10px;">
-        <label class="input-label">Ngày sinh</label>
-        <input id="cccd-dob-inp" class="input-field" type="text" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY"
-          onfocus="focusWrap('cccd-dob-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-dob-wrap');scheduleHideKbCta()"
-          oninput="onDOBInput()"/>
-      </div>
-      <div style="background:#FFF0F7;border-radius:10px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10" stroke="#E91E8C" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
-        <div style="font-size:12px;color:#666;line-height:1.6;">Nhập chính xác thông tin theo <strong>Căn cước công dân gắn chip</strong> của bạn</div>
-      </div>
-      <div style="text-align:center;margin-top:14px;"><button class="demo-btn" onclick="demoCCCD()">demo fill</button></div>
-    </div>
-    <!-- Next step hint -->
-    <div style="margin:0 12px 12px;background:#FFF0F7;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;">
-      <div style="width:32px;height:32px;border-radius:10px;background:#C62828;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#fff"/></svg>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;color:#E91E8C;">Tiếp theo: Chuyển sang app VNeID</div>
-        <div style="font-size:11px;color:#666;margin-top:2px;line-height:1.4;">Đăng nhập VNeID &amp; xác nhận chia sẻ thông tin với MoMo</div>
+      <div id="cccd-dob-wrap" class="input-wrap" style="border-radius:12px;margin-bottom:0;">
+        <label class="input-label">Ngày sinh<span style="color:#FF5722;margin-left:2px;">*</span></label>
+        <div class="input-row">
+          <input id="cccd-dob-inp" class="input-field" type="text" inputmode="numeric" maxlength="10" placeholder="Chọn ngày tháng năm sinh"
+            onfocus="focusWrap('cccd-dob-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-dob-wrap');scheduleHideKbCta()"
+            oninput="onDOBInput()" style="flex:1;"/>
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path d="M6 9l6 6 6-6" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
       </div>
     </div>
+    <!-- Demo button (outside card, discreet) -->
+    <div style="text-align:center;margin-top:14px;"><button class="demo-btn" onclick="demoCCCD()">demo fill</button></div>
     <div style="height:12px;"></div>
   </div>
   <div class="bottom-area">
