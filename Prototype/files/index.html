@@ -10,12 +10,107 @@
 <link rel="manifest" href="./manifest.json"/>
 <title>MoMo – Đăng ký</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet"/>
 <style>
 :root { --page-bg:#F5F5F5; --sat:env(safe-area-inset-top,0px); }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 html { min-height:calc(100% + env(safe-area-inset-top)); overflow:hidden; background:#fff; }
 body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-family:'Be Vietnam Pro',-apple-system,'Helvetica Neue',Arial,sans-serif; }
 #app { position:fixed; inset:0; overflow:hidden; }
+
+/* ═══ DESKTOP IPHONE 15 PRO SIMULATOR ═══ */
+@media (min-width:600px) {
+  html, body { overflow:auto; background:#0f0f13; height:100%; }
+  body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:radial-gradient(ellipse at 50% 40%, #1a1a2e 0%, #0f0f13 70%); }
+
+  #phone-frame {
+    position:relative;
+    width:393px; height:852px;
+    border-radius:55px;
+    background:#1c1c1e;
+    padding:4px;
+    flex-shrink:0;
+    transform:translateZ(0);
+    box-shadow:
+      /* Titanium edge highlight */
+      0 0 0 1px rgba(255,255,255,0.08),
+      /* Outer bezel */
+      0 0 0 3px #2a2a2e,
+      0 0 0 4px rgba(255,255,255,0.05),
+      /* Depth shadow */
+      0 20px 60px rgba(0,0,0,0.6),
+      0 40px 100px rgba(0,0,0,0.4),
+      /* Soft ambient glow */
+      0 0 120px rgba(100,100,120,0.08);
+  }
+
+  /* Inner screen bezel */
+  #phone-frame-inner {
+    position:relative;
+    width:100%; height:100%;
+    border-radius:51px;
+    overflow:hidden;
+    background:#000;
+  }
+
+  /* Dynamic Island */
+  #phone-frame-inner::before {
+    content:'';
+    position:absolute;
+    top:12px; left:50%; transform:translateX(-50%);
+    width:126px; height:37px;
+    background:#000;
+    border-radius:24px;
+    z-index:10000;
+  }
+
+  /* Home indicator */
+  #phone-frame-inner::after {
+    content:'';
+    position:absolute;
+    bottom:8px; left:50%; transform:translateX(-50%);
+    width:134px; height:5px;
+    background:rgba(255,255,255,0.25);
+    border-radius:3px;
+    z-index:10000;
+  }
+
+  /* Side buttons */
+  #phone-frame::before {
+    content:'';
+    position:absolute;
+    /* Power button — right side */
+    top:168px; right:-7px;
+    width:4px; height:96px;
+    background:linear-gradient(180deg, #3a3a3e 0%, #2a2a2e 50%, #3a3a3e 100%);
+    border-radius:0 3px 3px 0;
+    box-shadow:1px 0 2px rgba(0,0,0,0.3);
+    z-index:10;
+  }
+  #phone-frame::after {
+    content:'';
+    position:absolute;
+    /* Volume buttons — left side */
+    top:178px; left:-7px;
+    width:4px; height:64px;
+    background:linear-gradient(180deg, #3a3a3e 0%, #2a2a2e 50%, #3a3a3e 100%);
+    border-radius:3px 0 0 3px;
+    box-shadow:-1px 0 2px rgba(0,0,0,0.3);
+    z-index:10;
+  }
+
+  #app { position:absolute; inset:0; border-radius:51px; overflow:hidden; }
+  .screen { position:absolute; inset:0; }
+  .status-spacer { height:59px !important; }
+  .bottom-area { padding-bottom:28px !important; }
+  #support-sheet { max-height:88% !important; position:absolute !important; }
+  #support-sheet-overlay { position:absolute !important; }
+  #vneid-overlay { border-radius:51px; position:absolute !important; }
+  #kb-cta { max-width:385px; position:absolute !important; }
+}
+@media (max-width:599px) {
+  #phone-frame, #phone-frame-inner { position:fixed; inset:0; overflow:hidden; }
+}
 
 /* STATUS SPACER */
 .status-spacer { flex-shrink:0; height:max(calc(var(--sat) + 4px),24px); }
@@ -71,7 +166,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
 .otp-row.error { animation:shake .4s ease; }
 
 /* BUTTONS */
-.btn-pink { width:100%; height:52px; background:#E8197D; color:#fff; border-radius:14px; font-size:16px; font-weight:700; box-shadow:0 4px 16px rgba(232,25,125,0.3); border:none; cursor:pointer; font-family:inherit; }
+.btn-pink { width:100%; height:52px; background:#EB2F96; color:#fff; border-radius:14px; font-size:16px; font-weight:700; box-shadow:0 4px 16px rgba(232,25,125,0.3); border:none; cursor:pointer; font-family:inherit; }
 .btn-pink:disabled { background:#E0E0E0; color:#999; box-shadow:none; cursor:default; }
 .btn-outline { width:100%; height:52px; border:1.5px solid #E91E8C; color:#E91E8C; border-radius:14px; margin-top:10px; background:#fff; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit; }
 .btn-text { color:#E91E8C; font-size:15px; font-weight:600; padding:12px; background:none; border:none; cursor:pointer; font-family:inherit; }
@@ -191,6 +286,12 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
 .survey-rate-btn.sel { background:#E91E8C; border-color:#E91E8C; color:#fff; }
 .survey-scale-labels { display:flex; justify-content:space-between; margin-top:5px; }
 .survey-scale-labels span { font-size:10px; color:#BBB; }
+.survey-q.error { animation:shake .4s ease; }
+.survey-q.error .survey-rate-btn { border-color:#FF5722; }
+
+/* Bank OTP row error (6-box variant) */
+#botp-row.error { animation:shake .4s ease; }
+#botp-row.error .otp-box { border-color:#FF5722; }
 
 /* FACE CAPTURE SCREEN */
 @keyframes faceScan { 0%{top:14%;opacity:1} 45%{top:78%;opacity:1} 50%{top:78%;opacity:0.3} 55%{top:78%;opacity:1} 100%{top:14%;opacity:1} }
@@ -282,6 +383,8 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
 </style>
 </head>
 <body>
+<div id="phone-frame">
+<div id="phone-frame-inner">
 <div id="app">
 
 <!-- ═══════════════════════════════════════
@@ -316,6 +419,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#FF5722" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="#FF5722" stroke-width="2" stroke-linecap="round"/></svg>
           <span id="phone-err-text">Số điện thoại không hợp lệ</span>
         </div>
+        <div style="text-align:center;margin-top:4px;"><button class="demo-btn" onclick="demoFillPhone()">demo fill</button></div>
       </div>
 
       <!-- Lang switch -->
@@ -735,7 +839,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     <!-- Hero -->
     <div style="text-align:center;padding:24px 16px 16px;">
       <div style="position:relative;display:inline-block;">
-        <div style="width:90px;height:90px;border-radius:45px;background:#EEF3FF;display:flex;align-items:center;justify-content:center;margin:0 auto;">
+        <div style="width:90px;height:90px;border-radius:45px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin:0 auto;">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#4A90D9" stroke-width="1.8"/><path d="M7 9h4M7 12h6M7 15h3" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="9" r="2" fill="#4A90D9"/></svg>
         </div>
         <div style="position:absolute;top:-4px;right:-4px;width:26px;height:26px;border-radius:13px;background:#E91E8C;display:flex;align-items:center;justify-content:center;">
@@ -807,115 +911,159 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     </div>
   </div>
   <div class="scroll">
-    <!-- Hero VNeID badge -->
-    <div style="text-align:center;padding:20px 16px 16px;">
-      <div style="position:relative;display:inline-block;">
-        <div style="width:88px;height:88px;border-radius:44px;background:linear-gradient(135deg,#EEF3FF,#DDEAFF);display:flex;align-items:center;justify-content:center;margin:0 auto;">
-          <!-- VNeID card icon -->
-          <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
-            <rect x="1" y="1" width="46" height="34" rx="4" fill="#1A237E" stroke="#3949AB" stroke-width="1"/>
-            <rect x="4" y="4" width="40" height="10" rx="2" fill="#283593" opacity="0.6"/>
-            <circle cx="10" cy="22" r="6" fill="#3F51B5"/>
-            <path d="M7 22l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="18" y="18" width="22" height="2.5" rx="1.2" fill="#5C6BC0"/>
-            <rect x="18" y="23" width="16" height="2" rx="1" fill="#7986CB"/>
-            <rect x="18" y="27" width="12" height="2" rx="1" fill="#7986CB"/>
-            <!-- VN flag stripe -->
-            <rect x="1" y="1" width="8" height="34" rx="4" fill="none"/>
-            <path d="M3 8 L5 5 L7 8 L6 6.5 L8 6.5 L6.5 7.5 L7 9.5 L5 8 L3 9.5 L3.5 7.5 L2 6.5 L4 6.5 Z" fill="#FFD700" transform="scale(0.8) translate(1,4)"/>
-          </svg>
-        </div>
-        <div style="position:absolute;bottom:-4px;right:-4px;width:28px;height:28px;border-radius:14px;background:linear-gradient(135deg,#1565C0,#1E88E5);display:flex;align-items:center;justify-content:center;border:2px solid #fff;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+    <!-- Hero illustration: pink scan frame with CCCD card -->
+    <div style="text-align:center;padding:18px 16px 8px;">
+      <div style="display:inline-block;">
+        <svg width="160" height="120" viewBox="0 0 160 120" fill="none" aria-hidden="true">
+          <!-- 4 pink L-shaped corner brackets -->
+          <path d="M4 28 L4 4 L28 4" stroke="#E91E8C" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <path d="M132 4 L156 4 L156 28" stroke="#E91E8C" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <path d="M156 92 L156 116 L132 116" stroke="#E91E8C" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <path d="M28 116 L4 116 L4 92" stroke="#E91E8C" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <!-- CCCD card -->
+          <rect x="20" y="22" width="120" height="76" rx="6" fill="#fff" stroke="#E5E5E5" stroke-width="1"/>
+          <!-- CĂN CƯỚC green tag -->
+          <rect x="78" y="28" width="54" height="13" rx="2" fill="#2E7D32"/>
+          <text x="105" y="37.5" font-size="7.5" font-weight="800" fill="#fff" text-anchor="middle" font-family="inherit" letter-spacing="0.5">CĂN CƯỚC</text>
+          <!-- National emblem (small) -->
+          <circle cx="34" cy="35" r="4.5" fill="#E91E3C"/>
+          <path d="M34 32.5 L34.7 34.6 L36.8 34.6 L35.1 35.9 L35.8 38 L34 36.7 L32.2 38 L32.9 35.9 L31.2 34.6 L33.3 34.6 Z" fill="#FFD700"/>
+          <!-- Person photo area -->
+          <rect x="28" y="45" width="30" height="42" rx="3" fill="#FDE8F3"/>
+          <circle cx="43" cy="56" r="6" fill="#E91E8C" opacity="0.7"/>
+          <path d="M31 87 Q43 72 55 87 Z" fill="#E91E8C" opacity="0.7"/>
+          <!-- Text lines -->
+          <rect x="64" y="48" width="66" height="3" rx="1.5" fill="#E5E5E5"/>
+          <rect x="64" y="55" width="58" height="3" rx="1.5" fill="#E5E5E5"/>
+          <rect x="64" y="62" width="62" height="3" rx="1.5" fill="#E5E5E5"/>
+          <rect x="64" y="69" width="50" height="3" rx="1.5" fill="#E5E5E5"/>
+          <rect x="64" y="76" width="58" height="3" rx="1.5" fill="#E5E5E5"/>
+          <!-- Pink circle overlay (card icon indicator) -->
+          <circle cx="112" cy="90" r="19" fill="#FFF0F7" stroke="#fff" stroke-width="2.5"/>
+          <rect x="100" y="84" width="24" height="14" rx="2.5" fill="none" stroke="#E91E8C" stroke-width="1.8"/>
+          <circle cx="106" cy="90" r="2.2" fill="#E91E8C"/>
+          <rect x="110" y="89" width="10" height="1.8" rx="0.9" fill="#E91E8C"/>
+          <rect x="110" y="92.5" width="7" height="1.5" rx="0.75" fill="#E91E8C" opacity="0.6"/>
+          <!-- Green check badge -->
+          <circle cx="128" cy="100" r="8.5" fill="#4CAF50" stroke="#fff" stroke-width="2"/>
+          <path d="M124 100 l3 3 l5.5 -5.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
       </div>
-      <div style="font-size:18px;font-weight:800;color:#1A1A1A;margin-top:14px;">Xác thực qua VNeID</div>
-      <div style="font-size:13px;color:#666;margin-top:6px;line-height:1.5;">Kết nối MoMo với danh tính số quốc gia của bạn</div>
+      <div style="font-size:18px;font-weight:800;color:#1A1A1A;margin-top:6px;">Xác thực qua VNeID</div>
     </div>
 
     <!-- 3 Steps card -->
-    <div class="card" style="padding:0;overflow:hidden;">
-      <!-- MoMo step label -->
-      <div style="background:#FFF0F7;padding:8px 16px;display:flex;align-items:center;gap:6px;">
-        <div style="width:20px;height:20px;border-radius:10px;background:#E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="10" height="10" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#fff"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" fill="#fff"/></svg>
+    <div class="card" style="padding:6px 0;">
+      <!-- Bước 1 -->
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 16px;">
+        <div style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <!-- Mint tint background -->
+            <rect x="2" y="9" width="38" height="26" rx="5" fill="#D9F1E8"/>
+            <!-- CCCD card -->
+            <rect x="5" y="12" width="32" height="20" rx="2.5" fill="#fff" stroke="#E5E5E5" stroke-width="0.8"/>
+            <!-- Red emblem -->
+            <circle cx="9.5" cy="16" r="2" fill="#E91E3C"/>
+            <path d="M9.5 14.8 L9.9 15.8 L11 15.8 L10.1 16.4 L10.4 17.4 L9.5 16.8 L8.6 17.4 L8.9 16.4 L8 15.8 L9.1 15.8 Z" fill="#FFD700"/>
+            <!-- CĂN CƯỚC tag -->
+            <rect x="20" y="14" width="14" height="3.5" rx="1" fill="#2E7D32"/>
+            <!-- Person photo placeholder -->
+            <rect x="7" y="19" width="8" height="11" rx="1.2" fill="#FDE8F3"/>
+            <circle cx="11" cy="22" r="1.5" fill="#E91E8C" opacity="0.65"/>
+            <path d="M8 30 Q11 26.5 14 30 Z" fill="#E91E8C" opacity="0.65"/>
+            <!-- Text lines -->
+            <rect x="17" y="20" width="17" height="1.5" rx="0.75" fill="#E5E5E5"/>
+            <rect x="17" y="23" width="14" height="1.5" rx="0.75" fill="#E5E5E5"/>
+            <rect x="17" y="26" width="16" height="1.5" rx="0.75" fill="#E5E5E5"/>
+            <rect x="17" y="29" width="12" height="1.5" rx="0.75" fill="#E5E5E5"/>
+            <!-- Pink pencil/edit badge at top-right -->
+            <g transform="translate(30 4) rotate(45 6 6)">
+              <rect x="3.5" y="0.5" width="3.5" height="11" rx="0.8" fill="#E91E8C"/>
+              <path d="M3.5 10.5 L5.25 13 L7 10.5 Z" fill="#E91E8C"/>
+              <rect x="3.5" y="1" width="3.5" height="1.5" fill="#fff" opacity="0.4"/>
+            </g>
+          </svg>
         </div>
-        <span style="font-size:11px;font-weight:700;color:#E91E8C;letter-spacing:0.3px;">THỰC HIỆN TRONG MOMO</span>
-      </div>
-      <!-- Bước 1 — trong MoMo -->
-      <div class="vneid-step" style="padding:14px 16px;">
-        <div class="vneid-step-num" style="background:linear-gradient(135deg,#FFF0F7,#FDE8F3);">
-          <span class="vneid-step-num-text" style="color:#E91E8C;">1</span>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Nhập thông tin CCCD</div>
-          <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Nhập số CCCD, họ tên và ngày sinh để xác minh danh tính ngay trong MoMo</div>
-        </div>
-        <div style="width:36px;height:36px;border-radius:10px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M6 9h4M6 12h8M6 15h4" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-      </div>
-
-      <!-- VNeID step label -->
-      <div style="background:#E8EAF6;padding:8px 16px;display:flex;align-items:center;gap:6px;border-top:1px solid #F0F0F0;">
-        <div style="width:20px;height:20px;border-radius:10px;background:#1A237E;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="10" height="10" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#fff"/></svg>
-        </div>
-        <span style="font-size:11px;font-weight:700;color:#1A237E;letter-spacing:0.3px;">ĐIỀU HƯỚNG SANG APP VNEID</span>
-      </div>
-      <!-- Bước 2 — Chụp ảnh khuôn mặt -->
-      <div class="vneid-step" style="padding:14px 16px;">
-        <div class="vneid-step-num" style="background:linear-gradient(135deg,#E8EAF6,#C5CAE9);">
-          <span class="vneid-step-num-text" style="color:#1A237E;">2</span>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Chụp ảnh khuôn mặt</div>
-          <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Đưa khuôn mặt vào khung hình để xác thực danh tính của bạn</div>
-        </div>
-        <div style="width:36px;height:36px;border-radius:10px;background:#E8EAF6;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="#1A237E" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" stroke="#1A237E" stroke-width="1.8"/></svg>
+        <div style="flex:1;font-size:15px;color:#1A1A1A;line-height:1.4;">
+          <span style="font-weight:700;">Bước 1:</span> Nhập thông tin CCCD
         </div>
       </div>
-      <!-- Bước 3 — trong VNeID -->
-      <div class="vneid-step" style="border-bottom:none;padding:14px 16px;">
-        <div class="vneid-step-num" style="background:linear-gradient(135deg,#E8EAF6,#C5CAE9);">
-          <span class="vneid-step-num-text" style="color:#1A237E;">3</span>
+      <!-- Bước 2 -->
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 16px;">
+        <div style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <circle cx="22" cy="22" r="18" fill="#FDE8F3"/>
+            <circle cx="22" cy="19" r="5.5" fill="#E91E8C" opacity="0.55"/>
+            <path d="M13 34 Q22 23 31 34 Z" fill="#E91E8C" opacity="0.55"/>
+            <!-- Pink corner brackets -->
+            <path d="M3 11 L3 3 L11 3" stroke="#E91E8C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M33 3 L41 3 L41 11" stroke="#E91E8C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M41 33 L41 41 L33 41" stroke="#E91E8C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M11 41 L3 41 L3 33" stroke="#E91E8C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
         </div>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Xác nhận chia sẻ thông tin</div>
-          <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Đồng ý cho VNeID chia sẻ thông tin danh tính về MoMo</div>
+        <div style="flex:1;font-size:15px;color:#1A1A1A;line-height:1.4;">
+          <span style="font-weight:700;">Bước 2:</span> Chụp ảnh khuôn mặt
         </div>
-        <div style="width:36px;height:36px;border-radius:10px;background:#E8EAF6;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#1A237E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <!-- Bước 3 -->
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 16px;">
+        <div style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <!-- Folder body -->
+            <path d="M6 14 h12 l4 4 h16 a2 2 0 0 1 2 2 v14 a2 2 0 0 1 -2 2 h-32 a2 2 0 0 1 -2 -2 v-18 a2 2 0 0 1 2 -2 z" fill="#FFB3D1"/>
+            <rect x="6" y="18" width="34" height="18" rx="2" fill="#FF6FAE"/>
+            <!-- Share nodes -->
+            <circle cx="17" cy="24" r="2.5" fill="#fff"/>
+            <circle cx="29" cy="21" r="2.5" fill="#fff"/>
+            <circle cx="29" cy="30" r="2.5" fill="#fff"/>
+            <path d="M17 24 L29 21 M17 24 L29 30" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="flex:1;font-size:15px;color:#1A1A1A;line-height:1.4;">
+          <span style="font-weight:700;">Bước 3:</span> Xác nhận chia sẻ thông tin
         </div>
       </div>
     </div>
 
-    <!-- Warning notice -->
-    <div class="vneid-warn">
-      <strong style="color:#E65100;">⚠ Lưu ý trước khi xác thực</strong><br/>
-      Nếu bạn chưa đáp ứng yêu cầu dưới đây, hãy thực hiện theo hướng dẫn trên ứng dụng VNeID trước khi tiếp tục.
-    </div>
-
-    <!-- Requirements -->
-    <div class="card">
-      <div class="app-item">
-        <div class="app-icon" style="background:linear-gradient(135deg,#1565C0,#1E88E5);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" fill="rgba(255,255,255,0.25)"/><path d="M9 7h6M9 11h6M9 15h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <!-- Warning / Requirements card -->
+    <div class="card" style="padding:16px;">
+      <div style="font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:6px;line-height:1.4;">Lưu ý quan trọng trước khi xác thực qua VNeID</div>
+      <div style="font-size:13px;color:#666;line-height:1.55;margin-bottom:12px;">Nếu bạn chưa đáp ứng yêu cầu bên dưới, hãy thực hiện theo hướng dẫn trên ứng dụng VNeID trước khi tiếp tục</div>
+      <div style="border-top:1px dashed #D0D0D0;margin-bottom:10px;"></div>
+      <!-- Req 1: VNeID app installed -->
+      <div style="display:flex;align-items:center;gap:14px;padding:8px 0;">
+        <div style="width:44px;height:44px;border-radius:10px;background:#C62828;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;">
+          <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+            <path d="M18 4L4 10v10c0 9 6.3 17.4 14 20 7.7-2.6 14-11 14-20V10L18 4z" fill="#FFD700"/>
+            <path d="M18 10l1.6 4.8H25l-4.1 3 1.6 4.8L18 19.6l-4.5 3 1.6-4.8L11 14.8h4.8z" fill="#C62828"/>
+          </svg>
         </div>
-        <div><div class="app-item-text">Ứng dụng VNeID đã cài đặt</div><div class="app-item-sub">Tải về từ App Store / Google Play</div></div>
+        <div style="flex:1;font-size:14px;color:#1A1A1A;line-height:1.45;">Ứng dụng VNeID đã cài đặt trên điện thoại</div>
       </div>
-      <div class="app-item">
-        <div class="app-icon" style="background:linear-gradient(135deg,#2E7D32,#43A047);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="rgba(255,255,255,0.9)"/><path d="M9 12l2 2 4-4" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <!-- Req 2: Level 2 identified -->
+      <div style="display:flex;align-items:center;gap:14px;padding:8px 0;">
+        <div style="width:44px;height:44px;border-radius:8px;background:#7B1818;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;">
+          <div style="font-size:8px;font-weight:700;color:#fff;text-align:center;line-height:1.15;padding:0 2px;">Định danh<br/>mức 2</div>
+          <div style="position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:4px;background:#FFD700;display:flex;align-items:center;justify-content:center;">
+            <svg width="5" height="5" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#C62828" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
         </div>
-        <div><div class="app-item-text">Tài khoản VNeID định danh mức 2</div></div>
+        <div style="flex:1;font-size:14px;color:#1A1A1A;line-height:1.45;">Tài khoản VNeID của bạn đã được định danh mức 2</div>
       </div>
-      <div class="app-item" style="border-bottom:none;">
-        <div class="app-icon" style="background:linear-gradient(135deg,#455A64,#607D8B);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#fff" stroke-width="1.8"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#fff"/></svg>
+      <!-- Req 3: Correct password -->
+      <div style="display:flex;align-items:center;gap:14px;padding:8px 0;">
+        <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="36" height="40" viewBox="0 0 36 40" fill="none">
+            <path d="M12 15v-3a6 6 0 0 1 12 0v3" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <rect x="8" y="15" width="20" height="14" rx="2" fill="#1A1A1A"/>
+            <circle cx="18" cy="22" r="1.8" fill="#fff"/>
+            <rect x="17" y="23" width="2" height="3" fill="#fff"/>
+            <!-- Dashed underline with 4 stars -->
+            <text x="10" y="38" font-size="9" font-weight="700" fill="#1A1A1A" letter-spacing="2">****</text>
+          </svg>
         </div>
-        <div><div class="app-item-text">Mật khẩu đăng nhập VNeID chính xác</div></div>
+        <div style="flex:1;font-size:14px;color:#1A1A1A;line-height:1.45;">Mật khẩu đăng nhập chính xác</div>
       </div>
     </div>
     <div style="height:12px;"></div>
@@ -935,7 +1083,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       <button class="nav-back" onclick="goTo(8)">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <span class="nav-title">Nhập thông tin</span>
+      <span class="nav-title">Nhập thông tin CCCD</span>
       <div class="nav-right">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#666" stroke-width="1.8"/></svg>
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#666" stroke-width="1.8"/></svg>
@@ -943,68 +1091,44 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     </div>
   </div>
   <div class="scroll">
-    <!-- Step badge -->
-    <div style="padding:12px 16px 4px;">
-      <div style="display:inline-flex;align-items:center;gap:5px;background:#FFF0F7;border-radius:20px;padding:5px 12px;">
-        <div style="width:18px;height:18px;border-radius:9px;background:#E91E8C;display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:10px;font-weight:800;color:#fff;">1</span>
-        </div>
-        <span style="font-size:12px;font-weight:700;color:#E91E8C;">Bước 1/3 — Thực hiện trong MoMo</span>
-      </div>
-    </div>
-    <!-- Hero -->
-    <div style="text-align:center;padding:12px 16px 14px;">
-      <div style="width:72px;height:72px;border-radius:36px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
-        <svg width="36" height="36" fill="none" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M6 9h4M6 12h8M6 15h4" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </div>
-      <div style="font-size:18px;font-weight:800;color:#1A1A1A;">Nhập thông tin của bạn</div>
-      <div style="font-size:13px;color:#666;margin-top:6px;line-height:1.5;">Nhập đúng thông tin trên Căn cước công dân gắn chip</div>
+    <!-- Section heading -->
+    <div style="padding:16px 16px 10px;">
+      <div style="font-size:16px;font-weight:800;color:#1A1A1A;">Thông tin CCCD của bạn</div>
     </div>
     <!-- Input card -->
     <div class="card">
-      <!-- CCCD field -->
+      <!-- Số CCCD field -->
       <div id="cccd-wrap" class="input-wrap" style="border-radius:12px;">
-        <label class="input-label">Số CCCD / Căn cước công dân</label>
+        <label class="input-label">Số CCCD<span style="color:#FF5722;margin-left:2px;">*</span></label>
         <div class="input-row">
-          <input id="cccd-inp" class="input-field" type="tel" inputmode="numeric" maxlength="12" placeholder="Nhập 12 chữ số"
+          <input id="cccd-inp" class="input-field" type="tel" inputmode="numeric" maxlength="12" placeholder="Nhập số CCCD"
             onfocus="focusWrap('cccd-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-wrap');scheduleHideKbCta()"
             oninput="onCCCDInput()"/>
         </div>
       </div>
       <!-- Họ tên field -->
       <div id="cccd-name-wrap" class="input-wrap" style="border-radius:12px;">
-        <label class="input-label">Họ và tên</label>
-        <input id="cccd-name-inp" class="input-field" type="text" placeholder="Nhập họ và tên đầy đủ"
-          onfocus="focusWrap('cccd-name-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-name-wrap');scheduleHideKbCta()"
-          oninput="onCCCDInput()"/>
+        <label class="input-label">Họ và tên<span style="color:#FF5722;margin-left:2px;">*</span></label>
+        <input id="cccd-name-inp" class="input-field" type="text" placeholder="Nhập họ và tên"
+          onfocus="focusWrap('cccd-name-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-name-wrap');scheduleHideKbCta()"/>
       </div>
       <!-- Ngày sinh field -->
-      <div id="cccd-dob-wrap" class="input-wrap" style="border-radius:12px;margin-bottom:10px;">
-        <label class="input-label">Ngày sinh</label>
-        <input id="cccd-dob-inp" class="input-field" type="text" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY"
-          onfocus="focusWrap('cccd-dob-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-dob-wrap');scheduleHideKbCta()"
-          oninput="onDOBInput()"/>
-      </div>
-      <div style="background:#FFF0F7;border-radius:10px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10" stroke="#E91E8C" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
-        <div style="font-size:12px;color:#666;line-height:1.6;">Nhập chính xác thông tin theo <strong>Căn cước công dân gắn chip</strong> của bạn</div>
-      </div>
-      <div style="text-align:center;margin-top:14px;"><button class="demo-btn" onclick="demoCCCD()">demo fill</button></div>
-    </div>
-    <!-- Next step hint -->
-    <div style="margin:0 12px 12px;background:#F0F4FF;border-radius:12px;padding:12px 14px;border:1px solid #E8EAF6;display:flex;gap:10px;align-items:center;">
-      <div style="width:32px;height:32px;border-radius:10px;background:#1A237E;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#fff"/></svg>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;color:#1A237E;">Tiếp theo: Chuyển sang app VNeID</div>
-        <div style="font-size:11px;color:#666;margin-top:2px;line-height:1.4;">Đăng nhập VNeID &amp; xác nhận chia sẻ thông tin với MoMo</div>
+      <div id="cccd-dob-wrap" class="input-wrap" style="border-radius:12px;margin-bottom:0;">
+        <label class="input-label">Ngày sinh<span style="color:#FF5722;margin-left:2px;">*</span></label>
+        <div class="input-row">
+          <input id="cccd-dob-inp" class="input-field" type="text" inputmode="numeric" maxlength="10" placeholder="Chọn ngày tháng năm sinh"
+            onfocus="focusWrap('cccd-dob-wrap');scheduleShowKbCta()" onblur="blurWrap('cccd-dob-wrap');scheduleHideKbCta()"
+            oninput="onDOBInput()" style="flex:1;"/>
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path d="M6 9l6 6 6-6" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
       </div>
     </div>
+    <!-- Demo button (outside card, discreet) -->
+    <div style="text-align:center;margin-top:14px;"><button class="demo-btn" onclick="demoCCCD()">demo fill</button></div>
     <div style="height:12px;"></div>
   </div>
   <div class="bottom-area">
-    <button id="btn-cccd" class="btn-pink" disabled onclick="goTo(23)">Tiếp tục</button>
+    <button id="btn-cccd" class="btn-pink" onclick="submitCCCD()">Tiếp tục</button>
   </div>
 </div>
 
@@ -1115,14 +1239,9 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       <!-- Logo row: MoMo ↔ link icon ↔ VNeID -->
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:4px 0 18px;">
         <!-- MoMo logo -->
-        <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#E91E8C,#FF6EC7);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(233,30,140,0.28);">
-          <svg width="30" height="24" viewBox="0 0 30 24" fill="none">
-            <ellipse cx="7.5" cy="12" rx="6" ry="8" fill="#fff"/>
-            <ellipse cx="22.5" cy="12" rx="6" ry="8" fill="#fff"/>
-            <ellipse cx="15" cy="12" rx="4.5" ry="8" fill="#fff"/>
-            <circle cx="7.5" cy="12" r="2.8" fill="#E91E8C"/>
-            <circle cx="22.5" cy="12" r="2.8" fill="#E91E8C"/>
-          </svg>
+        <div style="width:52px;height:52px;border-radius:12px;background:#A50064;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:0.82;box-shadow:0 3px 10px rgba(165,0,100,0.3);">
+          <span style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-1px;font-family:inherit;">mo</span>
+          <span style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-1px;font-family:inherit;">mo</span>
         </div>
         <!-- Chain link icon -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1352,8 +1471,9 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       <div style="padding:16px;border-bottom:1px solid #F5F5F5;">
         <div style="text-align:center;margin-bottom:12px;">
           <div style="display:inline-flex;align-items:center;gap:10px;">
-            <div style="width:44px;height:44px;border-radius:22px;background:linear-gradient(135deg,#E91E8C,#FF6FAE);display:flex;align-items:center;justify-content:center;">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#fff"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div style="width:44px;height:44px;border-radius:10px;background:#A50064;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:0.82;">
+              <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.8px;font-family:inherit;">mo</span>
+              <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.8px;font-family:inherit;">mo</span>
             </div>
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="#1A237E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div style="width:44px;height:44px;border-radius:22px;background:#283593;display:flex;align-items:center;justify-content:center;">
@@ -1606,7 +1726,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     </div>
 
     <!-- All banks link row like Image 2 -->
-    <div style="margin:0 12px 12px;background:#FFF0F7;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="goTo(18b)" id="all-banks-row">
+    <div style="margin:0 12px 12px;background:#FFF0F7;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="scrollToAllBanks()" id="all-banks-row">
       <div style="width:40px;height:40px;border-radius:12px;background:#fff;border:1.5px solid #F0D0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="#E91E8C" stroke-width="1.8"/></svg>
       </div>
@@ -1682,8 +1802,8 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
 
     <!-- Open account promo -->
     <div class="card" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
-      <div style="width:44px;height:44px;border-radius:12px;background:#E3F2FD;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" stroke="#1565C0" stroke-width="1.8"/><path d="M16 7V5a2 2 0 0 0-4 0v2M8 7V5a2 2 0 0 0-4 0" stroke="#1565C0" stroke-width="1.8"/><line x1="12" y1="12" x2="12" y2="18" stroke="#1565C0" stroke-width="1.8"/><line x1="9" y1="15" x2="15" y2="15" stroke="#1565C0" stroke-width="1.8"/></svg>
+      <div style="width:44px;height:44px;border-radius:12px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M16 7V5a2 2 0 0 0-4 0v2M8 7V5a2 2 0 0 0-4 0" stroke="#E91E8C" stroke-width="1.8"/><line x1="12" y1="12" x2="12" y2="18" stroke="#E91E8C" stroke-width="1.8"/><line x1="9" y1="15" x2="15" y2="15" stroke="#E91E8C" stroke-width="1.8"/></svg>
       </div>
       <div style="flex:1;">
         <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Mở tài khoản ngân hàng</div>
@@ -1792,7 +1912,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     <div style="height:12px;"></div>
   </div>
   <div class="bottom-area">
-    <button id="btn-bankacct" class="btn-pink" disabled onclick="goTo(20)">Tiếp tục</button>
+    <button id="btn-bankacct" class="btn-pink" onclick="submitBankAcct()">Tiếp tục</button>
   </div>
 </div>
 
@@ -1817,15 +1937,15 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     <!-- OTP notice card -->
     <div class="card">
       <div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:8px;">Xác thực OTP</div>
-      <div style="background:#E3F2FD;border-radius:10px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10" stroke="#1565C0" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="#1565C0" stroke-width="2" stroke-linecap="round"/></svg>
-        <div style="font-size:12px;color:#1565C0;line-height:1.6;">Ngân hàng <span id="bank-otp-name">BIDV</span> vừa gửi một mật khẩu OTP đến số điện thoại <span id="bank-otp-phone" style="font-weight:700;color:#E91E8C;"></span>
+      <div style="background:#FFF0F7;border-radius:10px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10" stroke="#E91E8C" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
+        <div style="font-size:12px;color:#666;line-height:1.6;">Ngân hàng <span id="bank-otp-name">BIDV</span> vừa gửi một mật khẩu OTP đến số điện thoại <span id="bank-otp-phone" style="font-weight:700;color:#E91E8C;"></span>
           <span style="color:#E91E8C;font-weight:600;margin-left:4px;cursor:pointer;">Hướng dẫn</span>
         </div>
       </div>
 
       <!-- OTP input - 6 boxes -->
-      <div style="display:flex;gap:8px;justify-content:center;margin:8px 0 14px;">
+      <div id="botp-row" style="display:flex;gap:8px;justify-content:center;margin:8px 0 14px;">
         <input class="otp-box" id="botp1" type="tel" inputmode="numeric" maxlength="1" style="width:46px;height:52px;"
           oninput="bankOtpInput(this,null,'botp2')" onfocus="scheduleShowKbCta()" onblur="scheduleHideKbCta()"/>
         <input class="otp-box" id="botp2" type="tel" inputmode="numeric" maxlength="1" style="width:46px;height:52px;"
@@ -1847,11 +1967,11 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     <div class="card" style="padding:0;overflow:hidden;">
       <div class="row-item">
         <div style="font-size:13px;color:#666;width:100px;flex-shrink:0;">Số tài khoản</div>
-        <div style="font-size:14px;font-weight:600;color:#1A1A1A;" id="summary-acct">59494949</div>
+        <div style="font-size:14px;font-weight:600;color:#303233;" id="summary-acct">59494949</div>
       </div>
       <div class="row-item">
         <div style="font-size:13px;color:#666;width:100px;flex-shrink:0;">Họ và tên</div>
-        <div style="font-size:14px;font-weight:600;color:#1A1A1A;">TANG KHANH HAO</div>
+        <div style="font-size:14px;font-weight:600;color:#303233;">TANG KHANH HAO</div>
       </div>
       <div class="row-item" style="border-bottom:none;">
         <div style="font-size:13px;color:#666;width:100px;flex-shrink:0;">CCCD</div>
@@ -1861,7 +1981,7 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     <div style="height:12px;"></div>
   </div>
   <div class="bottom-area">
-    <button id="btn-bankotp" class="btn-pink" disabled onclick="goTo(21)">Tiếp tục</button>
+    <button id="btn-bankotp" class="btn-pink" onclick="submitBankOTP()">Tiếp tục</button>
   </div>
 </div>
 
@@ -1877,12 +1997,10 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       <div style="position:relative;display:inline-block;margin-bottom:28px;">
         <!-- Outer glow ring -->
         <div style="width:120px;height:120px;border-radius:60px;background:rgba(232,25,125,0.08);display:flex;align-items:center;justify-content:center;">
-          <!-- MoMo pink circle -->
-          <div style="width:96px;height:96px;border-radius:48px;background:linear-gradient(135deg,#E91E8C,#FF6FAE);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(232,25,125,0.4);">
-            <svg width="48" height="48" fill="none" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="4" fill="rgba(255,255,255,0.95)"/>
-              <path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" fill="rgba(255,255,255,0.85)"/>
-            </svg>
+          <!-- MoMo app icon -->
+          <div style="width:96px;height:96px;border-radius:22px;background:#A50064;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:0.82;box-shadow:0 8px 28px rgba(165,0,100,0.4);">
+            <span style="font-size:32px;font-weight:900;color:#fff;letter-spacing:-1.8px;font-family:inherit;">mo</span>
+            <span style="font-size:32px;font-weight:900;color:#fff;letter-spacing:-1.8px;font-family:inherit;">mo</span>
           </div>
         </div>
         <!-- Green check badge -->
@@ -2185,87 +2303,91 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       </div>
     </div>
 
-    <!-- Section A -->
-    <div class="survey-section-hdr"><div class="survey-section-hdr-text">Phần A — Mức độ dễ sử dụng</div></div>
+    <!-- Intro note — SUS scale -->
+    <div style="padding:4px 16px 4px;">
+      <div style="background:#FFF0F7;border-radius:10px;padding:10px 12px;font-size:12px;color:#666;line-height:1.55;">
+        Vui lòng đọc kỹ từng câu. Thang điểm <strong style="color:#E91E8C;">1</strong> = Hoàn toàn không đồng ý → <strong style="color:#E91E8C;">5</strong> = Hoàn toàn đồng ý.
+      </div>
+    </div>
+
+    <!-- 10 SUS questions (alternating positive/negative) -->
+    <div class="survey-section-hdr"><div class="survey-section-hdr-text">Đánh giá quy trình xác thực (10 câu)</div></div>
     <div style="background:#fff;">
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">1</span><div class="survey-q-text"><div class="survey-q-vi">Nhìn chung, tôi hài lòng với sự dễ dàng khi thực hiện việc đăng ký tài khoản MoMo.</div></div></div>
+        <div class="survey-q-top"><span class="survey-q-num">1</span><div class="survey-q-text"><div class="survey-q-vi">Nếu cần xác thực lại, tôi vẫn muốn chọn cách này.</div></div></div>
         <div class="survey-rate-row" id="sq1-row">
-          <button class="survey-rate-btn" id="sq1b1" onclick="onSurveyRate(1,1)">1</button><button class="survey-rate-btn" id="sq1b2" onclick="onSurveyRate(1,2)">2</button><button class="survey-rate-btn" id="sq1b3" onclick="onSurveyRate(1,3)">3</button><button class="survey-rate-btn" id="sq1b4" onclick="onSurveyRate(1,4)">4</button><button class="survey-rate-btn" id="sq1b5" onclick="onSurveyRate(1,5)">5</button><button class="survey-rate-btn" id="sq1b6" onclick="onSurveyRate(1,6)">6</button><button class="survey-rate-btn" id="sq1b7" onclick="onSurveyRate(1,7)">7</button>
+          <button class="survey-rate-btn" id="sq1b1" onclick="onSurveyRate(1,1)">1</button><button class="survey-rate-btn" id="sq1b2" onclick="onSurveyRate(1,2)">2</button><button class="survey-rate-btn" id="sq1b3" onclick="onSurveyRate(1,3)">3</button><button class="survey-rate-btn" id="sq1b4" onclick="onSurveyRate(1,4)">4</button><button class="survey-rate-btn" id="sq1b5" onclick="onSurveyRate(1,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">2</span><div class="survey-q-text"><div class="survey-q-vi">Các bước thực hiện đơn giản.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq2b1" onclick="onSurveyRate(2,1)">1</button><button class="survey-rate-btn" id="sq2b2" onclick="onSurveyRate(2,2)">2</button><button class="survey-rate-btn" id="sq2b3" onclick="onSurveyRate(2,3)">3</button><button class="survey-rate-btn" id="sq2b4" onclick="onSurveyRate(2,4)">4</button><button class="survey-rate-btn" id="sq2b5" onclick="onSurveyRate(2,5)">5</button><button class="survey-rate-btn" id="sq2b6" onclick="onSurveyRate(2,6)">6</button><button class="survey-rate-btn" id="sq2b7" onclick="onSurveyRate(2,7)">7</button>
+        <div class="survey-q-top"><span class="survey-q-num">2</span><div class="survey-q-text"><div class="survey-q-vi">Tôi thấy quy trình xác thực này phức tạp một cách không cần thiết.</div></div></div>
+        <div class="survey-rate-row" id="sq2-row">
+          <button class="survey-rate-btn" id="sq2b1" onclick="onSurveyRate(2,1)">1</button><button class="survey-rate-btn" id="sq2b2" onclick="onSurveyRate(2,2)">2</button><button class="survey-rate-btn" id="sq2b3" onclick="onSurveyRate(2,3)">3</button><button class="survey-rate-btn" id="sq2b4" onclick="onSurveyRate(2,4)">4</button><button class="survey-rate-btn" id="sq2b5" onclick="onSurveyRate(2,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">3</span><div class="survey-q-text"><div class="survey-q-vi">Tôi có thể hoàn thành thao tác một cách nhanh chóng.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq3b1" onclick="onSurveyRate(3,1)">1</button><button class="survey-rate-btn" id="sq3b2" onclick="onSurveyRate(3,2)">2</button><button class="survey-rate-btn" id="sq3b3" onclick="onSurveyRate(3,3)">3</button><button class="survey-rate-btn" id="sq3b4" onclick="onSurveyRate(3,4)">4</button><button class="survey-rate-btn" id="sq3b5" onclick="onSurveyRate(3,5)">5</button><button class="survey-rate-btn" id="sq3b6" onclick="onSurveyRate(3,6)">6</button><button class="survey-rate-btn" id="sq3b7" onclick="onSurveyRate(3,7)">7</button>
+        <div class="survey-q-top"><span class="survey-q-num">3</span><div class="survey-q-text"><div class="survey-q-vi">Tôi nghĩ quy trình xác thực này dễ thực hiện.</div></div></div>
+        <div class="survey-rate-row" id="sq3-row">
+          <button class="survey-rate-btn" id="sq3b1" onclick="onSurveyRate(3,1)">1</button><button class="survey-rate-btn" id="sq3b2" onclick="onSurveyRate(3,2)">2</button><button class="survey-rate-btn" id="sq3b3" onclick="onSurveyRate(3,3)">3</button><button class="survey-rate-btn" id="sq3b4" onclick="onSurveyRate(3,4)">4</button><button class="survey-rate-btn" id="sq3b5" onclick="onSurveyRate(3,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
-      </div>
-    </div>
-
-    <!-- Section B -->
-    <div class="survey-section-hdr"><div class="survey-section-hdr-text">Phần B — Thông tin hướng dẫn</div></div>
-    <div style="background:#fff;">
-      <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">4</span><div class="survey-q-text"><div class="survey-q-vi">Các thông tin hướng dẫn trong quá trình thực hiện là rõ ràng.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq4b1" onclick="onSurveyRate(4,1)">1</button><button class="survey-rate-btn" id="sq4b2" onclick="onSurveyRate(4,2)">2</button><button class="survey-rate-btn" id="sq4b3" onclick="onSurveyRate(4,3)">3</button><button class="survey-rate-btn" id="sq4b4" onclick="onSurveyRate(4,4)">4</button><button class="survey-rate-btn" id="sq4b5" onclick="onSurveyRate(4,5)">5</button><button class="survey-rate-btn" id="sq4b6" onclick="onSurveyRate(4,6)">6</button><button class="survey-rate-btn" id="sq4b7" onclick="onSurveyRate(4,7)">7</button>
-        </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">5</span><div class="survey-q-text"><div class="survey-q-vi">Thông tin được cung cấp đủ để tôi hoàn thành thao tác.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq5b1" onclick="onSurveyRate(5,1)">1</button><button class="survey-rate-btn" id="sq5b2" onclick="onSurveyRate(5,2)">2</button><button class="survey-rate-btn" id="sq5b3" onclick="onSurveyRate(5,3)">3</button><button class="survey-rate-btn" id="sq5b4" onclick="onSurveyRate(5,4)">4</button><button class="survey-rate-btn" id="sq5b5" onclick="onSurveyRate(5,5)">5</button><button class="survey-rate-btn" id="sq5b6" onclick="onSurveyRate(5,6)">6</button><button class="survey-rate-btn" id="sq5b7" onclick="onSurveyRate(5,7)">7</button>
+        <div class="survey-q-top"><span class="survey-q-num">4</span><div class="survey-q-text"><div class="survey-q-vi">Tôi nghĩ mình sẽ cần sự hỗ trợ của người khác để hoàn tất xác thực.</div></div></div>
+        <div class="survey-rate-row" id="sq4-row">
+          <button class="survey-rate-btn" id="sq4b1" onclick="onSurveyRate(4,1)">1</button><button class="survey-rate-btn" id="sq4b2" onclick="onSurveyRate(4,2)">2</button><button class="survey-rate-btn" id="sq4b3" onclick="onSurveyRate(4,3)">3</button><button class="survey-rate-btn" id="sq4b4" onclick="onSurveyRate(4,4)">4</button><button class="survey-rate-btn" id="sq4b5" onclick="onSurveyRate(4,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">6</span><div class="survey-q-text"><div class="survey-q-vi">Thông tin hiển thị trong trải nghiệm này dễ hiểu.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq6b1" onclick="onSurveyRate(6,1)">1</button><button class="survey-rate-btn" id="sq6b2" onclick="onSurveyRate(6,2)">2</button><button class="survey-rate-btn" id="sq6b3" onclick="onSurveyRate(6,3)">3</button><button class="survey-rate-btn" id="sq6b4" onclick="onSurveyRate(6,4)">4</button><button class="survey-rate-btn" id="sq6b5" onclick="onSurveyRate(6,5)">5</button><button class="survey-rate-btn" id="sq6b6" onclick="onSurveyRate(6,6)">6</button><button class="survey-rate-btn" id="sq6b7" onclick="onSurveyRate(6,7)">7</button>
+        <div class="survey-q-top"><span class="survey-q-num">5</span><div class="survey-q-text"><div class="survey-q-vi">Tôi thấy các bước trong quy trình được sắp xếp hợp lý với nhau.</div></div></div>
+        <div class="survey-rate-row" id="sq5-row">
+          <button class="survey-rate-btn" id="sq5b1" onclick="onSurveyRate(5,1)">1</button><button class="survey-rate-btn" id="sq5b2" onclick="onSurveyRate(5,2)">2</button><button class="survey-rate-btn" id="sq5b3" onclick="onSurveyRate(5,3)">3</button><button class="survey-rate-btn" id="sq5b4" onclick="onSurveyRate(5,4)">4</button><button class="survey-rate-btn" id="sq5b5" onclick="onSurveyRate(5,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
-      </div>
-    </div>
-
-    <!-- Section C -->
-    <div class="survey-section-hdr"><div class="survey-section-hdr-text">Phần C — Giao diện &amp; cảm nhận chung</div></div>
-    <div style="background:#fff;">
-      <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">7</span><div class="survey-q-text"><div class="survey-q-vi">Thiết kế giao diện trải nghiệm vừa rồi mang lại cảm giác dễ chịu.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq7b1" onclick="onSurveyRate(7,1)">1</button><button class="survey-rate-btn" id="sq7b2" onclick="onSurveyRate(7,2)">2</button><button class="survey-rate-btn" id="sq7b3" onclick="onSurveyRate(7,3)">3</button><button class="survey-rate-btn" id="sq7b4" onclick="onSurveyRate(7,4)">4</button><button class="survey-rate-btn" id="sq7b5" onclick="onSurveyRate(7,5)">5</button><button class="survey-rate-btn" id="sq7b6" onclick="onSurveyRate(7,6)">6</button><button class="survey-rate-btn" id="sq7b7" onclick="onSurveyRate(7,7)">7</button>
-        </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">8</span><div class="survey-q-text"><div class="survey-q-vi">Tôi thích sử dụng giao diện trong quá trình trải nghiệm vừa rồi.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq8b1" onclick="onSurveyRate(8,1)">1</button><button class="survey-rate-btn" id="sq8b2" onclick="onSurveyRate(8,2)">2</button><button class="survey-rate-btn" id="sq8b3" onclick="onSurveyRate(8,3)">3</button><button class="survey-rate-btn" id="sq8b4" onclick="onSurveyRate(8,4)">4</button><button class="survey-rate-btn" id="sq8b5" onclick="onSurveyRate(8,5)">5</button><button class="survey-rate-btn" id="sq8b6" onclick="onSurveyRate(8,6)">6</button><button class="survey-rate-btn" id="sq8b7" onclick="onSurveyRate(8,7)">7</button>
+        <div class="survey-q-top"><span class="survey-q-num">6</span><div class="survey-q-text"><div class="survey-q-vi">Tôi nghĩ có quá nhiều điểm không nhất quán trong quy trình này.</div></div></div>
+        <div class="survey-rate-row" id="sq6-row">
+          <button class="survey-rate-btn" id="sq6b1" onclick="onSurveyRate(6,1)">1</button><button class="survey-rate-btn" id="sq6b2" onclick="onSurveyRate(6,2)">2</button><button class="survey-rate-btn" id="sq6b3" onclick="onSurveyRate(6,3)">3</button><button class="survey-rate-btn" id="sq6b4" onclick="onSurveyRate(6,4)">4</button><button class="survey-rate-btn" id="sq6b5" onclick="onSurveyRate(6,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
       <div class="survey-q">
-        <div class="survey-q-top"><span class="survey-q-num">9</span><div class="survey-q-text"><div class="survey-q-vi">Nhìn chung, tôi hài lòng với trải nghiệm vừa rồi.</div></div></div>
-        <div class="survey-rate-row">
-          <button class="survey-rate-btn" id="sq9b1" onclick="onSurveyRate(9,1)">1</button><button class="survey-rate-btn" id="sq9b2" onclick="onSurveyRate(9,2)">2</button><button class="survey-rate-btn" id="sq9b3" onclick="onSurveyRate(9,3)">3</button><button class="survey-rate-btn" id="sq9b4" onclick="onSurveyRate(9,4)">4</button><button class="survey-rate-btn" id="sq9b5" onclick="onSurveyRate(9,5)">5</button><button class="survey-rate-btn" id="sq9b6" onclick="onSurveyRate(9,6)">6</button><button class="survey-rate-btn" id="sq9b7" onclick="onSurveyRate(9,7)">7</button>
+        <div class="survey-q-top"><span class="survey-q-num">7</span><div class="survey-q-text"><div class="survey-q-vi">Tôi tưởng tượng rằng hầu hết mọi người sẽ học cách thực hiện quy trình này rất nhanh.</div></div></div>
+        <div class="survey-rate-row" id="sq7-row">
+          <button class="survey-rate-btn" id="sq7b1" onclick="onSurveyRate(7,1)">1</button><button class="survey-rate-btn" id="sq7b2" onclick="onSurveyRate(7,2)">2</button><button class="survey-rate-btn" id="sq7b3" onclick="onSurveyRate(7,3)">3</button><button class="survey-rate-btn" id="sq7b4" onclick="onSurveyRate(7,4)">4</button><button class="survey-rate-btn" id="sq7b5" onclick="onSurveyRate(7,5)">5</button>
         </div>
-        <div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
+      </div>
+      <div class="survey-q">
+        <div class="survey-q-top"><span class="survey-q-num">8</span><div class="survey-q-text"><div class="survey-q-vi">Tôi thấy quy trình xác thực này rất cồng kềnh khi thực hiện.</div></div></div>
+        <div class="survey-rate-row" id="sq8-row">
+          <button class="survey-rate-btn" id="sq8b1" onclick="onSurveyRate(8,1)">1</button><button class="survey-rate-btn" id="sq8b2" onclick="onSurveyRate(8,2)">2</button><button class="survey-rate-btn" id="sq8b3" onclick="onSurveyRate(8,3)">3</button><button class="survey-rate-btn" id="sq8b4" onclick="onSurveyRate(8,4)">4</button><button class="survey-rate-btn" id="sq8b5" onclick="onSurveyRate(8,5)">5</button>
+        </div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
+      </div>
+      <div class="survey-q">
+        <div class="survey-q-top"><span class="survey-q-num">9</span><div class="survey-q-text"><div class="survey-q-vi">Tôi cảm thấy rất tự tin khi thực hiện xác thực qua quy trình này.</div></div></div>
+        <div class="survey-rate-row" id="sq9-row">
+          <button class="survey-rate-btn" id="sq9b1" onclick="onSurveyRate(9,1)">1</button><button class="survey-rate-btn" id="sq9b2" onclick="onSurveyRate(9,2)">2</button><button class="survey-rate-btn" id="sq9b3" onclick="onSurveyRate(9,3)">3</button><button class="survey-rate-btn" id="sq9b4" onclick="onSurveyRate(9,4)">4</button><button class="survey-rate-btn" id="sq9b5" onclick="onSurveyRate(9,5)">5</button>
+        </div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
+      </div>
+      <div class="survey-q">
+        <div class="survey-q-top"><span class="survey-q-num">10</span><div class="survey-q-text"><div class="survey-q-vi">Tôi cần học nhiều thứ trước khi có thể hoàn tất xác thực.</div></div></div>
+        <div class="survey-rate-row" id="sq10-row">
+          <button class="survey-rate-btn" id="sq10b1" onclick="onSurveyRate(10,1)">1</button><button class="survey-rate-btn" id="sq10b2" onclick="onSurveyRate(10,2)">2</button><button class="survey-rate-btn" id="sq10b3" onclick="onSurveyRate(10,3)">3</button><button class="survey-rate-btn" id="sq10b4" onclick="onSurveyRate(10,4)">4</button><button class="survey-rate-btn" id="sq10b5" onclick="onSurveyRate(10,5)">5</button>
+        </div>
+        <div class="survey-scale-labels"><span>Hoàn toàn không đồng ý</span><span>Hoàn toàn đồng ý</span></div>
       </div>
     </div>
     <div style="height:12px;"></div>
   </div>
   <div class="bottom-area">
-    <button id="btn-survey-submit" class="btn-pink" disabled onclick="submitSurvey()">Gửi khảo sát</button>
+    <button id="btn-survey-submit" class="btn-pink" onclick="submitSurvey()">Gửi khảo sát</button>
   </div>
 </div>
 
@@ -2288,122 +2410,131 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
 </div>
 
 <!-- ═══════════════════════════════════════
-     SCREEN 22 (s6b) — Chọn phương thức xác minh danh tính
+     SCREEN 22 (s6b) — Chọn phương thức xác minh danh tính (MoMo DS)
 ════════════════════════════════════════ -->
-<div id="s6b" class="screen">
-  <div class="hdr-pink">
+<div id="s6b" class="screen" style="background:#F2F2F6;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;letter-spacing:-0.01em;">
+
+  <!-- Header gradient mask -->
+  <div style="flex-shrink:0;background:linear-gradient(180deg,#FDCADE 0%,rgba(242,242,246,0) 100%);padding-bottom:8px;">
     <div class="status-spacer"></div>
-    <div class="nav">
-      <button class="nav-back" onclick="openSupportSheet()">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <!-- Navigation Header — 48px, pill actions -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 12px 8px;height:48px;">
+      <!-- Back pill -->
+      <button class="nav-back" onclick="openSupportSheet()" style="width:36px;height:34px;border-radius:40px;background:rgba(255,255,255,0.6);border:0.5px solid rgba(0,0,0,0.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#303233" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <span class="nav-title">Xác minh danh tính</span>
-      <div class="nav-right">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#666" stroke-width="1.8"/></svg>
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#666" stroke-width="1.8"/></svg>
+      <!-- Title -->
+      <span style="font-size:14px;font-weight:600;line-height:20px;color:#303233;">Xác thực tài khoản</span>
+      <!-- Right pill group -->
+      <div style="display:flex;align-items:center;gap:0;background:rgba(255,255,255,0.6);border:0.5px solid rgba(0,0,0,0.12);border-radius:40px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:4px 10px;height:34px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#484848" stroke-width="1.8"/></svg>
+        <div style="width:1px;height:12px;background:#484848;opacity:0.35;margin:0 8px;"></div>
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#484848" stroke-width="1.8"/></svg>
       </div>
     </div>
   </div>
 
   <div class="scroll">
-    <!-- Hero -->
-    <div style="text-align:center;padding:20px 16px 12px;">
+    <!-- Hero Section -->
+    <div style="text-align:center;padding:24px 24px 24px;">
       <div style="position:relative;display:inline-block;">
-        <div style="width:88px;height:88px;border-radius:44px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto;">
-          <!-- ID card + shield icon -->
-          <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
-            <rect x="4" y="10" width="30" height="20" rx="3" fill="#E91E8C" opacity="0.15" stroke="#E91E8C" stroke-width="1.5"/>
-            <circle cx="12" cy="18" r="4" fill="#E91E8C" opacity="0.5"/>
-            <rect x="18" y="14" width="12" height="2.5" rx="1.2" fill="#E91E8C" opacity="0.6"/>
-            <rect x="18" y="19" width="9" height="2" rx="1" fill="#E91E8C" opacity="0.4"/>
-            <path d="M28 24L24 26v4c0 3 2.2 5.8 4 6.8C29.8 35.8 32 33 32 30v-4L28 24z" fill="#E91E8C" opacity="0.8"/>
-            <path d="M26.5 29l1.2 1.2 2.8-2.8" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Avatar circle with person icon -->
+        <div style="width:88px;height:88px;border-radius:50%;background:#FDEAF4;display:flex;align-items:center;justify-content:center;margin:0 auto;">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="16" r="10" fill="#EB2F96" opacity="0.3"/>
+            <path d="M8 42c0-8.8 7.2-16 16-16s16 7.2 16 16" fill="#EB2F96" opacity="0.3"/>
+            <circle cx="24" cy="16" r="9" stroke="#EB2F96" stroke-width="1.5" fill="none"/>
+            <path d="M9 42c0-8.3 6.7-15 15-15s15 6.7 15 15" stroke="#EB2F96" stroke-width="1.5" fill="none"/>
           </svg>
         </div>
-        <div style="position:absolute;top:-4px;right:-4px;width:26px;height:26px;border-radius:13px;background:#E91E8C;display:flex;align-items:center;justify-content:center;">
+        <!-- Shield check badge -->
+        <div style="position:absolute;bottom:-2px;right:-2px;width:28px;height:28px;border-radius:50%;background:#34C759;border:3px solid #F2F2F6;display:flex;align-items:center;justify-content:center;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
-      <div style="font-size:19px;font-weight:800;color:#1A1A1A;margin-top:14px;">Xác minh danh tính</div>
-      <div style="font-size:13px;color:#666;margin-top:6px;line-height:1.5;">Xác thực sinh trắc học theo <strong style="color:#1A1A1A;">Thông Tư 41</strong><br/>để giao dịch an toàn trên MoMo.</div>
+      <!-- headline/s -->
+      <div style="font-size:24px;font-weight:600;line-height:32px;color:#303233;margin-top:16px;">Xác minh danh tính của bạn</div>
+      <!-- description/default -->
+      <div style="font-size:14px;font-weight:400;line-height:20px;color:#727272;margin-top:8px;padding:0 12px;">Chọn phương thức xác thực phù hợp để bảo vệ an toàn cho tài khoản của bạn</div>
     </div>
 
-    <!-- Warning notice -->
-    <div style="margin:0 12px 14px;background:#FFF8E1;border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;border:1px solid #FFE082;">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path d="M12 2L2 20h20L12 2z" fill="#FFB300" opacity="0.2" stroke="#FFB300" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9v5M12 16.5h.01" stroke="#F57C00" stroke-width="2" stroke-linecap="round"/></svg>
-      <div style="font-size:13px;color:#666;line-height:1.55;">Vui lòng chọn phương thức xác thực phù hợp với bạn để hoàn tất định danh tài khoản.</div>
+    <!-- Main Card Container — radius-16, padding 12 -->
+    <div style="background:#FFFFFF;border-radius:16px;margin:0 12px 12px;padding:12px;">
+
+      <!-- Option 1: Chụp CCCD — Option Card selected -->
+      <div id="idm-cccd" onclick="selectIdMethod('cccd')" style="display:flex;align-items:center;gap:8px;padding:12px;border-radius:12px;background:#FEF4FA;border:2px solid #F7ACD5;cursor:pointer;margin-bottom:12px;min-height:72px;">
+        <!-- Icon box -->
+        <div style="width:44px;height:44px;border-radius:12px;background:#E5F1FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="24" height="18" fill="none" viewBox="0 0 26 20"><rect x="1" y="1" width="24" height="18" rx="2.5" stroke="#007AFF" stroke-width="1.8"/><circle cx="8" cy="8" r="3" fill="#007AFF" opacity="0.5"/><rect x="13" y="6" width="8" height="2" rx="1" fill="#007AFF" opacity="0.6"/><rect x="13" y="10" width="6" height="2" rx="1" fill="#007AFF" opacity="0.4"/><rect x="2" y="14" width="22" height="3" rx="1" fill="#007AFF" opacity="0.15"/></svg>
+        </div>
+        <!-- Text -->
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;line-height:20px;color:#303233;">Chụp ảnh CCCD 2 mặt</div>
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:#727272;margin-top:4px;">Sử dụng CCCD bản gốc, còn hạn và đảm bảo ảnh sáng đầy đủ</div>
+        </div>
+        <!-- Radio — selected -->
+        <div id="idm-cccd-radio" style="width:20px;height:20px;border-radius:50%;background:#EB2F96;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:7px;height:7px;border-radius:50%;background:#fff;"></div>
+        </div>
+      </div>
+
+      <!-- Option 2: VNeID — Option Card unselected -->
+      <div id="idm-vneid" onclick="selectIdMethod('vneid')" style="display:flex;align-items:center;gap:8px;padding:12px;border-radius:12px;background:#FFFFFF;border:1px solid #E8E8E8;cursor:pointer;min-height:72px;">
+        <!-- Icon box -->
+        <div style="width:44px;height:44px;border-radius:12px;background:#E7F8F8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="26" height="26" fill="none" viewBox="0 0 28 28"><path d="M14 3L4 7v7c0 6.5 4.5 12.6 10 14 5.5-1.4 10-7.5 10-14V7L14 3z" fill="#34C759" opacity="0.2" stroke="#2A9F47" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 14l2.5 2.5L18 11" stroke="#2A9F47" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Text -->
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;line-height:20px;color:#303233;">Xác thực qua VNeID</div>
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:#727272;margin-top:4px;">Định danh VNeID mức 2</div>
+        </div>
+        <!-- Radio — unselected -->
+        <div id="idm-vneid-radio" style="width:20px;height:20px;border-radius:50%;background:#FFFFFF;border:2px solid #303233;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:7px;height:7px;border-radius:50%;background:transparent;"></div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Section label -->
-    <div class="section-label">Chọn phương thức xác thực:</div>
-
-    <!-- Option 1: Chụp CCCD -->
-    <div id="idm-cccd" class="sel-card" onclick="selectIdMethod('cccd')" style="display:flex;align-items:center;gap:14px;padding:18px 16px;">
-      <!-- Radio -->
-      <div id="idm-cccd-radio" style="width:22px;height:22px;border-radius:11px;border:2px solid #E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#E91E8C;">
-        <div style="width:10px;height:10px;border-radius:5px;background:#fff;"></div>
+    <!-- Trust Banner — bg #F2F8FF, radius-8 -->
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:12px;border-radius:8px;background:#F2F8FF;margin:0 12px 12px;">
+      <!-- Shield icon 48px -->
+      <div style="width:48px;height:48px;border-radius:12px;background:#FDEAF4;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#EB2F96"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <!-- Icon -->
-      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M7 9h4M7 12h6M7 15h3" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="9" r="2" fill="#E91E8C"/></svg>
-      </div>
-      <!-- Text -->
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:700;color:#1A1A1A;line-height:1.3;">Chụp ảnh CCCD</div>
-        <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Chụp mặt trước &amp; sau căn cước công dân</div>
-      </div>
-    </div>
-
-    <!-- Option 2: VNeID -->
-    <div id="idm-vneid" class="sel-card" onclick="selectIdMethod('vneid')" style="display:flex;align-items:center;gap:14px;padding:18px 16px;">
-      <!-- Radio -->
-      <div id="idm-vneid-radio" style="width:22px;height:22px;border-radius:11px;border:2px solid #E0E0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;">
-        <div style="width:10px;height:10px;border-radius:5px;background:transparent;"></div>
-      </div>
-      <!-- Icon -->
-      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#E8EAF6,#C5CAE9);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#1A237E" opacity="0.9"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <!-- Text -->
-      <div style="flex:1;">
-        <div style="font-size:15px;font-weight:700;color:#1A1A1A;line-height:1.3;">Xác thực qua VNeID</div>
-        <div style="font-size:12px;color:#666;margin-top:3px;line-height:1.5;">Cần định danh VNeID mức 2</div>
-      </div>
-    </div>
-
-    <!-- Security row -->
-    <div class="security-row">
-      <div style="width:44px;height:44px;border-radius:22px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#E91E8C"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="security-row-text">
-        An toàn tài sản &amp; Bảo mật thông tin của bạn là ưu tiên hàng đầu của MoMo.
-        <span class="security-link">Tìm hiểu thêm &gt;</span>
+        <!-- description/s text -->
+        <div style="font-size:12px;font-weight:400;line-height:18px;color:#484848;">An toàn tài sản &amp; Bảo mật thông tin của bạn là ưu tiên hàng đầu của MoMo.</div>
+        <!-- Link: action/xs bold pink -->
+        <div style="font-size:12px;font-weight:700;line-height:16px;color:#EB2F96;margin-top:4px;">Tìm hiểu thêm &gt;</div>
+        <!-- Cert badges -->
         <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
-          <div style="background:#1A3C7A;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:700;color:#fff;">PCI DSS</div>
-          <div style="background:#00A878;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:700;color:#fff;">GlobalSign</div>
+          <div style="background:#1D39C4;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:700;color:#fff;">PCI DSS</div>
+          <div style="background:#08979C;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:700;color:#fff;">GlobalSign</div>
         </div>
       </div>
     </div>
+
     <div style="height:12px;"></div>
   </div>
 
-  <div class="bottom-area">
-    <button class="btn-pink" onclick="submitIdMethod()">Xác thực ngay</button>
+  <!-- Footer — white bg, CTA + secondary button -->
+  <div style="flex-shrink:0;background:#FFFFFF;padding:8px 12px 0;">
+    <button onclick="submitIdMethod()" style="width:100%;height:48px;padding:13px 16px;border-radius:8px;background:#EB2F96;color:#FFFFFF;font-size:16px;font-weight:700;line-height:22px;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;letter-spacing:-0.01em;border:none;cursor:pointer;box-shadow:0 6px 16px rgba(226,126,181,0.25);">Xác thực ngay</button>
+    <button onclick="openSupportSheet()" style="width:100%;height:44px;margin-top:8px;background:#FFFFFF;color:#727272;border:1.5px solid #E8E8E8;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;letter-spacing:-0.01em;">Tôi cần hỗ trợ</button>
+    <!-- Home indicator -->
+    <div style="display:flex;justify-content:center;padding:8px 0 8px;">
+      <div style="width:134px;height:5px;background:#303233;border-radius:3px;"></div>
+    </div>
   </div>
-
-  <!-- Hỗ trợ floating button -->
-  <button onclick="openSupportSheet()" style="position:absolute;bottom:calc(88px + env(safe-area-inset-bottom,0px));right:14px;z-index:50;display:flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #E8C0D8;border-radius:24px;padding:10px 16px 10px 12px;box-shadow:0 3px 14px rgba(233,30,140,0.18);cursor:pointer;font-family:inherit;">
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#E91E8C" stroke-width="1.8"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="#E91E8C"/></svg>
-    <span style="font-size:14px;font-weight:700;color:#E91E8C;">Hỗ trợ</span>
-  </button>
 </div>
 
 <!-- ═══════════════════════════════════════
      SUPPORT BOTTOM SHEET (overlay trên s6b)
 ════════════════════════════════════════ -->
 <div id="support-sheet-overlay" onclick="closeSupportSheet()" style="position:fixed;inset:0;background:rgba(0,0,0,0);z-index:200;pointer-events:none;transition:background .28s ease;"></div>
-<div id="support-sheet" style="position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:20px 20px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);pointer-events:none;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;">
+<div id="support-sheet" style="position:fixed;bottom:0;left:0;right:0;z-index:201;background:#FFFFFF;border-radius:16px 16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);pointer-events:none;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;letter-spacing:-0.01em;">
 
   <!-- Handle -->
   <div style="flex-shrink:0;padding:10px 0 0;display:flex;justify-content:center;">
@@ -2411,143 +2542,101 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
   </div>
 
   <!-- Header -->
-  <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;">
-    <div style="font-size:16px;font-weight:700;color:#1A1A1A;">Bạn gặp khó khăn gì?</div>
-    <button onclick="closeSupportSheet()" style="width:30px;height:30px;border-radius:15px;background:#F5F5F5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="#666" stroke-width="2.2" stroke-linecap="round"/></svg>
+  <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;">
+    <div style="font-size:16px;font-weight:700;line-height:22px;color:#303233;">Bạn cần hỗ trợ gì?</div>
+    <button onclick="closeSupportSheet()" style="width:30px;height:30px;border-radius:50%;background:#F2F2F6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="#727272" stroke-width="2.2" stroke-linecap="round"/></svg>
     </button>
   </div>
 
   <!-- Subtitle -->
-  <div style="flex-shrink:0;padding:0 18px 14px;font-size:13px;color:#666;line-height:1.5;">Ở bước xác thực tài khoản, chọn vấn đề bạn đang gặp để được hỗ trợ ngay.</div>
+  <div style="flex-shrink:0;padding:0 16px 14px;font-size:14px;font-weight:400;line-height:20px;color:#727272;">Cho MoMo biết để hỗ trợ bạn tốt hơn nhé</div>
 
   <!-- Scrollable options -->
   <div class="scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;">
 
-    <!-- Option 1: Chưa cần giao dịch ngay -->
+    <!-- Option 1: Chưa rõ xác thực để làm gì -->
     <div class="support-opt" id="sopt-1" onclick="toggleSupportOpt(1)">
       <div class="support-opt-row">
-        <div class="support-opt-icon" style="background:#F0F4FF;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#5C7CFA" stroke-width="1.8"/><path d="M12 8v4l2 2" stroke="#5C7CFA" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div class="support-opt-icon" style="background:#FFF8E1;">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#F9A825" stroke-width="1.8"/><path d="M12 16h.01M12 8v4" stroke="#F9A825" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <div style="flex:1;font-size:14px;font-weight:600;color:#1A1A1A;">Tôi chưa cần giao dịch trên MoMo ngay</div>
+        <div style="flex:1;font-size:14px;font-weight:600;color:#303233;">Tôi chưa rõ xác thực để làm gì</div>
         <svg class="support-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="support-opt-body" id="sopt-body-1">
         <div class="support-opt-content">
-          <div style="font-size:13px;color:#666;line-height:1.7;margin-bottom:12px;">Không sao! Bạn có thể xác thực sau. Tuy nhiên, từ <strong style="color:#1A1A1A;">1/7/2025</strong>, theo Thông Tư 41, các giao dịch chuyển tiền sẽ yêu cầu xác thực sinh trắc học.</div>
-          <div style="background:#FFF0F7;border-radius:10px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;">
-            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10" stroke="#E91E8C" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
-            <div style="font-size:12px;color:#E91E8C;font-weight:600;line-height:1.5;">Xác thực ngay để không bị gián đoạn khi chuyển tiền, thanh toán!</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#EB2F96"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;">Bảo vệ an toàn cho tài khoản của bạn</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#EB2F96" stroke-width="1.8" fill="none"/><path d="M6 9h4M6 12h8" stroke="#EB2F96" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;">Tuân thủ quy định bắt buộc của Ngân hàng Nhà nước</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Option 2: Không có/không mang CCCD -->
+    <!-- Option 2: Chưa rõ nên chọn phương thức nào -->
     <div class="support-opt" id="sopt-2" onclick="toggleSupportOpt(2)">
       <div class="support-opt-row">
-        <div class="support-opt-icon" style="background:#FFF0F7;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M7 10h4M7 13h6" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/><path d="M16 3l3 3-3 3" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="support-opt-icon" style="background:#F0F4FF;">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="#5C7CFA" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="#5C7CFA"/><circle cx="12" cy="12" r="10" stroke="#5C7CFA" stroke-width="1.8"/></svg>
         </div>
-        <div style="flex:1;font-size:14px;font-weight:600;color:#1A1A1A;">Tôi không có / không mang thẻ CCCD</div>
+        <div style="flex:1;font-size:14px;font-weight:600;color:#303233;">Tôi chưa rõ nên chọn phương thức nào</div>
         <svg class="support-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="support-opt-body" id="sopt-body-2">
         <div class="support-opt-content">
-          <div style="background:#E8F5E9;border-radius:12px;padding:13px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10" fill="#4CAF50" opacity="0.15" stroke="#4CAF50" stroke-width="1.8"/><path d="M8 12l3 3 5-5" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div style="font-size:13px;color:#1A1A1A;line-height:1.6;">Đừng lo! Nếu bạn không có CCCD, bạn vẫn có thể xác thực bằng <strong style="color:#E91E8C;">VNeID</strong> nhé — không cần thẻ vật lý.</div>
+          <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:10px;">MoMo có 2 cách xác thực:</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div style="background:#F8F8F8;border-radius:10px;padding:10px 12px;">
+              <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Chụp ảnh CCCD</div>
+              <div style="font-size:12px;color:#666;line-height:1.5;">Dùng khi bạn có thẻ CCCD bản gốc trong tay.</div>
+            </div>
+            <div style="background:#F8F8F8;border-radius:10px;padding:10px 12px;">
+              <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:2px;">Liên kết qua VNeID</div>
+              <div style="font-size:12px;color:#666;line-height:1.5;">Dùng khi bạn không có CCCD hoặc đã có tài khoản VNeID mức 2.</div>
+            </div>
           </div>
-          <button onclick="selectIdMethod('vneid');closeSupportSheet();goTo(8);" style="width:100%;height:48px;background:#E8197D;color:#fff;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(232,25,125,0.25);">Chuyển sang xác thực VNeID</button>
+          <button onclick="closeSupportSheet();" style="width:100%;height:48px;background:#EB2F96;color:#fff;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(232,25,125,0.25);">Quay lại chọn phương thức</button>
         </div>
       </div>
     </div>
 
-    <!-- Option 3: Chưa rõ cách làm -->
+    <!-- Option 3: Không có/không mang CCCD -->
     <div class="support-opt" id="sopt-3" onclick="toggleSupportOpt(3)">
       <div class="support-opt-row">
-        <div class="support-opt-icon" style="background:#FFF8E1;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#F9A825" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#F9A825" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="support-opt-icon" style="background:#FFF0F7;">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M7 10h4M7 13h6" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/><path d="M16 3l3 3-3 3" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div style="flex:1;font-size:14px;font-weight:600;color:#1A1A1A;">Tôi chưa rõ cách làm</div>
+        <div style="flex:1;font-size:14px;font-weight:600;color:#303233;">Tôi không có / không mang thẻ CCCD</div>
         <svg class="support-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="support-opt-body" id="sopt-body-3">
         <div class="support-opt-content">
-          <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:10px;">Các bước thực hiện đơn giản:</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:22px;height:22px;border-radius:11px;background:#E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><span style="font-size:11px;font-weight:700;color:#fff;">1</span></div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;">Chọn phương thức <strong>Chụp ảnh CCCD</strong> hoặc <strong>VNeID</strong></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:22px;height:22px;border-radius:11px;background:#E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><span style="font-size:11px;font-weight:700;color:#fff;">2</span></div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;">Nhập thông tin và chụp ảnh CCCD rõ nét, đủ ánh sáng</div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:22px;height:22px;border-radius:11px;background:#E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><span style="font-size:11px;font-weight:700;color:#fff;">3</span></div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;">Chụp ảnh khuôn mặt đưa vào khung tròn</div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:22px;height:22px;border-radius:11px;background:#E91E8C;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><span style="font-size:11px;font-weight:700;color:#fff;">4</span></div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;">Xác nhận và hoàn tất — chỉ mất khoảng 2 phút!</div>
-            </div>
-          </div>
+          <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:12px;">Không sao! Bạn vẫn xác thực được bằng <strong style="color:#E91E8C;">VNeID</strong> — không cần thẻ vật lý.</div>
+          <button onclick="selectIdMethod('vneid');closeSupportSheet();goTo(8);" style="width:100%;height:48px;background:#EB2F96;color:#fff;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(232,25,125,0.25);">Chuyển sang xác thực VNeID</button>
         </div>
       </div>
     </div>
 
-    <!-- Option 4: Chưa rõ chụp để làm gì -->
+    <!-- Option 4: Lo ngại bảo mật -->
     <div class="support-opt" id="sopt-4" onclick="toggleSupportOpt(4)">
-      <div class="support-opt-row">
-        <div class="support-opt-icon" style="background:#F3E5F5;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="#9C27B0" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" stroke="#9C27B0" stroke-width="1.8"/></svg>
-        </div>
-        <div style="flex:1;font-size:14px;font-weight:600;color:#1A1A1A;">Tôi chưa rõ chụp ảnh để làm gì</div>
-        <svg class="support-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="support-opt-body" id="sopt-body-4">
-        <div class="support-opt-content">
-          <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:10px;">Ảnh được dùng để xác thực danh tính của bạn:</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:32px;height:32px;border-radius:10px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 2z" fill="#E91E8C"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;"><strong style="color:#1A1A1A;">Bảo vệ tài khoản</strong> khỏi các giao dịch trái phép và gian lận</div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:32px;height:32px;border-radius:10px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M6 9h4M6 12h8M6 15h4" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;"><strong style="color:#1A1A1A;">Tuân thủ Thông Tư 41</strong> — yêu cầu bắt buộc của Ngân hàng Nhà nước</div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:10px;">
-              <div style="width:32px;height:32px;border-radius:10px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="#E91E8C" stroke-width="1.8"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg>
-              </div>
-              <div style="font-size:13px;color:#444;line-height:1.5;flex:1;"><strong style="color:#1A1A1A;">Xác nhận đúng chủ tài khoản</strong> — ảnh không được dùng vào mục đích khác</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Option 5: Lo ngại bảo mật -->
-    <div class="support-opt" id="sopt-5" onclick="toggleSupportOpt(5)">
       <div class="support-opt-row">
         <div class="support-opt-icon" style="background:#E8F5E9;">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#2E7D32" stroke-width="1.8"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#2E7D32" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#2E7D32"/></svg>
         </div>
-        <div style="flex:1;font-size:14px;font-weight:600;color:#1A1A1A;">Tôi lo ngại về bảo mật</div>
+        <div style="flex:1;font-size:14px;font-weight:600;color:#303233;">Tôi lo ngại về bảo mật</div>
         <svg class="support-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="support-opt-body" id="sopt-body-5">
+      <div class="support-opt-body" id="sopt-body-4">
         <div class="support-opt-content">
-          <div style="font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px;">MoMo bảo mật dữ liệu tuyệt đối</div>
-          <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:10px;">Thông tin của bạn được mã hóa chuẩn quốc tế, chỉ dùng để xác thực danh tính.</div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:10px;">Dữ liệu của bạn được mã hóa đầu-cuối, chỉ dùng để xác minh danh tính và không chia sẻ cho bên thứ ba.</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
             <div style="display:flex;align-items:center;gap:8px;background:#F8F8F8;border-radius:10px;padding:9px 12px;">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span style="font-size:13px;color:#1A1A1A;font-weight:500;">Đối tác chính thức của <strong>VNeID</strong> (Bộ Công An)</span>
@@ -2565,32 +2654,27 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
       </div>
     </div>
 
-    <!-- Option 6: Gặp lỗi -->
-    <div class="support-opt" id="sopt-6" onclick="toggleSupportOpt(6)">
+    <!-- Option 5: Gặp lỗi -->
+    <div class="support-opt" id="sopt-5" onclick="toggleSupportOpt(5)">
       <div class="support-opt-row">
         <div class="support-opt-icon" style="background:#FFEBEE;">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#E53935" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="#E53935" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <div style="flex:1;font-size:14px;font-weight:600;color:#1A1A1A;">Tôi gặp lỗi trong quá trình xác thực</div>
+        <div style="flex:1;font-size:14px;font-weight:600;color:#303233;">Tôi gặp lỗi trong quá trình xác thực</div>
         <svg class="support-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#CCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="support-opt-body" id="sopt-body-6">
+      <div class="support-opt-body" id="sopt-body-5">
         <div class="support-opt-content">
-          <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:12px;">Đội ngũ CSKH MoMo sẵn sàng hỗ trợ bạn 24/7. Liên hệ ngay để được giải quyết trong vòng vài phút.</div>
-          <a href="tel:1900545441" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;background:#E8197D;color:#fff;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 3px 10px rgba(232,25,125,0.25);">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:12px;">Nếu gặp lỗi, hãy liên hệ CSKH để được hỗ trợ nhanh nhất.</div>
+          <a href="tel:1900545441" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;background:#EB2F96;color:#fff;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 3px 10px rgba(232,25,125,0.25);">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Gọi CSKH 1900 54 54 41
           </a>
-          <div style="text-align:center;margin-top:8px;font-size:12px;color:#999;">Miễn phí · 24/7</div>
         </div>
       </div>
     </div>
 
-    <div style="height:16px;"></div>
-    <!-- Thoát thực sự -->
-    <div style="text-align:center;padding:0 18px 20px;">
-      <button onclick="closeSupportSheet();goTo(6);" style="background:none;border:none;font-size:14px;font-weight:500;color:#999;cursor:pointer;font-family:inherit;padding:8px;">Quay lại bước trước</button>
-    </div>
+    <div style="height:20px;"></div>
   </div>
 </div>
 
@@ -2638,6 +2722,8 @@ body { margin:0; padding:0; height:100%; overflow:hidden; background:#fff; font-
     </div>
   </div>
 </div>
+</div><!-- /phone-frame-inner -->
+</div><!-- /phone-frame -->
 
 <script>
 'use strict';
@@ -2947,21 +3033,36 @@ function selectIdMethod(method) {
   if (method === 'cccd') {
     cccdCard.classList.add('selected');
     vneidCard.classList.remove('selected');
-    cccdRadio.style.background = '#E91E8C';
-    cccdRadio.style.borderColor = '#E91E8C';
-    cccdRadio.innerHTML = '<div style="width:10px;height:10px;border-radius:5px;background:#fff;"></div>';
+    /* MoMo DS: Option Card selected */
+    cccdCard.style.background = '#FEF4FA';
+    cccdCard.style.border = '2px solid #F7ACD5';
+    vneidCard.style.background = '#FFFFFF';
+    vneidCard.style.border = '1px solid #E8E8E8';
+    /* MoMo DS: Radio selected */
+    cccdRadio.style.background = '#EB2F96';
+    cccdRadio.style.borderColor = '#EB2F96';
+    cccdRadio.style.border = 'none';
+    cccdRadio.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:#fff;"></div>';
+    /* MoMo DS: Radio unselected */
     vneidRadio.style.background = '#fff';
-    vneidRadio.style.borderColor = '#E0E0E0';
-    vneidRadio.innerHTML = '<div style="width:10px;height:10px;border-radius:5px;background:transparent;"></div>';
+    vneidRadio.style.border = '2px solid #303233';
+    vneidRadio.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:transparent;"></div>';
   } else {
     vneidCard.classList.add('selected');
     cccdCard.classList.remove('selected');
-    vneidRadio.style.background = '#E91E8C';
-    vneidRadio.style.borderColor = '#E91E8C';
-    vneidRadio.innerHTML = '<div style="width:10px;height:10px;border-radius:5px;background:#fff;"></div>';
+    /* MoMo DS: Option Card selected */
+    vneidCard.style.background = '#FEF4FA';
+    vneidCard.style.border = '2px solid #F7ACD5';
+    cccdCard.style.background = '#FFFFFF';
+    cccdCard.style.border = '1px solid #E8E8E8';
+    /* MoMo DS: Radio selected */
+    vneidRadio.style.background = '#EB2F96';
+    vneidRadio.style.border = 'none';
+    vneidRadio.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:#fff;"></div>';
+    /* MoMo DS: Radio unselected */
     cccdRadio.style.background = '#fff';
-    cccdRadio.style.borderColor = '#E0E0E0';
-    cccdRadio.innerHTML = '<div style="width:10px;height:10px;border-radius:5px;background:transparent;"></div>';
+    cccdRadio.style.border = '2px solid #303233';
+    cccdRadio.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:transparent;"></div>';
   }
 }
 
@@ -3018,19 +3119,24 @@ function selectBankDetail(name, code, id) {
   /* Reset bank acct field */
   var acctInp = document.getElementById('bankacct-inp');
   if (acctInp) { acctInp.value = ''; }
-  var btnAcct = document.getElementById('btn-bankacct');
-  if (btnAcct) btnAcct.disabled = true;
+  var acctWrap = document.getElementById('bankacct-wrap');
+  if (acctWrap) acctWrap.classList.remove('error');
   /* Reset bank OTP */
   for (var i = 1; i <= 6; i++) {
     var b = document.getElementById('botp' + i);
     if (b) b.value = '';
   }
-  var btnOtp = document.getElementById('btn-bankotp');
-  if (btnOtp) btnOtp.disabled = true;
+  var botpRow = document.getElementById('botp-row');
+  if (botpRow) botpRow.classList.remove('error');
   goTo(19);
 }
 
 function selectBank(code) { goTo(12); }
+
+function scrollToAllBanks() {
+  var el = document.getElementById('all-banks-list');
+  if (el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
 
 function filterBanks(q) {
   var items = document.querySelectorAll('#all-banks-list .bank-item');
@@ -3044,10 +3150,6 @@ function filterBanks(q) {
 function onCCCDInput() {
   var v = document.getElementById('cccd-inp').value.replace(/\D/g,'');
   document.getElementById('cccd-inp').value = v;
-  var name = document.getElementById('cccd-name-inp') ? document.getElementById('cccd-name-inp').value.trim() : '';
-  var dob = document.getElementById('cccd-dob-inp') ? document.getElementById('cccd-dob-inp').value.trim() : '';
-  var btn = document.getElementById('btn-cccd');
-  if (btn) btn.disabled = !(v.length === 12 && name.length > 0 && dob.length === 10);
   /* Update masked display */
   var disp = document.getElementById('cccd-display');
   if (disp && v.length >= 3) {
@@ -3062,6 +3164,18 @@ function onCCCDInput() {
   var phoneEl = document.getElementById('otp-phone');
   var bankOtpPhone = document.getElementById('bank-otp-phone');
   if (bankOtpPhone && phoneEl) bankOtpPhone.textContent = phoneEl.textContent;
+}
+
+function submitCCCD() {
+  var v = document.getElementById('cccd-inp').value.replace(/\D/g,'');
+  var nameEl = document.getElementById('cccd-name-inp');
+  var dobEl = document.getElementById('cccd-dob-inp');
+  var name = nameEl ? nameEl.value.trim() : '';
+  var dob = dobEl ? dobEl.value.trim() : '';
+  if (v.length !== 12) { highlightError('cccd-wrap'); return; }
+  if (name.length === 0) { highlightError('cccd-name-wrap'); return; }
+  if (dob.length !== 10) { highlightError('cccd-dob-wrap'); return; }
+  goTo(23);
 }
 
 function onDOBInput() {
@@ -3087,11 +3201,15 @@ function demoCCCD() {
 
 function onBankAcctInput() {
   var v = document.getElementById('bankacct-inp').value.trim();
-  var btn = document.getElementById('btn-bankacct');
-  if (btn) btn.disabled = v.length < 6;
   /* Update summary */
   var sum = document.getElementById('summary-acct');
   if (sum) sum.textContent = v || '—';
+}
+
+function submitBankAcct() {
+  var v = document.getElementById('bankacct-inp').value.trim();
+  if (v.length < 6) { highlightError('bankacct-wrap'); return; }
+  goTo(20);
 }
 
 function demoBankAcct() {
@@ -3100,18 +3218,25 @@ function demoBankAcct() {
 }
 
 function bankOtpInput(el, prevId, nextId) {
+  var row = document.getElementById('botp-row');
+  if (row) row.classList.remove('error');
   if (el.value.length >= 1 && nextId) { document.getElementById(nextId).focus(); }
-  checkBankOTP();
 }
 
-function checkBankOTP() {
+function submitBankOTP() {
   var v = '';
   for (var i = 1; i <= 6; i++) {
     var b = document.getElementById('botp' + i);
     if (b) v += b.value;
   }
-  var btn = document.getElementById('btn-bankotp');
-  if (btn) btn.disabled = v.length < 6;
+  if (v.length < 6) {
+    var row = document.getElementById('botp-row');
+    if (row) { row.classList.remove('error'); void row.offsetWidth; row.classList.add('error'); }
+    var first = document.getElementById('botp1');
+    if (first) first.focus();
+    return;
+  }
+  goTo(21);
 }
 
 function demoBankOTP() {
@@ -3120,7 +3245,6 @@ function demoBankOTP() {
     var b = document.getElementById('botp' + i);
     if (b) b.value = digits[i-1];
   }
-  checkBankOTP();
   /* Update success screen */
   var msg = document.getElementById('bank-success-msg');
   if (msg) msg.textContent = 'Bạn đã liên kết thành công với ngân hàng ' + selectedBankName;
@@ -3131,47 +3255,71 @@ var surveyAnswers = {};
 
 function onSurveyRate(q, val) {
   surveyAnswers[q] = val;
-  for (var sv = 1; sv <= 7; sv++) {
+  for (var sv = 1; sv <= 5; sv++) {
     var sbtn = document.getElementById('sq' + q + 'b' + sv);
     if (sbtn) {
       if (sv === val) { sbtn.classList.add('sel'); }
       else { sbtn.classList.remove('sel'); }
     }
   }
+  /* Clear error shake on this question when user responds */
+  var row = document.getElementById('sq' + q + '-row');
+  if (row) {
+    var qEl = row.closest('.survey-q');
+    if (qEl) qEl.classList.remove('error');
+  }
   checkSurveyComplete();
 }
 
 function checkSurveyComplete() {
-  var uname = document.getElementById('survey-username');
-  var hasName = uname && uname.value.trim().length > 0;
-  var done = hasName;
-  for (var sq = 1; sq <= 9; sq++) {
-    if (!surveyAnswers[sq]) { done = false; break; }
-  }
-  var btn = document.getElementById('btn-survey-submit');
-  if (btn) btn.disabled = !done;
+  /* No-op: CTA is always enabled, validation happens on submit. */
 }
 
 function resetSurvey() {
   surveyAnswers = {};
-  for (var sq = 1; sq <= 9; sq++) {
-    for (var sv = 1; sv <= 7; sv++) {
+  for (var sq = 1; sq <= 10; sq++) {
+    for (var sv = 1; sv <= 5; sv++) {
       var sbtn = document.getElementById('sq' + sq + 'b' + sv);
       if (sbtn) sbtn.classList.remove('sel');
+    }
+    /* Clear error shake on any survey-q */
+    var qBtn = document.getElementById('sq' + sq + 'b1');
+    if (qBtn) {
+      var qEl = qBtn.closest('.survey-q');
+      if (qEl) qEl.classList.remove('error');
     }
   }
   var uname = document.getElementById('survey-username');
   if (uname) uname.value = '';
   var btn = document.getElementById('btn-survey-submit');
-  if (btn) btn.disabled = true;
+  if (btn) { btn.textContent = 'Gửi khảo sát'; btn.style.pointerEvents = ''; }
 }
 
 function submitSurvey() {
   var btn = document.getElementById('btn-survey-submit');
-  btn.disabled = true;
-  btn.textContent = 'Đang gửi...';
   var uname = document.getElementById('survey-username');
-  var username = encodeURIComponent(uname ? uname.value.trim() : '');
+  var unameVal = uname ? uname.value.trim() : '';
+  if (unameVal.length === 0) { highlightError('survey-user-wrap'); return; }
+  for (var qi = 1; qi <= 10; qi++) {
+    if (!surveyAnswers[qi]) {
+      var firstBtn = document.getElementById('sq' + qi + 'b1');
+      if (firstBtn) {
+        var qEl = firstBtn.closest('.survey-q');
+        if (qEl) {
+          qEl.classList.remove('error');
+          void qEl.offsetWidth;
+          qEl.classList.add('error');
+          if (qEl.scrollIntoView) qEl.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(function() { qEl.classList.remove('error'); }, 1400);
+        }
+      }
+      return;
+    }
+  }
+  /* Loading state: prevent double-submit via pointer-events (CTA stays visually enabled) */
+  btn.style.pointerEvents = 'none';
+  btn.textContent = 'Đang gửi...';
+  var username = encodeURIComponent(unameVal);
   var params = 'username=' + username +
     '&q1=' + (surveyAnswers[1] || '') +
     '&q2=' + (surveyAnswers[2] || '') +
@@ -3181,11 +3329,12 @@ function submitSurvey() {
     '&q6=' + (surveyAnswers[6] || '') +
     '&q7=' + (surveyAnswers[7] || '') +
     '&q8=' + (surveyAnswers[8] || '') +
-    '&q9=' + (surveyAnswers[9] || '');
+    '&q9=' + (surveyAnswers[9] || '') +
+    '&q10=' + (surveyAnswers[10] || '');
   fetch(SURVEY_ENDPOINT + '?' + params, { method: 'GET', mode: 'no-cors' })
     .then(function() { goTo(SURVEY_THANKYOU_SCREEN); })
     .catch(function() {
-      btn.disabled = false;
+      btn.style.pointerEvents = '';
       btn.textContent = 'Gửi khảo sát';
     });
 }
@@ -3289,7 +3438,11 @@ function goTo(n) {
     var cccdI = document.getElementById('cccd-inp'); if (cccdI) cccdI.value = '';
     var cccdNameI = document.getElementById('cccd-name-inp'); if (cccdNameI) cccdNameI.value = '';
     var cccdDobI = document.getElementById('cccd-dob-inp'); if (cccdDobI) cccdDobI.value = '';
-    var btnCC = document.getElementById('btn-cccd'); if (btnCC) btnCC.disabled = true;
+    var ids = ['cccd-wrap','cccd-name-wrap','cccd-dob-wrap'];
+    for (var ei = 0; ei < ids.length; ei++) {
+      var w = document.getElementById(ids[ei]);
+      if (w) w.classList.remove('error');
+    }
   }
   if (n === 16) {
     var vp = document.getElementById('vneid-pw-inp'); if (vp) vp.value = '';
@@ -3427,7 +3580,7 @@ function toggleSupportOpt(n) {
   if (!opt) return;
   var isOpen = opt.classList.contains('open');
   /* Close all */
-  for (var i = 1; i <= 6; i++) {
+  for (var i = 1; i <= 5; i++) {
     var el = document.getElementById('sopt-' + i);
     if (el) el.classList.remove('open');
   }
@@ -3460,6 +3613,223 @@ document.addEventListener('touchmove', function(e) {
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('./sw.js').catch(function(){});
 }
+/* ═══ SCREEN CAPTURE UTILITY (Desktop only) ═══ */
+var captureScript = document.createElement('script');
+captureScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+document.head.appendChild(captureScript);
+
+var SCREEN_NAMES = {
+  0:'01_Nhap_SDT', 1:'02_OTP', 2:'03_Mat_khau', 3:'04_Dieu_khoan',
+  4:'05_Thong_tin_ca_nhan', 5:'06_Tao_PIN', 6:'07_Gioi_thieu_eKYC',
+  7:'08_Chon_phuong_thuc_OCR', 8:'09_Chon_phuong_thuc_VNeID',
+  9:'10_Huong_dan_chup_CCCD', 10:'11_Thanh_cong', 11:'12_That_bai',
+  12:'13_Home', 13:'14_Khao_sat_moi', 14:'15_Khao_sat', 15:'16_Cam_on',
+  16:'17_Lien_ket_ngan_hang', 17:'18_Chon_ngan_hang', 18:'19_Nhap_so_TK',
+  19:'20_OTP_ngan_hang', 20:'21_LK_thanh_cong', 21:'22_Dang_nhap',
+  22:'23_Chon_phuong_thuc_s6b', 23:'24_Chup_khuon_mat', 24:'25_VNeID_xac_nhan'
+};
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function renderPhoneFrame(screenCanvas) {
+  /*
+   * iPhone 15 Pro — fixed dimensions, scale from canvas pixels
+   * Screen canvas = whatever html2canvas produced (already 2x)
+   * We draw a fixed-size phone and stretch/fit the screen into it
+   */
+  var S = 2;
+  /* iPhone 15 Pro logical px */
+  var phoneW = 393;
+  var phoneH = 852;
+  var bezel  = 5;
+  var scrW   = phoneW - bezel * 2; /* 383 */
+  var scrH   = phoneH - bezel * 2; /* 842 */
+  var outerR = 55;
+  var innerR = 50;
+  var margin = 20;
+  var btnW   = 3;
+
+  var cW = (phoneW + margin * 2 + btnW * 2) * S;
+  var cH = (phoneH + margin * 2) * S;
+  var out = document.createElement('canvas');
+  out.width = cW; out.height = cH;
+  var ctx = out.getContext('2d');
+  ctx.clearRect(0, 0, cW, cH);
+
+  var cx = cW / 2, cy = cH / 2;
+  var fx = cx - phoneW * S / 2;
+  var fy = cy - phoneH * S / 2;
+  var fw = phoneW * S, fh = phoneH * S;
+
+  /* Shadow */
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)';
+  ctx.shadowBlur = 30 * S;
+  ctx.shadowOffsetY = 8 * S;
+  roundRect(ctx, fx, fy, fw, fh, outerR * S);
+  ctx.fillStyle = '#1c1c1e';
+  ctx.fill();
+  ctx.restore();
+
+  /* Bezel */
+  roundRect(ctx, fx, fy, fw, fh, outerR * S);
+  ctx.fillStyle = '#1c1c1e';
+  ctx.fill();
+
+  /* Edge highlight */
+  ctx.save();
+  ctx.lineWidth = 1 * S;
+  roundRect(ctx, fx, fy, fw, fh, outerR * S);
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.stroke();
+  ctx.restore();
+
+  /* Screen — draw captured content stretched to fit */
+  var sx = fx + bezel * S;
+  var sy = fy + bezel * S;
+  var sw = scrW * S;
+  var sh = scrH * S;
+
+  ctx.save();
+  roundRect(ctx, sx, sy, sw, sh, innerR * S);
+  ctx.clip();
+  /* stretch entire source canvas into screen area */
+  ctx.drawImage(screenCanvas, 0, 0, screenCanvas.width, screenCanvas.height, sx, sy, sw, sh);
+  ctx.restore();
+
+  /* Dynamic Island */
+  var diW = 120 * S, diH = 36 * S;
+  var diX = cx - diW / 2;
+  var diY = sy + 10 * S;
+  roundRect(ctx, diX, diY, diW, diH, 19 * S);
+  ctx.fillStyle = '#000';
+  ctx.fill();
+  /* Camera lens */
+  ctx.beginPath();
+  ctx.arc(diX + diW - 26 * S, diY + diH / 2, 4.5 * S, 0, Math.PI * 2);
+  ctx.fillStyle = '#111';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(diX + diW - 26 * S, diY + diH / 2, 2.5 * S, 0, Math.PI * 2);
+  ctx.fillStyle = '#060610';
+  ctx.fill();
+
+  /* Home indicator */
+  var hiW = 130 * S, hiH = 5 * S;
+  roundRect(ctx, cx - hiW / 2, sy + sh - 10 * S, hiW, hiH, hiH / 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fill();
+
+  /* Side buttons */
+  var bc = '#2a2a2e';
+  /* Power — right */
+  roundRect(ctx, fx + fw, fy + 160 * S, btnW * S, 78 * S, 1.5 * S);
+  ctx.fillStyle = bc; ctx.fill();
+  /* Silent — left */
+  var lx = fx - btnW * S;
+  roundRect(ctx, lx, fy + 125 * S, btnW * S, 18 * S, 1.5 * S);
+  ctx.fillStyle = bc; ctx.fill();
+  /* Vol up */
+  roundRect(ctx, lx, fy + 168 * S, btnW * S, 38 * S, 1.5 * S);
+  ctx.fillStyle = bc; ctx.fill();
+  /* Vol down */
+  roundRect(ctx, lx, fy + 216 * S, btnW * S, 38 * S, 1.5 * S);
+  ctx.fillStyle = bc; ctx.fill();
+
+  return out;
+}
+
+function captureCurrentScreen() {
+  /* Capture the active .screen element directly — most reliable */
+  var activeScreen = document.querySelector('.screen.active');
+  if (!activeScreen) return;
+  var container = document.getElementById('phone-frame-inner') || document.getElementById('app');
+  var rect = container.getBoundingClientRect();
+
+  html2canvas(container, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: null,
+    logging: false
+  }).then(function(screenCanvas) {
+    var finalCanvas = renderPhoneFrame(screenCanvas);
+    var link = document.createElement('a');
+    var name = SCREEN_NAMES[currentScreen] || ('screen_' + currentScreen);
+    link.download = name + '.png';
+    link.href = finalCanvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+function captureAllScreens() {
+  var btn = document.getElementById('capture-all-btn');
+  if (btn) { btn.textContent = 'Capturing...'; btn.disabled = true; }
+  var indices = [];
+  for (var i = 0; i < SCREENS.length; i++) { indices.push(i); }
+  var idx = 0;
+
+  function captureNext() {
+    if (idx >= indices.length) {
+      if (btn) { btn.textContent = 'Export All Screens'; btn.disabled = false; }
+      return;
+    }
+    goTo(indices[idx]);
+    /* hide overlays */
+    closeSupportSheet();
+    var vnOl = document.getElementById('vneid-overlay');
+    if (vnOl) vnOl.classList.remove('show');
+
+    setTimeout(function() {
+      var container = document.getElementById('phone-frame-inner') || document.getElementById('app');
+      html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      }).then(function(screenCanvas) {
+        var finalCanvas = renderPhoneFrame(screenCanvas);
+        var link = document.createElement('a');
+        var name = SCREEN_NAMES[indices[idx]] || ('screen_' + indices[idx]);
+        link.download = name + '.png';
+        link.href = finalCanvas.toDataURL('image/png');
+        link.click();
+        idx++;
+        setTimeout(captureNext, 600);
+      });
+    }, 500);
+  }
+  captureNext();
+}
+
+/* Add capture toolbar on desktop */
+if (window.innerWidth >= 600) {
+  var captureBar = document.createElement('div');
+  captureBar.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:8px;';
+  captureBar.innerHTML =
+    '<button id="capture-one-btn" onclick="captureCurrentScreen()" style="padding:10px 16px;background:#EB2F96;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(235,47,150,0.3);">Export This Screen</button>' +
+    '<button id="capture-all-btn" onclick="captureAllScreens()" style="padding:10px 16px;background:#fff;color:#EB2F96;border:1.5px solid #EB2F96;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Export All Screens</button>' +
+    '<div style="font-size:10px;color:rgba(255,255,255,0.4);text-align:center;margin-top:4px;">Or press <kbd style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;">S</kbd> to capture current</div>';
+  document.body.appendChild(captureBar);
+}
+
+/* Keyboard shortcut: S to capture current screen */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 's' && !e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT') {
+    captureCurrentScreen();
+  }
+});
 </script>
 </body>
 </html>
