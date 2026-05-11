@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#FFFFFF"/>
+<link rel="manifest" href="./manifest.json"/>
+<title>MoMo – Quản lý Ví Phụ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--page-bg:#F5F5F5;--sat:env(safe-area-inset-top,0px);}
+html{min-height:calc(100% + env(safe-area-inset-top));overflow:hidden;background:#FFFFFF;font-family:'Be Vietnam Pro',-apple-system,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%;}
+body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFFFFF;}
+#app{position:fixed;inset:0;overflow:hidden;}
+
+/* ═══ DESKTOP IPHONE 15 PRO SIMULATOR ═══ */
+@media (min-width:600px){
+  html,body{overflow:auto;background:#0f0f13;height:100%;}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;
+        background:radial-gradient(ellipse at 50% 40%,#1a1a2e 0%,#0f0f13 70%);}
+
+  #phone-frame{
+    position:relative;width:393px;height:852px;
+    border-radius:55px;background:#1c1c1e;padding:4px;
+    flex-shrink:0;transform:translateZ(0);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 0 0 3px #2a2a2e,
+      0 0 0 4px rgba(255,255,255,0.05),
+      0 20px 60px rgba(0,0,0,0.6),
+      0 40px 100px rgba(0,0,0,0.4),
+      0 0 120px rgba(100,100,120,0.08);
+  }
+  #phone-frame-inner{
+    position:relative;width:100%;height:100%;
+    border-radius:51px;overflow:hidden;background:#000;
+  }
+  /* Dynamic Island */
+  #phone-frame-inner::before{
+    content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);
+    width:126px;height:37px;background:#000;border-radius:24px;z-index:10000;
+    pointer-events:none;
+  }
+  /* Home indicator */
+  #phone-frame-inner::after{
+    content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+    width:134px;height:5px;background:rgba(255,255,255,0.25);border-radius:3px;z-index:10000;
+    pointer-events:none;
+  }
+  /* Power button (right side) */
+  #phone-frame::before{
+    content:'';position:absolute;top:168px;right:-7px;width:4px;height:96px;
+    background:linear-gradient(180deg,#3a3a3e 0%,#2a2a2e 50%,#3a3a3e 100%);
+    border-radius:0 3px 3px 0;box-shadow:1px 0 2px rgba(0,0,0,0.3);z-index:10;
+  }
+  /* Volume buttons (left side) */
+  #phone-frame::after{
+    content:'';position:absolute;top:178px;left:-7px;width:4px;height:64px;
+    background:linear-gradient(180deg,#3a3a3e 0%,#2a2a2e 50%,#3a3a3e 100%);
+    border-radius:3px 0 0 3px;box-shadow:-1px 0 2px rgba(0,0,0,0.3);z-index:10;
+  }
+
+  #app{position:absolute;inset:0;border-radius:51px;overflow:hidden;background:#FFFFFF;}
+  .screen{position:absolute;inset:0;}
+  .status-spacer{height:59px !important;}
+  .bottom-area{padding-bottom:28px !important;}
+
+  /* Keep position:fixed overlays anchored inside the simulated phone */
+  #kb-cta{position:absolute !important;top:auto !important;bottom:0 !important;}
+}
+
+@media (max-width:599px){
+  #phone-frame,#phone-frame-inner{position:fixed;inset:0;overflow:hidden;}
+}
+
+/* ── SCREENS ── */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transform:translateX(100%);transition:opacity .3s,transform .32s cubic-bezier(.4,0,.2,1);
+  will-change:transform,opacity;overflow:hidden;}
+.screen.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.screen.leaving{opacity:0;transform:translateX(-30px);pointer-events:none;}
+
+/* ── SAFE AREA ── */
+.status-spacer{flex-shrink:0;height:max(calc(var(--sat) + 4px),24px);}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* ── HEADERS ── */
+.hdr-pink{background:linear-gradient(180deg,#FFE4F0 0%,#FFF5F9 40%,#F5F5F5 100%);flex-shrink:0;}
+
+/* ── BOTTOM AREA ── */
+.bottom-area{flex-shrink:0;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--page-bg);}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;padding:4px 16px 10px;gap:8px;}
+.nav-back{width:36px;height:34px;border-radius:20px;background:rgba(0,0,0,0.06);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;flex-shrink:0;}
+.nav-title{font-size:16px;font-weight:700;color:#1A1A1A;flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-capsule{display:flex;align-items:center;background:#fff;border-radius:20px;border:1px solid #E0E0E0;overflow:hidden;height:34px;flex-shrink:0;}
+.nav-cap-btn{width:36px;height:34px;min-width:44px;min-height:44px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.nav-cap-div{width:1px;height:20px;background:#E0E0E0;}
+
+/* ── CARD ── */
+.card{background:#fff;border-radius:16px;margin:0 12px 12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:13px;font-weight:700;color:#1A1A1A;padding:12px 16px 6px;}
+
+/* ── BUTTONS ── */
+.btn-pink{width:100%;height:52px;background:#E8197D;color:#fff;border:none;border-radius:14px;
+  font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 16px rgba(232,25,125,0.3);}
+.btn-pink:disabled{background:#E0E0E0;color:#999;box-shadow:none;cursor:default;}
+.btn-outline{width:100%;height:52px;background:#fff;border:1.5px solid #E91E8C;color:#E91E8C;
+  border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:10px;}
+.btn-text{background:transparent;border:none;color:#E91E8C;font-size:15px;font-weight:600;padding:12px;width:100%;text-align:center;font-family:inherit;cursor:pointer;}
+
+/* ── INPUT FLOATING LABEL ── */
+.input-wrap{border:1.5px solid #E0E0E0;border-radius:10px;padding:8px 14px 10px;margin-bottom:14px;position:relative;transition:border-color .2s;}
+.input-wrap.focused{border-color:#E91E8C;}
+.input-wrap.error{border-color:#FF5722;animation:shake .4s ease;}
+.input-wrap.error .input-label{color:#FF5722;}
+.input-label{font-size:12px;font-weight:500;color:#999;display:block;margin-bottom:2px;}
+.input-wrap.focused .input-label{color:#E91E8C;}
+.input-field{width:100%;border:none;outline:none;font-family:inherit;font-size:16px;font-weight:400;color:#1A1A1A;background:transparent;}
+.input-field::placeholder{color:#CCC;}
+.input-pfx-row{display:flex;align-items:center;gap:8px;}
+.input-eye{background:transparent;border:none;cursor:pointer;padding:0;display:flex;align-items:center;}
+
+/* ── OTP ── */
+.otp-row{display:flex;justify-content:center;gap:12px;padding:8px 0 16px;}
+.otp-row.error .otp-box{border-color:#FF5722;}
+.otp-row.error{animation:shake .4s ease;}
+.otp-box{width:52px;height:58px;border:1.5px solid #E0E0E0;border-radius:10px;font-size:22px;font-weight:700;text-align:center;font-family:inherit;color:#1A1A1A;background:#fff;outline:none;}
+.otp-box:focus{border-color:#E91E8C;}
+
+/* ── ROW ITEMS ── */
+.row-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #F0F0F0;cursor:pointer;transition:background .1s;}
+.row-item:last-child{border-bottom:none;}
+.row-item:active{background:#FFF0F7;}
+
+/* ── SELECTION CARDS ── */
+.selection-card{border:2px solid #E0E0E0;border-radius:14px;padding:16px;margin-bottom:12px;cursor:pointer;background:#fff;transition:all .2s;display:flex;align-items:center;gap:14px;}
+.selection-card.selected{border-color:#E91E8C;background:#FFF0F7;}
+
+/* ── DEMO BTN ── */
+.demo-btn{display:inline-flex;align-items:center;gap:3px;background:transparent;color:#CCC;border:1px dashed #E0E0E0;border-radius:6px;padding:4px 8px;font-size:10px;font-weight:400;font-family:inherit;cursor:pointer;opacity:0.5;}
+
+/* ── ERROR ANIMATION ── */
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* ── KEYBOARD CTA CLONE ── */
+#kb-cta{display:none;position:fixed;left:0;right:0;z-index:9999;}
+#kb-cta .bottom-area{padding-bottom:12px;}
+
+/* ── PROGRESS BAR (3 steps with labels) ── */
+.pb-row{display:flex;align-items:flex-start;justify-content:center;padding:6px 24px 8px;}
+.pb-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;}
+.pb-circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;z-index:2;position:relative;background:#E0E0E0;color:#999;}
+.pb-circle.done{background:#E91E8C;color:#fff;}
+.pb-circle.active{background:#E91E8C;color:#fff;box-shadow:0 0 0 3px rgba(233,30,140,0.2);}
+.pb-line{position:absolute;top:13px;left:50%;width:100%;height:2px;background:#E0E0E0;z-index:1;}
+.pb-line.done{background:#E91E8C;}
+.pb-item:last-child .pb-line{display:none;}
+.pb-label{font-size:11px;color:#999;text-align:center;line-height:1.3;font-weight:500;}
+.pb-label.active{color:#E91E8C;font-weight:700;}
+.pb-label.done{color:#1A1A1A;font-weight:600;}
+
+/* ── LIMIT INPUT (s2) ── */
+.limit-input-row{display:flex;align-items:center;}
+.limit-suffix{font-size:16px;color:#1A1A1A;font-weight:600;flex-shrink:0;padding-left:8px;}
+.quick-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;}
+.quick-chip{height:38px;border-radius:10px;background:#FFF0F7;border:1.5px solid #FCD3E5;color:#E91E8C;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;padding:0;}
+.quick-chip:active{background:#FDE8F3;}
+.quick-chip.selected{background:#E91E8C;color:#fff;border-color:#E91E8C;}
+.limit-hint{font-size:11px;color:#999;margin-top:8px;line-height:1.4;}
+
+/* ── INFO CARD (constraint) ── */
+.card-info{background:#FFF5F9;border:1px solid #FCD3E5;border-radius:14px;margin:0 12px 12px;padding:14px;display:flex;align-items:flex-start;gap:12px;}
+.card-info-ic{flex-shrink:0;width:34px;height:34px;border-radius:17px;background:#FFE4F0;display:flex;align-items:center;justify-content:center;}
+.card-info-text{flex:1;font-size:13px;color:#1A1A1A;line-height:1.55;}
+.card-info-text b{font-weight:700;color:#1A1A1A;}
+
+/* ── SOB: Onboarding ── */
+.sob-hero{width:110px;height:110px;border-radius:55px;background:linear-gradient(145deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;}
+.benefit-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-top:1px solid #F0F0F0;}
+
+/* ── S0: HOME ── */
+.balance-card{background:#fff;border-radius:16px;margin:0 12px 12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.bal-label{font-size:11px;color:#666;font-weight:500;margin-bottom:3px;}
+.bal-amount{font-size:20px;font-weight:800;color:#1A1A1A;letter-spacing:-0.5px;}
+.bal-icon{width:44px;height:44px;border-radius:50%;background:#FDE8F3;display:flex;align-items:center;justify-content:center;}
+.sub-card{background:#fff;border-radius:16px;margin:0 12px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;cursor:pointer;}
+.sub-card-main{display:flex;align-items:center;gap:12px;padding:14px 14px 10px;}
+.sub-ava{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.sub-info{flex:1;}
+.sub-name{font-size:14px;font-weight:700;color:#1A1A1A;}
+.sub-bal{font-size:13px;font-weight:600;color:#E91E8C;margin-top:1px;}
+.sub-detail{font-size:11px;color:#666;margin-top:1px;}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge-on{background:#E8FAF0;color:#1B8F55;}
+.badge-off{background:#E0E0E0;color:#999;}
+.sub-actions{display:flex;border-top:1px solid #F5F5F5;}
+.sub-act-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 0;font-size:12px;font-weight:600;color:#E91E8C;background:transparent;border:none;font-family:inherit;cursor:pointer;transition:background .1s;}
+.sub-act-btn:active{background:#FFF0F7;}
+.sub-act-div{width:1px;background:#F0F0F0;align-self:stretch;}
+.add-card{background:#fff;border-radius:16px;margin:0 12px 10px;padding:14px;display:flex;align-items:center;gap:12px;border:1.5px dashed #F5A7CC;cursor:pointer;transition:background .15s;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.add-card:active{background:#FFF0F7;}
+.add-circle{width:42px;height:42px;border-radius:50%;background:#FDE8F3;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ── S5: DETAIL ── */
+.detail-hero{background:linear-gradient(135deg,#E8197D 0%,#FF6BB0 100%);margin:8px 12px 0;border-radius:16px;padding:20px 16px 18px;text-align:center;}
+.dh-ava{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.25);border:2.5px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin:0 auto 8px;}
+.dh-name{font-size:16px;font-weight:800;color:#fff;}
+.dh-phone{font-size:12px;color:rgba(255,255,255,0.8);margin-top:2px;}
+.dh-badge{display:inline-block;background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;color:#fff;margin-top:6px;}
+.dh-bal-row{display:flex;margin-top:14px;background:rgba(255,255,255,0.12);border-radius:12px;overflow:hidden;}
+.dh-bal-item{flex:1;padding:10px 0;text-align:center;}
+.dh-bal-item+.dh-bal-item{border-left:1px solid rgba(255,255,255,0.2);}
+.dh-bal-val{font-size:15px;font-weight:800;color:#fff;}
+.dh-bal-lbl{font-size:10px;color:rgba(255,255,255,0.75);margin-top:2px;}
+.detail-actions{display:flex;background:#fff;margin:0 12px;border-radius:0 0 16px 16px;box-shadow:0 3px 8px rgba(0,0,0,0.07);}
+.det-act-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 0;font-size:11px;font-weight:600;color:#E91E8C;background:transparent;border:none;font-family:inherit;cursor:pointer;transition:background .1s;}
+.det-act-btn:active{background:#FFF0F7;}
+.det-act-btn+.det-act-btn{border-left:1px solid #F0F0F0;}
+.det-act-icon{width:36px;height:36px;border-radius:50%;background:#FFF0F7;display:flex;align-items:center;justify-content:center;}
+.info-card{background:#fff;border-radius:16px;margin:12px 12px 0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #F5F5F5;}
+.info-row:last-child{border-bottom:none;}
+.info-key{font-size:12px;color:#666;}
+.info-val{font-size:12px;font-weight:700;color:#1A1A1A;}
+.info-val.pink{color:#E91E8C;}
+.txn-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #F5F5F5;cursor:pointer;transition:background .1s;}
+.txn-item:last-child{border-bottom:none;}
+.txn-item:active{background:#FFF0F7;}
+.txn-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.txn-icon.in{background:#E8F5E9;}
+.txn-icon.out{background:#FFF3E0;}
+.txn-info{flex:1;}
+.txn-title{font-size:13px;font-weight:600;color:#1A1A1A;}
+.txn-date{font-size:11px;color:#999;margin-top:2px;}
+.txn-amt{font-size:13px;font-weight:700;}
+.txn-amt.in{color:#2E7D32;}
+.txn-amt.out{color:#E65100;}
+
+/* ── S6: TOPUP NUMPAD ── */
+.s6-body{flex:1;display:flex;flex-direction:column;overflow-y:auto;background:#F5F5F5;}
+.amt-center{text-align:center;padding:28px 24px 20px;background:#fff;margin-bottom:8px;}
+.amt-receiver{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:18px;}
+.amt-receiver-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#E91E8C,#FF6EC7);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.amt-receiver-name{font-size:14px;font-weight:600;color:#1A1A1A;}
+.amt-value{font-size:38px;font-weight:800;color:#1A1A1A;letter-spacing:-1px;border-bottom:2.5px solid #E91E8C;display:inline-block;padding-bottom:2px;min-width:80px;}
+.amt-value.zero{color:#BDBDBD;}
+.amt-note{font-size:11px;color:#E91E8C;margin-top:8px;min-height:16px;}
+.msg-card{background:#fff;border-radius:12px;margin:0 12px 8px;padding:12px 14px;}
+.msg-label{font-size:12px;color:#999;margin-bottom:6px;}
+.msg-input{width:100%;border:none;outline:none;font-size:14px;color:#1A1A1A;font-family:inherit;resize:none;background:transparent;}
+.msg-input::placeholder{color:#CCC;}
+.msg-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.msg-chip{background:#F5F5F5;border:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:500;color:#444;cursor:pointer;font-family:inherit;}
+.msg-chip:active{background:#FFF0F7;color:#E91E8C;}
+.quick-amts{display:flex;gap:8px;padding:0 12px 12px;}
+.quick-amt{flex:1;background:#fff;border:1.5px solid #E0E0E0;border-radius:20px;padding:8px 0;text-align:center;font-size:13px;font-weight:600;color:#1A1A1A;cursor:pointer;font-family:inherit;}
+.quick-amt.selected{background:#FFF0F7;border-color:#E91E8C;color:#E91E8C;}
+.numpad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:repeat(4,1fr);gap:1px;background:#E0E0E0;border-radius:12px;overflow:hidden;margin:0 12px 8px;}
+.num-key{background:#fff;padding:14px 0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;color:#1A1A1A;cursor:pointer;font-family:inherit;border:none;transition:background .1s;-webkit-tap-highlight-color:transparent;}
+.num-key:active{background:#F5F5F5;}
+.num-key.del{font-size:14px;color:#666;}
+
+/* ── SUCCESS ── */
+@keyframes pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.check-ring{width:88px;height:88px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;animation:pop .5s cubic-bezier(.4,0,.2,1) forwards;margin-bottom:16px;}
+.suc-title{font-size:20px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;}
+.suc-sub{font-size:14px;color:#666;line-height:1.6;margin-top:8px;}
+.suc-amount{font-size:28px;font-weight:800;color:#E91E8C;margin:14px 0 4px;letter-spacing:-0.5px;}
+.suc-to{font-size:13px;color:#999;}
+.suc-divider{width:40px;height:3px;background:#F0F0F0;border-radius:2px;margin:18px auto;}
+.suc-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F5F5F5;}
+.suc-row:last-child{border-bottom:none;}
+.suc-key{font-size:12px;color:#999;}
+.suc-val{font-size:12px;font-weight:600;color:#1A1A1A;}
+
+
+/* ── REVIEW ── */
+.review-hero{background:linear-gradient(135deg,#E8197D 0%,#FF6BB0 100%);margin:0 12px;border-radius:16px 16px 0 0;padding:20px 16px 16px;text-align:center;}
+.rev-ava{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:#fff;margin:0 auto 8px;}
+.rev-name{font-size:15px;font-weight:800;color:#fff;}
+.rev-phone{font-size:12px;color:rgba(255,255,255,0.8);margin-top:2px;}
+.review-body{background:#fff;margin:0 12px;border-radius:0 0 16px 16px;margin-bottom:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.rev-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #F5F5F5;}
+.rev-row:last-child{border-bottom:none;}
+.rev-key{font-size:12px;color:#666;}
+.rev-val{font-size:12px;font-weight:700;color:#1A1A1A;}
+.rev-val.pink{color:#E91E8C;}
+.tnc-row{display:flex;align-items:flex-start;gap:10px;background:#fff;border-radius:16px;margin:0 12px 10px;padding:14px;box-shadow:0 1px 6px rgba(0,0,0,0.06);cursor:pointer;}
+.tnc-check{width:20px;height:20px;border:2px solid #E0E0E0;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;transition:all .2s;margin-top:1px;}
+.tnc-check.checked{background:#E91E8C;border-color:#E91E8C;}
+.tnc-txt{font-size:12px;color:#666;line-height:1.6;}
+.tnc-txt a{color:#E91E8C;font-weight:600;text-decoration:none;}
+
+/* ── S4 SUCCESS: invitation ── */
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.8}}
+.check-circle{width:72px;height:72px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;animation:pulse 2s ease-in-out infinite;margin:0 auto 14px;}
+.invite-row{background:#FFF0F7;border:1.5px dashed #F5A7CC;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin:12px 0 0;cursor:pointer;}
+.invite-row:active{background:#FDE8F3;}
+.inv-label{font-size:10px;color:#999;font-weight:600;text-transform:uppercase;margin-bottom:2px;}
+.inv-link{font-size:12px;font-weight:700;color:#E91E8C;}
+
+/* ── COMBO INPUT ── */
+
+/* ── EMPTY STATE ── */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px;text-align:center;}
+.empty-icon{width:88px;height:88px;border-radius:44px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+
+/* ── BOTTOM SHEET (share) ── */
+.sheet-overlay{position:absolute;inset:0;z-index:9000;display:none;}
+.sheet-overlay.open{display:block;}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.4);opacity:0;transition:opacity .25s ease;}
+.sheet-overlay.open .sheet-backdrop{opacity:1;}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sheet-overlay.open .sheet-panel{transform:translateY(0);}
+.sheet-handle{width:40px;height:4px;border-radius:2px;background:#E0E0E0;margin:6px auto 8px;}
+.sheet-title{font-size:16px;font-weight:700;color:#1A1A1A;text-align:center;padding:6px 0 4px;}
+.sheet-sub{font-size:12px;color:#999;text-align:center;padding:0 0 10px;}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px 0 14px;}
+.share-item{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 4px;cursor:pointer;border-radius:12px;transition:background .15s;border:none;background:transparent;font-family:inherit;}
+.share-item:active{background:#F5F5F5;}
+.share-ic{width:52px;height:52px;border-radius:26px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
+.share-lbl{font-size:12px;color:#1A1A1A;font-weight:500;text-align:center;line-height:1.2;}
+
+/* ── SURVEY ── */
+.survey-section-hdr{background:#FFF0F7;padding:10px 16px;margin-bottom:2px;}
+.survey-section-hdr-text{font-size:12px;font-weight:700;color:#E91E8C;line-height:1.4;}
+.survey-q{padding:14px 16px;border-bottom:1px solid #F0F0F0;background:#fff;}
+.survey-q:last-child{border-bottom:none;}
+.survey-q-num{display:inline-block;width:24px;height:24px;border-radius:12px;background:#E91E8C;color:#fff;font-size:11px;font-weight:700;line-height:24px;text-align:center;flex-shrink:0;margin-right:8px;}
+.survey-q-top{display:flex;align-items:flex-start;}
+.survey-q-text{flex:1;}
+.survey-q-vi{font-size:14px;font-weight:600;color:#1A1A1A;line-height:1.45;}
+.survey-rate-row{display:flex;justify-content:space-between;margin-top:10px;gap:4px;}
+.survey-rate-btn{flex:1;height:36px;border-radius:8px;border:1.5px solid #E0E0E0;background:#fff;font-size:13px;font-weight:600;color:#999;cursor:pointer;font-family:inherit;}
+.survey-rate-btn.sel{background:#E91E8C;border-color:#E91E8C;color:#fff;}
+.survey-scale-labels{display:flex;justify-content:space-between;margin-top:5px;}
+.survey-scale-labels span{font-size:10px;color:#BBBBBB;}
+
+/* ── TOGGLE ── */
+.toggle-track{width:48px;height:28px;border-radius:14px;background:#D0D0D0;transition:background .2s;position:relative;cursor:pointer;flex-shrink:0;}
+.toggle-track.on{background:#4CAF50;}
+.toggle-thumb{position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+.toggle-track.on .toggle-thumb{transform:translateX(20px);}
+
+</style>
+</head>
+<body>
+<div id="phone-frame">
+<div id="phone-frame-inner">
+<div id="app">
+
+  <!-- ══════════════════════════
+       SOB: ONBOARDING (idx=0)
+  ══════════════════════════ -->
+  <div id="sob" class="screen active" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;padding:4px 16px 0;">
+        <span style="font-size:14px;font-weight:600;color:#E91E8C;cursor:pointer;" onclick="goTo(1)">Bỏ qua</span>
+      </div>
+    </div>
+    <div class="scroll" style="background:#fff;">
+      <div style="text-align:center;padding:20px 32px 16px;">
+        <div class="sob-hero">
+          <svg width="54" height="54" viewBox="0 0 24 24" fill="none"><path d="M21 7H3a2 2 0 00-2 2v9a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2z" stroke="#E91E8C" stroke-width="1.6" stroke-linecap="round"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#E91E8C" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="13" r="2" fill="#E91E8C"/></svg>
+          <div style="position:absolute;bottom:2px;right:2px;width:34px;height:34px;border-radius:17px;background:#E8F5E9;border:3px solid #fff;display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:#E91E8C;letter-spacing:1.4px;margin-bottom:8px;">VÍ PHỤ MOMO</div>
+        <div style="font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;line-height:1.3;">Cho con tự lập,<br>bố mẹ vẫn yên tâm</div>
+        <div style="font-size:14px;color:#666;line-height:1.6;margin-top:8px;">Ngăn ví riêng cho con —<br>bố mẹ kiểm soát hoàn toàn.</div>
+      </div>
+      <div style="padding:0 24px 32px;">
+        <div class="benefit-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#E91E8C" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><div style="font-size:15px;font-weight:600;color:#1A1A1A;">An toàn từ A đến Z</div><div style="font-size:13px;color:#666;margin-top:2px;line-height:1.5;">Đặt hạn mức tháng cho con. Vượt mức là không tiêu được.</div></div>
+        </div>
+        <div class="benefit-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="#E91E8C" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="#E91E8C" stroke-width="1.8"/></svg>
+          <div><div style="font-size:15px;font-weight:600;color:#1A1A1A;">Bố mẹ luôn nắm rõ</div><div style="font-size:13px;color:#666;margin-top:2px;line-height:1.5;">Xem con tiêu gì, ở đâu, lúc nào — ngay trên MoMo của bạn.</div></div>
+        </div>
+        <div class="benefit-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><rect x="4" y="11" width="16" height="10" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.4" fill="#E91E8C"/></svg>
+          <div><div style="font-size:15px;font-weight:600;color:#1A1A1A;">Chặn dịch vụ rủi ro</div><div style="font-size:13px;color:#666;margin-top:2px;line-height:1.5;">Chỉ thanh toán &amp; chuyển tiền. Không Trả Sau, không Vay Nhanh.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button class="btn-pink" onclick="goTo(1)">Khám phá ngay</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       S0: QUẢN LÝ VÍ PHỤ (idx=2) — starts empty
+  ══════════════════════════ -->
+  <div id="s0" class="screen">
+    <div class="hdr-pink">
+      <div class="status-spacer"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 12px;">
+        <div style="font-size:18px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;">Ví điện tử</div>
+        <div class="nav-capsule">
+          <button class="nav-cap-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <div class="nav-cap-div"></div>
+          <button class="nav-cap-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll" style="padding-top:4px;">
+      <div class="balance-card">
+        <div>
+          <div class="bal-label">Số dư chính</div>
+          <div class="bal-amount">12.500.000 ₫</div>
+        </div>
+        <div class="bal-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="3" stroke="#E91E8C" stroke-width="1.8"/><path d="M2 10h20" stroke="#E91E8C" stroke-width="1.8"/><rect x="5" y="14" width="4" height="2" rx="1" fill="#E91E8C"/></svg>
+        </div>
+      </div>
+      <div class="section-label">Ngăn Ví phụ của tôi</div>
+      <div id="wallet-list"></div>
+      <div class="add-card" onclick="goTo(2)">
+        <div class="add-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#E91E8C" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#E91E8C;">Thêm Ngăn Ví phụ</div>
+          <div style="font-size:11px;color:#666;margin-top:2px;">Mời thành viên gia đình</div>
+        </div>
+      </div>
+      <div style="height:8px;"></div>
+    </div>
+    <div class="bottom-area"></div>
+  </div>
+
+  <!-- ══════════════════════════
+       S1: NHẬP SĐT (idx=3)
+  ══════════════════════════ -->
+  <div id="s1" class="screen" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 0;">
+        <button class="nav-back" onclick="goTo(1)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div style="width:44px;"></div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-item">
+          <div class="pb-circle active">1</div>
+          <div class="pb-line"></div>
+          <div class="pb-label active">Nhập SĐT</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-circle">2</div>
+          <div class="pb-line"></div>
+          <div class="pb-label">Hạn mức</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-circle">3</div>
+          <div class="pb-label">Xác nhận</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll" style="background:#fff;padding:0 24px;">
+      <div style="text-align:center;padding:24px 0 20px;">
+        <div style="width:110px;height:110px;border-radius:55px;background:linear-gradient(145deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <svg width="54" height="54" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M12 17h.01" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;line-height:1.3;">Nhập số điện thoại</div>
+        <div style="font-size:14px;color:#666;line-height:1.6;margin-top:8px;">Nhập SĐT của người thân để<br>gửi lời mời kích hoạt Ngăn Ví phụ.</div>
+      </div>
+
+      <div id="phone-wrap" class="input-wrap">
+        <label class="input-label">Số điện thoại</label>
+        <div class="input-pfx-row">
+          <span style="font-size:14px;color:#1A1A1A;font-weight:600;flex-shrink:0;">🇻🇳 +84</span>
+          <input id="phone-inp" class="input-field" type="tel" inputmode="tel" maxlength="10" placeholder="9xx xxx xxx"
+            onfocus="focusWrap('phone-wrap')" onblur="blurWrap('phone-wrap')" oninput="clearWrapError('phone-wrap')"/>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:4px 0 16px;">
+        <button class="demo-btn" onclick="demoPhone()">demo fill</button>
+      </div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button id="btn1" class="btn-pink" onclick="submitPhone()">Tiếp tục</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       S2: THIẾT LẬP HẠN MỨC (idx=4)
+  ══════════════════════════ -->
+  <div id="s2" class="screen">
+    <div class="hdr-pink">
+      <div class="status-spacer"></div>
+      <div class="nav">
+        <button class="nav-back" onclick="goTo(2)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-title">Thiết lập Ví Phụ</div>
+        <div class="nav-capsule">
+          <button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <div class="nav-cap-div"></div>
+          <button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-item">
+          <div class="pb-circle done">&#10003;</div>
+          <div class="pb-line done"></div>
+          <div class="pb-label done">Nhập SĐT</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-circle active">2</div>
+          <div class="pb-line"></div>
+          <div class="pb-label active">Hạn mức</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-circle">3</div>
+          <div class="pb-label">Xác nhận</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll" style="padding:6px 0 10px;">
+      <input id="nick-inp" type="hidden" value=""/>
+      <div class="section-label">Hạn mức giao dịch</div>
+      <div class="card">
+        <div style="font-size:13px;color:#666;line-height:1.55;padding-bottom:12px;">Thiết lập hạn mức chi tiêu cho Ví Phụ được thêm. Bạn có thể thay đổi sau trong phần cài đặt.</div>
+        <div id="limit-wrap" class="input-wrap" style="margin-bottom:8px;">
+          <label class="input-label">Hạn mức / tháng</label>
+          <div class="limit-input-row">
+            <input id="limit-inp" class="input-field" type="tel" inputmode="numeric" placeholder="Nhập số tiền (tối đa 2.000.000)"
+              oninput="fmtLimit()" onfocus="focusWrap('limit-wrap');scheduleShowKbCta();" onblur="blurWrap('limit-wrap');scheduleHideKbCta();"/>
+            <span class="limit-suffix">₫</span>
+          </div>
+        </div>
+        <div class="quick-chips">
+          <button class="quick-chip" data-val="500000" onclick="pickLimit(500000)">500K</button>
+          <button class="quick-chip" data-val="1000000" onclick="pickLimit(1000000)">1tr</button>
+          <button class="quick-chip" data-val="1500000" onclick="pickLimit(1500000)">1.5tr</button>
+          <button class="quick-chip" data-val="2000000" onclick="pickLimit(2000000)">2tr</button>
+        </div>
+        <div class="limit-hint">Tổng chi tiêu tối đa mỗi tháng, không vượt quá 2.000.000 ₫</div>
+      </div>
+
+      <div class="section-label">Dịch vụ được phép sử dụng</div>
+      <div class="card-info">
+        <div class="card-info-ic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="11" width="16" height="10" rx="2" fill="#E91E8C"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-info-text">Ví Phụ chỉ được phép sử dụng các dịch vụ <b>chuyển tiền, thanh toán</b>. Không được phép sử dụng các <b>dịch vụ tài chính</b> trên MoMo (Ví Trả Sau, Vay Nhanh,...).</div>
+      </div>
+
+      <div style="text-align:center;padding:4px 0 8px;">
+        <button class="demo-btn" onclick="demoFillS2()">demo fill</button>
+      </div>
+    </div>
+    <div class="bottom-area">
+      <button class="btn-pink" id="btn2" onclick="submitS2()">Tiếp tục</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       S3: XEM LẠI + ĐIỀU KHOẢN (idx=11)
+  ══════════════════════════ -->
+  <div id="s3" class="screen">
+    <div class="hdr-pink">
+      <div class="status-spacer"></div>
+      <div class="nav">
+        <button class="nav-back" onclick="goTo(3)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-title">Xem lại</div>
+        <div class="nav-capsule">
+          <button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <div class="nav-cap-div"></div>
+          <button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-item">
+          <div class="pb-circle done">&#10003;</div>
+          <div class="pb-line done"></div>
+          <div class="pb-label done">Nhập SĐT</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-circle done">&#10003;</div>
+          <div class="pb-line done"></div>
+          <div class="pb-label done">Hạn mức</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-circle active">3</div>
+          <div class="pb-label active">Xác nhận</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll" style="padding:0 0 10px;">
+      <div class="review-hero">
+        <div class="rev-ava" id="rv-ava">?</div>
+        <div class="rev-name" id="rv-name">Ngăn Ví phụ</div>
+        <div class="rev-phone" id="rv-phone">+84 9xx xxx xxx</div>
+      </div>
+      <div class="review-body">
+        <div class="rev-row"><span class="rev-key">Hạn mức / tháng</span><span class="rev-val pink" id="rv-month">—</span></div>
+        <div class="rev-row"><span class="rev-key">Dịch vụ được phép</span><span class="rev-val">Chuyển tiền, thanh toán</span></div>
+      </div>
+      <div class="tnc-row" onclick="toggleTnc()">
+        <div class="tnc-check" id="tnc-check">
+          <svg id="tnc-svg" width="11" height="9" viewBox="0 0 11 9" fill="none" style="display:none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tnc-txt">Tôi đồng ý với <a href="#" onclick="return false;">Điều khoản sử dụng Ngăn Ví Phụ</a> và xác nhận thông tin trên là chính xác.</div>
+      </div>
+    </div>
+    <div class="bottom-area">
+      <button class="btn-pink" id="btn3" disabled onclick="createWalletAndGo()">Xác nhận thêm Ngăn Ví phụ</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       S4: TẠO VÍ PHỤ THÀNH CÔNG (idx=12) — white bg
+  ══════════════════════════ -->
+  <div id="s4" class="screen" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;text-align:center;">
+      <div style="background:#fff;border-radius:16px;padding:28px 20px;width:100%;box-shadow:0 2px 10px rgba(0,0,0,0.07);margin-bottom:14px;">
+        <div class="check-circle">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16l5.5 5.5L24 10" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="font-size:18px;font-weight:800;color:#1A1A1A;margin-bottom:8px;">Thêm Ngăn Ví phụ thành công!</div>
+        <div style="font-size:13px;color:#666;line-height:1.6;" id="s4-body-txt">Tin nhắn mời đã được gửi. Người thân có thể kích hoạt ngay!</div>
+        <div class="invite-row">
+          <div style="width:36px;height:36px;border-radius:50%;background:#FDE8F3;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div style="flex:1;"><div class="inv-label">Link mời kích hoạt</div><div class="inv-link" id="inv-lnk">momo.vn/vi-phu/abc123</div></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#E91E8C" stroke-width="1.8"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button class="btn-pink" onclick="goTo(1)">Về trang ví</button>
+      <button class="btn-outline" onclick="openShareSheet()">Chia sẻ</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       S5: CHI TIẾT VÍ PHỤ (idx=13)
+  ══════════════════════════ -->
+  <div id="s5" class="screen">
+    <div class="hdr-pink">
+      <div class="status-spacer"></div>
+      <div class="nav">
+        <button class="nav-back" onclick="goTo(1)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-title" id="s5-nav-title">Chi tiết Ví phụ</div>
+        <div class="nav-capsule">
+          <button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <div class="nav-cap-div"></div>
+          <button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll">
+      <div class="detail-hero">
+        <div class="dh-ava" id="s5-ava">MT</div>
+        <div class="dh-name" id="s5-name">Minh Tú</div>
+        <div class="dh-phone" id="s5-phone">0912 345 678</div>
+        <div class="dh-badge" id="s5-status">Đang hoạt động</div>
+        <div class="dh-bal-row">
+          <div class="dh-bal-item"><div class="dh-bal-val" id="s5-bal">0 ₫</div><div class="dh-bal-lbl">Số dư</div></div>
+          <div class="dh-bal-item"><div class="dh-bal-val" id="s5-limit">1M</div><div class="dh-bal-lbl">Hạn mức/tháng</div></div>
+          <div class="dh-bal-item"><div class="dh-bal-val" id="s5-spent">0</div><div class="dh-bal-lbl">Đã dùng tháng này</div></div>
+        </div>
+      </div>
+      <div class="detail-actions">
+        <button class="det-act-btn" onclick="openTopup(currentDetail)">
+          <div class="det-act-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7-7 7 7" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Nạp tiền
+        </button>
+        <button class="det-act-btn">
+          <div class="det-act-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7 7 7-7" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Rút tiền
+        </button>
+        <button class="det-act-btn" onclick="toggleWalletStatus()">
+          <div class="det-act-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z" stroke="#E91E8C" stroke-width="1.8"/><path d="M12 8v4l3 3" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          Tạm dừng
+        </button>
+      </div>
+      <div class="info-card">
+        <div class="info-row"><span class="info-key">Hạn mức / tháng</span><span class="info-val pink" id="s5-monthlimit">—</span></div>
+        <div class="info-row"><span class="info-key">Dịch vụ được phép</span><span class="info-val">Chuyển tiền, thanh toán</span></div>
+        <div class="info-row">
+          <span class="info-key">Trạng thái</span>
+          <span class="badge badge-on" id="s5-badge">Hoạt động</span>
+        </div>
+      </div>
+      <div class="section-label">Lịch sử giao dịch</div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div id="txn-list"></div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+    <div class="bottom-area"></div>
+  </div>
+
+  <!-- ══════════════════════════
+       S6: NẠP TIỀN NUMPAD (idx=14)
+  ══════════════════════════ -->
+  <div id="s6" class="screen">
+    <div class="hdr-pink">
+      <div class="status-spacer"></div>
+      <div class="nav">
+        <button class="nav-back" id="s6-back" onclick="goTo(6)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-title">Nạp tiền Ví phụ</div>
+        <div class="nav-capsule">
+          <button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <div class="nav-cap-div"></div>
+          <button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="s6-body">
+      <div class="amt-center">
+        <div class="amt-receiver">
+          <div class="amt-receiver-avatar" id="s6-recv-ava">VA</div>
+          <div class="amt-receiver-name" id="s6-recv-name">Nguyễn Văn An</div>
+        </div>
+        <div style="text-align:center;">
+          <span class="amt-value zero" id="amt-display">0đ</span>
+        </div>
+        <div class="amt-note" id="amt-note"></div>
+      </div>
+      <div class="msg-card">
+        <div class="msg-label">Lời nhắn (0/160)</div>
+        <textarea class="msg-input" id="msg-input" rows="1" placeholder="Nhập hoặc chọn bên dưới" maxlength="160"></textarea>
+        <div class="msg-chips">
+          <button class="msg-chip" onclick="setMsg('Ba gửi tiền nha con')">Ba gửi tiền nha con</button>
+          <button class="msg-chip" onclick="setMsg('Tiền tiêu vặt tháng này')">Tiền tiêu vặt tháng này</button>
+          <button class="msg-chip" onclick="setMsg('Con dùng tiết kiệm nha!')">Con dùng tiết kiệm nha!</button>
+        </div>
+      </div>
+      <div class="quick-amts">
+        <button class="quick-amt" onclick="setPreset('200000',this)">200K</button>
+        <button class="quick-amt" onclick="setPreset('500000',this)">500K</button>
+        <button class="quick-amt" onclick="setPreset('1000000',this)">1 triệu</button>
+      </div>
+      <div class="numpad">
+        <button class="num-key" onclick="numPress('1')">1</button>
+        <button class="num-key" onclick="numPress('2')">2</button>
+        <button class="num-key" onclick="numPress('3')">3</button>
+        <button class="num-key" onclick="numPress('4')">4</button>
+        <button class="num-key" onclick="numPress('5')">5</button>
+        <button class="num-key" onclick="numPress('6')">6</button>
+        <button class="num-key" onclick="numPress('7')">7</button>
+        <button class="num-key" onclick="numPress('8')">8</button>
+        <button class="num-key" onclick="numPress('9')">9</button>
+        <button class="num-key" onclick="numPress('000')" style="font-size:13px;">000</button>
+        <button class="num-key" onclick="numPress('0')">0</button>
+        <button class="num-key del" onclick="numDel()">
+          <svg width="20" height="16" viewBox="0 0 24 18" fill="none"><path d="M9 3H21a2 2 0 012 2v8a2 2 0 01-2 2H9l-7-6 7-6z" stroke="#666" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 7l-4 4M11 7l4 4" stroke="#666" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="bottom-area">
+      <button class="btn-pink" id="btn6" disabled onclick="confirmTopup()">Nạp tiền</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       S7: NẠP TIỀN THÀNH CÔNG (idx=15) — white bg
+  ══════════════════════════ -->
+  <div id="s7" class="screen" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 20px 0;text-align:center;">
+      <div class="check-ring">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 20l7 7L30 13" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="suc-title">Nạp tiền thành công!</div>
+      <div class="suc-amount" id="suc-amount">+500.000 ₫</div>
+      <div class="suc-to">đã nạp vào ngăn ví <span id="suc-to-name" style="font-weight:600;color:#1A1A1A;">—</span></div>
+      <div class="suc-divider"></div>
+      <div style="width:100%;background:#fff;border-radius:14px;padding:4px 0;">
+        <div class="suc-row"><span class="suc-key">Từ</span><span class="suc-val">Ví chính MoMo</span></div>
+        <div class="suc-row"><span class="suc-key">Đến</span><span class="suc-val" id="suc-dest">—</span></div>
+        <div class="suc-row"><span class="suc-key">Thời gian</span><span class="suc-val" id="suc-time">—</span></div>
+        <div class="suc-row" style="border:none;"><span class="suc-key">Mã GD</span><span class="suc-val" id="suc-txnid">—</span></div>
+      </div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button class="btn-pink" onclick="goTo(10)">Hoàn thành</button>
+      <button class="btn-outline" onclick="goTo(6)">Xem chi tiết ví phụ</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       SRECEIVE: NHẬN TIỀN (idx=16) — white bg
+  ══════════════════════════ -->
+  <div id="sreceive" class="screen" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+      <div style="padding:4px 16px 0;">
+        <button class="nav-back" onclick="goTo(1)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;">
+      <div style="width:88px;height:88px;border-radius:44px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7 7 7-7" stroke="#E91E8C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:20px;font-weight:800;color:#1A1A1A;margin-bottom:8px;">Ví phụ của bạn<br>đang chờ kích hoạt</div>
+      <div style="font-size:14px;color:#666;line-height:1.6;">Nhờ người thân gửi lời mời kích hoạt qua MoMo để bắt đầu nhận tiền.</div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button class="btn-pink" onclick="goTo(1)">Quay lại</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       SSURVEY-INVITE (idx=17) — white bg
+  ══════════════════════════ -->
+  <div id="ssurveyinvite" class="screen" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+    </div>
+    <div class="scroll" style="background:#fff;">
+      <div style="text-align:center;padding:40px 32px 24px;">
+        <div style="width:96px;height:96px;border-radius:48px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="#E91E8C" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;">Cảm ơn bạn rất nhiều!</div>
+        <div style="font-size:14px;color:#666;line-height:1.6;margin-top:10px;">Bạn vừa hoàn thành luồng trải nghiệm<br>quản lý Ví Phụ MoMo.</div>
+      </div>
+      <div style="margin:0 24px 24px;padding:16px;background:#FFF0F7;border-radius:14px;border:1px solid #FDE8F3;">
+        <div style="font-size:13px;font-weight:700;color:#E91E8C;margin-bottom:6px;">📋 Khảo sát nhanh</div>
+        <div style="font-size:13px;color:#666;line-height:1.6;">Chỉ 9 câu hỏi đơn giản, khoảng <strong>2 phút</strong>. Ý kiến của bạn giúp chúng tôi cải thiện trải nghiệm tốt hơn.</div>
+      </div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button class="btn-pink" onclick="goTo(11)">Bắt đầu khảo sát</button>
+      <button class="btn-outline" onclick="goTo(1)">Bỏ qua</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       SSURVEY: PSSUQ-9 (idx=18)
+  ══════════════════════════ -->
+  <div id="ssurvey" class="screen">
+    <div class="hdr-pink">
+      <div class="status-spacer"></div>
+      <div class="nav">
+        <button class="nav-back" onclick="goTo(10)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-title">Khảo sát trải nghiệm</div>
+        <div class="nav-capsule">
+          <button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <div class="nav-cap-div"></div>
+          <button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll">
+      <div style="padding:12px 16px 8px;">
+        <div id="sname-wrap" class="input-wrap">
+          <label class="input-label">Tên của bạn</label>
+          <input id="survey-username" class="input-field" type="text" placeholder="Nhập tên để nhận diện"
+            onfocus="focusWrap('sname-wrap')" onblur="blurWrap('sname-wrap')"
+            oninput="clearWrapError('sname-wrap');checkSurveyComplete();"/>
+        </div>
+      </div>
+      <div class="survey-section-hdr"><div class="survey-section-hdr-text">A — Mức độ dễ sử dụng</div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">1</span><div class="survey-q-text"><div class="survey-q-vi">Nhìn chung, tôi hài lòng với sự dễ dàng khi thực hiện việc quản lý Ví Phụ trên MoMo.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq1b1" onclick="onSurveyRate(1,1)">1</button><button class="survey-rate-btn" id="sq1b2" onclick="onSurveyRate(1,2)">2</button><button class="survey-rate-btn" id="sq1b3" onclick="onSurveyRate(1,3)">3</button><button class="survey-rate-btn" id="sq1b4" onclick="onSurveyRate(1,4)">4</button><button class="survey-rate-btn" id="sq1b5" onclick="onSurveyRate(1,5)">5</button><button class="survey-rate-btn" id="sq1b6" onclick="onSurveyRate(1,6)">6</button><button class="survey-rate-btn" id="sq1b7" onclick="onSurveyRate(1,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">2</span><div class="survey-q-text"><div class="survey-q-vi">Các bước thực hiện đơn giản.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq2b1" onclick="onSurveyRate(2,1)">1</button><button class="survey-rate-btn" id="sq2b2" onclick="onSurveyRate(2,2)">2</button><button class="survey-rate-btn" id="sq2b3" onclick="onSurveyRate(2,3)">3</button><button class="survey-rate-btn" id="sq2b4" onclick="onSurveyRate(2,4)">4</button><button class="survey-rate-btn" id="sq2b5" onclick="onSurveyRate(2,5)">5</button><button class="survey-rate-btn" id="sq2b6" onclick="onSurveyRate(2,6)">6</button><button class="survey-rate-btn" id="sq2b7" onclick="onSurveyRate(2,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">3</span><div class="survey-q-text"><div class="survey-q-vi">Tôi có thể hoàn thành thao tác một cách nhanh chóng.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq3b1" onclick="onSurveyRate(3,1)">1</button><button class="survey-rate-btn" id="sq3b2" onclick="onSurveyRate(3,2)">2</button><button class="survey-rate-btn" id="sq3b3" onclick="onSurveyRate(3,3)">3</button><button class="survey-rate-btn" id="sq3b4" onclick="onSurveyRate(3,4)">4</button><button class="survey-rate-btn" id="sq3b5" onclick="onSurveyRate(3,5)">5</button><button class="survey-rate-btn" id="sq3b6" onclick="onSurveyRate(3,6)">6</button><button class="survey-rate-btn" id="sq3b7" onclick="onSurveyRate(3,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-section-hdr"><div class="survey-section-hdr-text">B — Thông tin hướng dẫn</div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">4</span><div class="survey-q-text"><div class="survey-q-vi">Các thông tin hướng dẫn trong quá trình thực hiện là rõ ràng.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq4b1" onclick="onSurveyRate(4,1)">1</button><button class="survey-rate-btn" id="sq4b2" onclick="onSurveyRate(4,2)">2</button><button class="survey-rate-btn" id="sq4b3" onclick="onSurveyRate(4,3)">3</button><button class="survey-rate-btn" id="sq4b4" onclick="onSurveyRate(4,4)">4</button><button class="survey-rate-btn" id="sq4b5" onclick="onSurveyRate(4,5)">5</button><button class="survey-rate-btn" id="sq4b6" onclick="onSurveyRate(4,6)">6</button><button class="survey-rate-btn" id="sq4b7" onclick="onSurveyRate(4,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">5</span><div class="survey-q-text"><div class="survey-q-vi">Thông tin được cung cấp đủ để tôi hoàn thành thao tác.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq5b1" onclick="onSurveyRate(5,1)">1</button><button class="survey-rate-btn" id="sq5b2" onclick="onSurveyRate(5,2)">2</button><button class="survey-rate-btn" id="sq5b3" onclick="onSurveyRate(5,3)">3</button><button class="survey-rate-btn" id="sq5b4" onclick="onSurveyRate(5,4)">4</button><button class="survey-rate-btn" id="sq5b5" onclick="onSurveyRate(5,5)">5</button><button class="survey-rate-btn" id="sq5b6" onclick="onSurveyRate(5,6)">6</button><button class="survey-rate-btn" id="sq5b7" onclick="onSurveyRate(5,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">6</span><div class="survey-q-text"><div class="survey-q-vi">Thông tin hiển thị trong trải nghiệm này dễ hiểu.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq6b1" onclick="onSurveyRate(6,1)">1</button><button class="survey-rate-btn" id="sq6b2" onclick="onSurveyRate(6,2)">2</button><button class="survey-rate-btn" id="sq6b3" onclick="onSurveyRate(6,3)">3</button><button class="survey-rate-btn" id="sq6b4" onclick="onSurveyRate(6,4)">4</button><button class="survey-rate-btn" id="sq6b5" onclick="onSurveyRate(6,5)">5</button><button class="survey-rate-btn" id="sq6b6" onclick="onSurveyRate(6,6)">6</button><button class="survey-rate-btn" id="sq6b7" onclick="onSurveyRate(6,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-section-hdr"><div class="survey-section-hdr-text">C — Giao diện &amp; cảm nhận chung</div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">7</span><div class="survey-q-text"><div class="survey-q-vi">Thiết kế giao diện trải nghiệm vừa rồi mang lại cảm giác dễ chịu.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq7b1" onclick="onSurveyRate(7,1)">1</button><button class="survey-rate-btn" id="sq7b2" onclick="onSurveyRate(7,2)">2</button><button class="survey-rate-btn" id="sq7b3" onclick="onSurveyRate(7,3)">3</button><button class="survey-rate-btn" id="sq7b4" onclick="onSurveyRate(7,4)">4</button><button class="survey-rate-btn" id="sq7b5" onclick="onSurveyRate(7,5)">5</button><button class="survey-rate-btn" id="sq7b6" onclick="onSurveyRate(7,6)">6</button><button class="survey-rate-btn" id="sq7b7" onclick="onSurveyRate(7,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">8</span><div class="survey-q-text"><div class="survey-q-vi">Tôi thích sử dụng giao diện trong quá trình trải nghiệm vừa rồi.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq8b1" onclick="onSurveyRate(8,1)">1</button><button class="survey-rate-btn" id="sq8b2" onclick="onSurveyRate(8,2)">2</button><button class="survey-rate-btn" id="sq8b3" onclick="onSurveyRate(8,3)">3</button><button class="survey-rate-btn" id="sq8b4" onclick="onSurveyRate(8,4)">4</button><button class="survey-rate-btn" id="sq8b5" onclick="onSurveyRate(8,5)">5</button><button class="survey-rate-btn" id="sq8b6" onclick="onSurveyRate(8,6)">6</button><button class="survey-rate-btn" id="sq8b7" onclick="onSurveyRate(8,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div class="survey-q"><div class="survey-q-top"><span class="survey-q-num">9</span><div class="survey-q-text"><div class="survey-q-vi">Nhìn chung, tôi hài lòng với trải nghiệm vừa rồi.</div></div></div><div class="survey-rate-row"><button class="survey-rate-btn" id="sq9b1" onclick="onSurveyRate(9,1)">1</button><button class="survey-rate-btn" id="sq9b2" onclick="onSurveyRate(9,2)">2</button><button class="survey-rate-btn" id="sq9b3" onclick="onSurveyRate(9,3)">3</button><button class="survey-rate-btn" id="sq9b4" onclick="onSurveyRate(9,4)">4</button><button class="survey-rate-btn" id="sq9b5" onclick="onSurveyRate(9,5)">5</button><button class="survey-rate-btn" id="sq9b6" onclick="onSurveyRate(9,6)">6</button><button class="survey-rate-btn" id="sq9b7" onclick="onSurveyRate(9,7)">7</button></div><div class="survey-scale-labels"><span>Không đồng ý</span><span>Đồng ý</span></div></div>
+      <div style="height:16px;"></div>
+    </div>
+    <div class="bottom-area">
+      <button class="btn-pink" id="btn-survey-submit" disabled onclick="submitSurvey()">Gửi khảo sát</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       SSURVEY-THANKS (idx=19) — white bg
+  ══════════════════════════ -->
+  <div id="ssurveythanks" class="screen" style="background:#fff;">
+    <div style="flex-shrink:0;background:#fff;">
+      <div class="status-spacer" style="background:#fff;"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;">
+      <div style="font-size:72px;margin-bottom:20px;">🥰</div>
+      <div style="font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;">Bạn thật tuyệt vời!</div>
+      <div style="font-size:14px;color:#666;line-height:1.6;margin-top:10px;">Cảm ơn bạn đã dành thời gian<br>chia sẻ trải nghiệm với chúng tôi.</div>
+      <div style="margin:24px 0 0;padding:16px;background:#FFF0F7;border-radius:14px;border:1px solid #FDE8F3;width:100%;">
+        <div style="font-size:14px;color:#E91E8C;font-weight:600;">Hẹn gặp lại bạn lần sau nhé! 👋</div>
+      </div>
+    </div>
+    <div class="bottom-area" style="background:#fff;">
+      <button class="btn-pink" onclick="goTo(1)">Về trang chủ MoMo</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- KEYBOARD CTA CLONE -->
+<div id="kb-cta"></div>
+
+<!-- SHARE BOTTOM SHEET -->
+<div id="share-sheet" class="sheet-overlay">
+  <div class="sheet-backdrop" onclick="closeShareSheet()"></div>
+  <div class="sheet-panel">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Chia sẻ link mời</div>
+    <div class="sheet-sub" id="share-link-preview">momo.vn/vi-phu/abc123</div>
+    <div class="share-grid">
+      <button class="share-item" onclick="shareVia('messenger')">
+        <div class="share-ic" style="background:linear-gradient(135deg,#00B2FF,#006AFF);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.7 1.3 5.2 3.4 6.8v3.3l3.1-1.7c.9.3 1.9.4 2.9.4l.6.0c5.5 0 10-4.1 10-9.2 0-5.1-4.5-9.2-10-9.2zm.9 12L10.5 11l-4.4 2.6 4.9-5.2 2.5 2.6L17.6 8l-4.7 6z" fill="#fff"/></svg>
+        </div>
+        <div class="share-lbl">Messenger</div>
+      </button>
+      <button class="share-item" onclick="shareVia('zalo')">
+        <div class="share-ic" style="background:#0068FF;">
+          <span style="font-size:22px;font-weight:800;color:#fff;font-style:italic;letter-spacing:-1px;">Zalo</span>
+        </div>
+        <div class="share-lbl">Zalo</div>
+      </button>
+      <button class="share-item" onclick="shareVia('sms')">
+        <div class="share-ic" style="background:#34C759;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" fill="#fff"/></svg>
+        </div>
+        <div class="share-lbl">Tin nhắn</div>
+      </button>
+      <button class="share-item" onclick="shareVia('telegram')">
+        <div class="share-ic" style="background:linear-gradient(135deg,#2AABEE,#229ED9);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21.4 4.5L2.6 11.7c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.1.8.7.8.4 0 .6-.2.9-.4l2.1-2 4.4 3.2c.8.4 1.4.2 1.6-.7l2.9-13.7c.3-1.2-.5-1.7-1.2-1.5z" fill="#fff"/></svg>
+        </div>
+        <div class="share-lbl">Telegram</div>
+      </button>
+      <button class="share-item" onclick="shareVia('copy')">
+        <div class="share-ic" style="background:#F5F5F5;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="#666" stroke-width="1.8"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#666" stroke-width="1.8"/></svg>
+        </div>
+        <div class="share-lbl">Sao chép</div>
+      </button>
+      <button class="share-item" onclick="shareVia('more')">
+        <div class="share-ic" style="background:#F5F5F5;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="1.8" fill="#666"/><circle cx="12" cy="12" r="1.8" fill="#666"/><circle cx="18" cy="12" r="1.8" fill="#666"/></svg>
+        </div>
+        <div class="share-lbl">Khác</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /phone-frame-inner -->
+</div><!-- /phone-frame -->
+
+<script>
+'use strict';
+
+var SCREENS = ['sob','s0','s1','s2','s3','s4','s5','s6','s7','sreceive','ssurveyinvite','ssurvey','ssurveythanks'];
+/* idx:  0      1    2    3    4    5    6    7    8    9          10              11         12 */
+
+var SURVEY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwx_U1o6vHDrSRtM0qf6emY74j9efq-pI5Z5BRThG-zLZz-wi9QkzTRcPW26a3vEYnDAA/exec';
+
+var cur = 0;
+var tncChecked = false;
+var currentDetail = 0;
+var amtRaw = '';
+var surveyAnswers = {};
+
+/* wallets starts EMPTY */
+var wallets = [];
+
+/* ════════════════════════════════
+   RENDER WALLET LIST
+════════════════════════════════ */
+function renderWalletList() {
+  var container = document.getElementById('wallet-list');
+  if (!container) return;
+  if (wallets.length === 0) {
+    container.innerHTML = '<div class="empty-state">'
+      + '<div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M21 7H3a2 2 0 00-2 2v9a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2z" stroke="#E91E8C" stroke-width="1.4" stroke-linecap="round"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#E91E8C" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="13" r="2" fill="#E91E8C" opacity="0.3"/></svg></div>'
+      + '<div style="font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:6px;">Chưa có Ngăn Ví phụ nào</div>'
+      + '<div style="font-size:13px;color:#666;line-height:1.5;">Thêm ngăn ví phụ để quản lý<br>chi tiêu cho người thân.</div>'
+      + '</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < wallets.length; i++) {
+    var w = wallets[i];
+    html += '<div class="sub-card">'
+      + '<div class="sub-card-main" onclick="openDetail(' + i + ')">'
+      + '<div class="sub-ava" style="background:#FFF0F7;color:#E91E8C;">' + w.ava + '</div>'
+      + '<div class="sub-info">'
+      + '<div class="sub-name">' + w.name + '</div>'
+      + '<div class="sub-bal">' + fmtVND(w.bal) + '</div>'
+      + '<div class="sub-detail">Hạn mức ' + fmtVNDShort(w.limit) + '/ngày</div>'
+      + '</div>'
+      + '<span class="badge ' + w.badgeClass + '">' + (w.badgeClass === 'badge-on' ? 'Hoạt động' : 'Tạm dừng') + '</span>'
+      + '</div>'
+      + '<div class="sub-actions">'
+      + '<button class="sub-act-btn" onclick="openTopup(' + i + ')">'
+      + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7-7 7 7" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Nạp tiền</button>'
+      + '<div class="sub-act-div"></div>'
+      + '<button class="sub-act-btn" onclick="openDetail(' + i + ')">'
+      + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" stroke="#E91E8C" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="#E91E8C" stroke-width="1.8"/></svg> Xem chi tiết</button>'
+      + '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+/* ════════════════════════════════
+   NAVIGATION
+════════════════════════════════ */
+function goTo(n) {
+  hideKbCta();
+  var c = document.getElementById(SCREENS[cur]);
+  var nx = document.getElementById(SCREENS[n]);
+  if (!c || !nx) return;
+  c.classList.remove('active');
+  c.classList.add('leaving');
+  var old = c;
+  setTimeout(function(){ old.classList.remove('leaving'); }, 380);
+  nx.classList.add('active');
+  cur = n;
+
+  var whiteScreens = {0:1, 5:1, 8:1, 9:1, 10:1, 12:1};
+  var tc = document.querySelector('meta[name="theme-color"]');
+  if (whiteScreens[n]) {
+    if (tc) tc.setAttribute('content', '#FFFFFF');
+    document.body.style.background = '#FFFFFF';
+    document.documentElement.style.background = '#FFFFFF';
+  } else {
+    if (tc) tc.setAttribute('content', '#FFE4F0');
+    document.body.style.background = '#F5F5F5';
+    document.documentElement.style.background = '#F5F5F5';
+  }
+
+  var sc = nx.querySelector('.scroll');
+  if (sc) sc.scrollTop = 0;
+
+  if (n === 1) renderWalletList();
+  if (n === 3) {
+    monthLimitVal = 0;
+    var li = document.getElementById('limit-inp');
+    if (li) li.value = '';
+    var lw = document.getElementById('limit-wrap');
+    if (lw) lw.classList.remove('error');
+    updateChips(0);
+  }
+  if (n === 5) doSuccess();
+}
+
+/* ════════════════════════════════
+   ERROR HELPERS
+════════════════════════════════ */
+function highlightError(id) {
+  var wrap = document.getElementById(id);
+  if (!wrap) return;
+  wrap.classList.remove('error');
+  void wrap.offsetWidth;
+  wrap.classList.add('error');
+  var inp = wrap.querySelector('input,select');
+  if (inp) inp.focus();
+}
+function clearWrapError(id) {
+  var wrap = document.getElementById(id);
+  if (wrap) wrap.classList.remove('error');
+}
+
+/* ════════════════════════════════
+   INPUT FOCUS/BLUR
+════════════════════════════════ */
+function focusWrap(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.add('focused'); el.classList.remove('error'); }
+  scheduleShowKbCta();
+}
+function blurWrap(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('focused');
+  scheduleHideKbCta();
+}
+
+/* ════════════════════════════════
+   KEYBOARD CTA CLONE (Section 1.19)
+════════════════════════════════ */
+var kbOrigArea = null;
+var kbHideTimer = null;
+var kbShowTimer = null;
+var kbObserver = null;
+var kbLastOffsetTop = 0;
+
+function kbSyncState() {
+  if (!kbOrigArea) return;
+  var el = document.getElementById('kb-cta');
+  var origBtns = kbOrigArea.querySelectorAll('button');
+  var cloneBtns = el.querySelectorAll('button');
+  var len = Math.min(origBtns.length, cloneBtns.length);
+  for (var i = 0; i < len; i++) cloneBtns[i].disabled = origBtns[i].disabled;
+}
+function startKbObserver() {
+  if (!kbOrigArea || kbObserver) return;
+  kbObserver = new MutationObserver(kbSyncState);
+  kbObserver.observe(kbOrigArea, { subtree:true, attributes:true, attributeFilter:['disabled'] });
+}
+function stopKbObserver() {
+  if (kbObserver) { kbObserver.disconnect(); kbObserver = null; }
+}
+function showKbCta() {
+  if (kbOrigArea) return;
+  var scr = document.querySelector('.screen.active');
+  if (!scr) return;
+  var orig = scr.querySelector('.bottom-area');
+  if (!orig) return;
+  kbOrigArea = orig;
+  var el = document.getElementById('kb-cta');
+  el.innerHTML = '';
+  el.appendChild(orig.cloneNode(true));
+  el.style.display = 'block';
+  orig.style.visibility = 'hidden';
+  startKbObserver();
+  setTimeout(updateKbCtaPos, 0);
+}
+function hideKbCta() {
+  if (kbShowTimer) { clearTimeout(kbShowTimer); kbShowTimer = null; }
+  if (kbHideTimer) { clearTimeout(kbHideTimer); kbHideTimer = null; }
+  stopKbObserver();
+  var el = document.getElementById('kb-cta');
+  el.style.display = 'none';
+  el.style.top = '';
+  el.innerHTML = '';
+  if (kbOrigArea) { kbOrigArea.style.visibility = ''; kbOrigArea = null; }
+  kbLastOffsetTop = 0;
+}
+function updateKbCtaPos() {
+  var vv = window.visualViewport;
+  var el = document.getElementById('kb-cta');
+  if (!vv || el.style.display === 'none') return;
+  var ctaH = el.offsetHeight || 80;
+  el.style.top = (vv.offsetTop + vv.height - ctaH) + 'px';
+  el.style.bottom = 'auto';
+}
+function scheduleShowKbCta() {
+  if (kbHideTimer) { clearTimeout(kbHideTimer); kbHideTimer = null; }
+  if (kbShowTimer) { clearTimeout(kbShowTimer); kbShowTimer = null; }
+  kbShowTimer = setTimeout(function() { kbShowTimer = null; showKbCta(); }, 350);
+}
+function scheduleHideKbCta() {
+  if (kbShowTimer) { clearTimeout(kbShowTimer); kbShowTimer = null; }
+  kbHideTimer = setTimeout(function() {
+    kbHideTimer = null;
+    var vv = window.visualViewport;
+    if (vv && Math.round(window.innerHeight - vv.height) > 100) return;
+    hideKbCta();
+  }, 200);
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', function() {
+    var kbH = Math.round(window.innerHeight - window.visualViewport.height);
+    if (kbH < 100) hideKbCta();
+    else if (kbOrigArea) updateKbCtaPos();
+  });
+  window.visualViewport.addEventListener('scroll', function() {
+    var ot = Math.round(window.visualViewport.offsetTop);
+    if (ot !== kbLastOffsetTop) { kbLastOffsetTop = ot; updateKbCtaPos(); }
+  });
+}
+
+/* ════════════════════════════════
+   S1: PHONE ENTRY
+════════════════════════════════ */
+function submitPhone() {
+  var p = document.getElementById('phone-inp').value.trim();
+  if (p.length < 9) { highlightError('phone-wrap'); return; }
+  goTo(3);
+}
+function demoPhone() {
+  document.getElementById('phone-inp').value = '912345678';
+  clearWrapError('phone-wrap');
+}
+
+/* ════════════════════════════════
+   S2: MONTHLY LIMIT INPUT + VALIDATION
+════════════════════════════════ */
+var monthLimitVal = 0;
+var LIMIT_MAX = 2000000;
+
+function updateChips(val) {
+  var chips = document.querySelectorAll('.quick-chip');
+  for (var i = 0; i < chips.length; i++) {
+    var cv = parseInt(chips[i].getAttribute('data-val'), 10);
+    if (cv === val) chips[i].classList.add('selected');
+    else chips[i].classList.remove('selected');
+  }
+}
+
+function fmtLimit() {
+  var el = document.getElementById('limit-inp');
+  var raw = el.value.replace(/\D/g, '');
+  clearWrapError('limit-wrap');
+  if (raw === '') { el.value = ''; monthLimitVal = 0; updateChips(0); return; }
+  var num = parseInt(raw, 10);
+  if (num > LIMIT_MAX) num = LIMIT_MAX;
+  el.value = num.toLocaleString('vi-VN');
+  monthLimitVal = num;
+  updateChips(num);
+}
+
+function pickLimit(val) {
+  monthLimitVal = val;
+  document.getElementById('limit-inp').value = val.toLocaleString('vi-VN');
+  updateChips(val);
+  clearWrapError('limit-wrap');
+}
+
+function submitS2() {
+  if (!monthLimitVal) { highlightError('limit-wrap'); return; }
+  buildRev();
+  goTo(4);
+}
+
+function demoFillS2() {
+  pickLimit(1000000);
+}
+
+/* ════════════════════════════════
+   S3: T&C
+════════════════════════════════ */
+function toggleTnc() {
+  tncChecked = !tncChecked;
+  var box = document.getElementById('tnc-check');
+  var svg = document.getElementById('tnc-svg');
+  if (tncChecked) { box.classList.add('checked'); svg.style.display = 'block'; }
+  else { box.classList.remove('checked'); svg.style.display = 'none'; }
+  document.getElementById('btn3').disabled = !tncChecked;
+}
+
+/* ════════════════════════════════
+   BUILD REVIEW
+════════════════════════════════ */
+function buildRev() {
+  var name = document.getElementById('nick-inp').value.trim() || 'Ngăn Ví phụ';
+  var phone = '+84 ' + (document.getElementById('phone-inp').value.trim() || '9xx xxx xxx');
+  var init = '';
+  var parts = name.split(' ');
+  for (var i = 0; i < parts.length && init.length < 2; i++) {
+    if (parts[i].length > 0) init += parts[i][0].toUpperCase();
+  }
+  document.getElementById('rv-ava').textContent = init || '?';
+  document.getElementById('rv-name').textContent = name;
+  document.getElementById('rv-phone').textContent = phone;
+  document.getElementById('rv-month').textContent = monthLimitVal ? monthLimitVal.toLocaleString('vi-VN') + ' ₫' : '—';
+  tncChecked = false;
+  document.getElementById('tnc-check').classList.remove('checked');
+  document.getElementById('tnc-svg').style.display = 'none';
+  document.getElementById('btn3').disabled = true;
+}
+
+/* ════════════════════════════════
+   CREATE WALLET & GO TO SUCCESS
+════════════════════════════════ */
+function createWalletAndGo() {
+  var name = document.getElementById('nick-inp').value.trim() || 'Ngăn Ví phụ';
+  var phone = document.getElementById('phone-inp').value.trim() || '9xx xxx xxx';
+  var init = '';
+  var parts = name.split(' ');
+  for (var i = 0; i < parts.length && init.length < 2; i++) {
+    if (parts[i].length > 0) init += parts[i][0].toUpperCase();
+  }
+  var newWallet = {
+    ava: init || '??',
+    name: name,
+    phone: '0' + phone,
+    bal: 0,
+    limit: monthLimitVal || 1000000,
+    spent: 0,
+    status: 'Đang hoạt động',
+    badgeClass: 'badge-on',
+    txns: []
+  };
+  wallets.push(newWallet);
+  goTo(5);
+}
+
+/* ════════════════════════════════
+   S4: SUCCESS
+════════════════════════════════ */
+function doSuccess() {
+  var name = document.getElementById('nick-inp').value.trim() || 'người thân';
+  document.getElementById('s4-body-txt').textContent = 'Tin nhắn mời đã được gửi đến ' + name + '. Họ có thể kích hoạt Ngăn Ví phụ ngay bây giờ!';
+  var r = Math.random().toString(36).substring(2, 8);
+  document.getElementById('inv-lnk').textContent = 'momo.vn/vi-phu/' + r;
+}
+
+/* ════════════════════════════════
+   SHARE BOTTOM SHEET
+════════════════════════════════ */
+function openShareSheet() {
+  var lnk = document.getElementById('inv-lnk');
+  var preview = document.getElementById('share-link-preview');
+  if (lnk && preview) preview.textContent = lnk.textContent;
+  document.getElementById('share-sheet').classList.add('open');
+}
+
+function closeShareSheet() {
+  document.getElementById('share-sheet').classList.remove('open');
+}
+
+function shareVia(platform) {
+  var lnk = document.getElementById('inv-lnk');
+  var url = lnk ? lnk.textContent : '';
+  if (platform === 'copy' && navigator.clipboard) {
+    navigator.clipboard.writeText(url).catch(function(){});
+  }
+  closeShareSheet();
+}
+
+/* ════════════════════════════════
+   S5: DETAIL
+════════════════════════════════ */
+function openDetail(idx) {
+  currentDetail = idx;
+  var w = wallets[idx];
+  if (!w) return;
+  document.getElementById('s5-nav-title').textContent = 'Chi tiết ví ' + w.name;
+  document.getElementById('s5-ava').textContent = w.ava;
+  document.getElementById('s5-name').textContent = w.name;
+  document.getElementById('s5-phone').textContent = w.phone;
+  document.getElementById('s5-status').textContent = w.status;
+  document.getElementById('s5-bal').textContent = fmtVND(w.bal);
+  document.getElementById('s5-limit').textContent = fmtVNDShort(w.limit);
+  document.getElementById('s5-spent').textContent = fmtVNDShort(w.spent);
+  document.getElementById('s5-monthlimit').textContent = fmtVND(w.limit);
+  var badge = document.getElementById('s5-badge');
+  badge.textContent = w.status;
+  badge.className = 'badge ' + w.badgeClass;
+  var list = document.getElementById('txn-list');
+  var html = '';
+  if (w.txns.length === 0) {
+    html = '<div style="padding:24px 16px;text-align:center;font-size:13px;color:#999;">Chưa có giao dịch nào</div>';
+  }
+  for (var i = 0; i < w.txns.length; i++) {
+    var t = w.txns[i];
+    var ic = t.type === 'in' ? '#2E7D32' : '#E65100';
+    var ip = t.type === 'in'
+      ? '<path d="M12 19V5M5 12l7 7 7-7" stroke="' + ic + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+      : '<path d="M12 5v14M5 12l7-7 7 7" stroke="' + ic + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    html += '<div class="txn-item">'
+      + '<div class="txn-icon ' + t.type + '"><svg width="18" height="18" viewBox="0 0 24 24" fill="none">' + ip + '</svg></div>'
+      + '<div class="txn-info"><div class="txn-title">' + t.title + '</div><div class="txn-date">' + t.date + '</div></div>'
+      + '<div class="txn-amt ' + t.type + '">' + t.amt + '</div>'
+      + '</div>';
+  }
+  list.outerHTML = '<div id="txn-list">' + html + '</div>';
+  goTo(6);
+}
+
+function toggleWalletStatus() {
+  var w = wallets[currentDetail];
+  if (!w) return;
+  if (w.badgeClass === 'badge-on') {
+    w.status = 'Tạm dừng'; w.badgeClass = 'badge-off';
+  } else {
+    w.status = 'Đang hoạt động'; w.badgeClass = 'badge-on';
+  }
+  document.getElementById('s5-status').textContent = w.status;
+  var badge = document.getElementById('s5-badge');
+  badge.textContent = w.status;
+  badge.className = 'badge ' + w.badgeClass;
+}
+
+/* ════════════════════════════════
+   S6: TOPUP NUMPAD
+════════════════════════════════ */
+function openTopup(idx) {
+  currentDetail = idx;
+  amtRaw = '';
+  updateAmtDisplay();
+  document.querySelectorAll('.quick-amt').forEach(function(b){ b.classList.remove('selected'); });
+  var w = wallets[idx];
+  if (w) {
+    document.getElementById('s6-recv-name').textContent = w.name;
+    document.getElementById('s6-recv-ava').textContent = w.ava;
+  }
+  var mi = document.getElementById('msg-input');
+  if (mi) mi.value = '';
+  goTo(7);
+}
+
+function numPress(v) {
+  if (amtRaw.length >= 10) return;
+  if (amtRaw === '0' && v !== '000') amtRaw = v;
+  else amtRaw += v;
+  amtRaw = String(parseInt(amtRaw, 10) || 0);
+  updateAmtDisplay();
+  document.querySelectorAll('.quick-amt').forEach(function(b){ b.classList.remove('selected'); });
+}
+function numDel() {
+  if (amtRaw.length <= 1) amtRaw = '0';
+  else amtRaw = amtRaw.substring(0, amtRaw.length - 1);
+  updateAmtDisplay();
+}
+function setPreset(val, el) {
+  amtRaw = String(parseInt(val, 10));
+  updateAmtDisplay();
+  document.querySelectorAll('.quick-amt').forEach(function(b){ b.classList.remove('selected'); });
+  if (el) el.classList.add('selected');
+}
+function setMsg(txt) {
+  var mi = document.getElementById('msg-input');
+  if (mi) mi.value = txt;
+}
+function updateAmtDisplay() {
+  var n = parseInt(amtRaw, 10) || 0;
+  var el = document.getElementById('amt-display');
+  if (n === 0) { el.textContent = '0đ'; el.classList.add('zero'); }
+  else { el.textContent = n.toLocaleString('vi-VN') + 'đ'; el.classList.remove('zero'); }
+  var note = '';
+  if (n > 0 && n < 10000) note = 'Tối thiểu 10.000 ₫';
+  if (n > 10000000) note = 'Tối đa 10.000.000 ₫';
+  document.getElementById('amt-note').textContent = note;
+  document.getElementById('btn6').disabled = !(n >= 10000 && n <= 10000000);
+}
+
+function confirmTopup() {
+  var n = parseInt(amtRaw, 10) || 0;
+  var w = wallets[currentDetail];
+  if (!w) return;
+  var newBal = w.bal + n;
+  wallets[currentDetail].bal = newBal;
+  wallets[currentDetail].txns.unshift({
+    type:'in',
+    title:'Nạp từ ví chính',
+    date:'Hôm nay, ' + new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}),
+    amt:'+' + n.toLocaleString('vi-VN') + ' ₫'
+  });
+  document.getElementById('suc-amount').textContent = '+' + n.toLocaleString('vi-VN') + ' ₫';
+  document.getElementById('suc-to-name').textContent = w.name;
+  document.getElementById('suc-dest').textContent = w.name;
+  document.getElementById('suc-txnid').textContent = 'MOM' + Date.now().toString().slice(-10);
+  var now = new Date();
+  document.getElementById('suc-time').textContent =
+    ('0'+now.getDate()).slice(-2) + '/' +
+    ('0'+(now.getMonth()+1)).slice(-2) + '/' +
+    now.getFullYear() + ' ' +
+    ('0'+now.getHours()).slice(-2) + ':' +
+    ('0'+now.getMinutes()).slice(-2);
+  goTo(8);
+}
+
+/* ════════════════════════════════
+   FORMAT HELPERS
+════════════════════════════════ */
+function fmtVND(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+function fmtVNDShort(n) {
+  if (n >= 1000000) return (n/1000000).toLocaleString('vi-VN') + 'M';
+  if (n >= 1000) return (n/1000).toLocaleString('vi-VN') + 'K';
+  return n + '';
+}
+
+/* ════════════════════════════════
+   SURVEY (Section 1.20)
+════════════════════════════════ */
+function onSurveyRate(q, val) {
+  surveyAnswers[q] = val;
+  for (var sv = 1; sv <= 7; sv++) {
+    var sbtn = document.getElementById('sq' + q + 'b' + sv);
+    if (sbtn) {
+      if (sv === val) sbtn.classList.add('sel');
+      else sbtn.classList.remove('sel');
+    }
+  }
+  checkSurveyComplete();
+}
+function checkSurveyComplete() {
+  var hasName = document.getElementById('survey-username').value.trim().length > 0;
+  var done = hasName;
+  for (var sq = 1; sq <= 9; sq++) {
+    if (!surveyAnswers[sq]) { done = false; break; }
+  }
+  document.getElementById('btn-survey-submit').disabled = !done;
+}
+function resetSurvey() {
+  surveyAnswers = {};
+  for (var sq = 1; sq <= 9; sq++) {
+    for (var sv = 1; sv <= 7; sv++) {
+      var sbtn = document.getElementById('sq' + sq + 'b' + sv);
+      if (sbtn) sbtn.classList.remove('sel');
+    }
+  }
+  var uname = document.getElementById('survey-username');
+  if (uname) uname.value = '';
+  document.getElementById('btn-survey-submit').disabled = true;
+}
+function submitSurvey() {
+  var btn = document.getElementById('btn-survey-submit');
+  btn.disabled = true;
+  btn.textContent = 'Đang gửi...';
+  var username = encodeURIComponent(document.getElementById('survey-username').value.trim());
+  var params = 'username=' + username
+    + '&q1=' + (surveyAnswers[1] || '')
+    + '&q2=' + (surveyAnswers[2] || '')
+    + '&q3=' + (surveyAnswers[3] || '')
+    + '&q4=' + (surveyAnswers[4] || '')
+    + '&q5=' + (surveyAnswers[5] || '')
+    + '&q6=' + (surveyAnswers[6] || '')
+    + '&q7=' + (surveyAnswers[7] || '')
+    + '&q8=' + (surveyAnswers[8] || '')
+    + '&q9=' + (surveyAnswers[9] || '');
+  fetch(SURVEY_ENDPOINT + '?' + params, { method: 'GET', mode: 'no-cors' })
+    .then(function() { goTo(12); })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Gửi khảo sát';
+    });
+}
+
+/* ════════════════════════════════
+   iOS BOUNCE PREVENTION
+════════════════════════════════ */
+document.addEventListener('touchmove', function(e) {
+  if (!e.target.closest('.scroll')) e.preventDefault();
+}, { passive: false });
+
+/* ════════════════════════════════
+   INIT
+════════════════════════════════ */
+renderWalletList();
+
+/* ════════════════════════════════
+   PWA
+════════════════════════════════ */
+if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+</script>
+</body>
+</html>
