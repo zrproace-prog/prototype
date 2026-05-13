@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" id="theme-color" content="#FFFFFF"/>
+<link rel="manifest" href="./manifest.json"/>
+<title>MoMo — Thêm Ví Phụ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--page-bg:#F5F5F5;--sat:env(safe-area-inset-top,0px);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{min-height:calc(100% + env(safe-area-inset-top));overflow:hidden;background:#FFF;font-family:'Be Vietnam Pro',-apple-system,'Helvetica Neue',Arial,sans-serif;}
+body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFF;}
+#app{position:fixed;inset:0;overflow:hidden;}
+.status-spacer{flex-shrink:0;height:max(calc(var(--sat)+4px),24px);}
+
+/* ═══ DESKTOP IPHONE 15 PRO SIMULATOR ═══ */
+@media (min-width:600px){
+  html,body{overflow:auto;background:#0f0f13 !important;height:100%;}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 40%,#1a1a2e 0%,#0f0f13 70%) !important;}
+
+  #phone-frame{
+    position:relative;width:393px;height:852px;
+    border-radius:55px;background:#1c1c1e;padding:4px;
+    flex-shrink:0;transform:translateZ(0);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 0 0 3px #2a2a2e,
+      0 0 0 4px rgba(255,255,255,0.05),
+      0 20px 60px rgba(0,0,0,0.6),
+      0 40px 100px rgba(0,0,0,0.4),
+      0 0 120px rgba(100,100,120,0.08);
+  }
+  #phone-frame-inner{position:relative;width:100%;height:100%;border-radius:51px;overflow:hidden;background:#000;}
+  /* Dynamic Island */
+  #phone-frame-inner::before{
+    content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);
+    width:126px;height:37px;background:#000;border-radius:24px;z-index:10000;
+  }
+  /* Home indicator */
+  #phone-frame-inner::after{
+    content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+    width:134px;height:5px;background:rgba(255,255,255,0.25);border-radius:3px;z-index:10000;
+  }
+  /* Power button */
+  #phone-frame::before{
+    content:'';position:absolute;top:168px;right:-7px;width:4px;height:96px;
+    background:linear-gradient(180deg,#3a3a3e 0%,#2a2a2e 50%,#3a3a3e 100%);
+    border-radius:0 3px 3px 0;box-shadow:1px 0 2px rgba(0,0,0,0.3);z-index:10;
+  }
+  /* Volume buttons */
+  #phone-frame::after{
+    content:'';position:absolute;top:178px;left:-7px;width:4px;height:64px;
+    background:linear-gradient(180deg,#3a3a3e 0%,#2a2a2e 50%,#3a3a3e 100%);
+    border-radius:3px 0 0 3px;box-shadow:-1px 0 2px rgba(0,0,0,0.3);z-index:10;
+  }
+
+  #app{position:absolute;inset:0;border-radius:51px;overflow:hidden;}
+  .screen{position:absolute;inset:0;}
+  .status-spacer{height:59px !important;}
+  .bottom-area{padding-bottom:28px !important;}
+
+  /* Keep fixed-position overlays inside the phone frame */
+  #kb-cta{position:absolute !important;}
+}
+
+@media (max-width:599px){
+  #phone-frame,#phone-frame-inner{position:fixed;inset:0;overflow:hidden;}
+}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(100%);transition:opacity .3s,transform .32s cubic-bezier(.4,0,.2,1);will-change:transform,opacity;}
+.screen.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.screen.leaving{opacity:0;transform:translateX(-30px);pointer-events:none;}
+.hdr-pink{background:linear-gradient(180deg,#FFE4F0 0%,#FFF5F9 40%,#F5F5F5 100%);flex-shrink:0;}
+.nav{display:flex;align-items:center;height:56px;padding:0 12px;position:relative;}
+.nav-back{width:36px;height:34px;border-radius:20px;background:rgba(0,0,0,.06);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.nav-title{position:absolute;left:50%;transform:translateX(-50%);font-size:16px;font-weight:700;color:#1A1A1A;white-space:nowrap;}
+.nav-right{margin-left:auto;display:flex;align-items:center;background:#fff;border-radius:20px;border:1px solid #E0E0E0;padding:4px 8px;gap:6px;}
+.card{background:#fff;border-radius:16px;margin:0 12px 12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.section-label{font-size:13px;font-weight:700;color:#1A1A1A;padding:12px 16px 6px;}
+.input-wrap{border:1.5px solid #E0E0E0;border-radius:10px;padding:8px 14px 10px;margin-bottom:14px;position:relative;transition:border-color .2s;}
+.input-wrap.focused{border-color:#E91E8C;}
+.input-label{font-size:12px;font-weight:500;color:#999;margin-bottom:4px;transition:color .2s;}
+.input-wrap.focused .input-label{color:#E91E8C;}
+.input-field{width:100%;border:none;outline:none;font-size:16px;font-weight:400;color:#1A1A1A;background:transparent;font-family:inherit;}
+.input-field::placeholder{color:#CCC;}
+.input-wrap.error{border-color:#FF5722;animation:shake .4s ease;}
+.input-wrap.error .input-label{color:#FF5722;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.otp-row{display:flex;gap:12px;justify-content:center;margin:20px 0;}
+.otp-box{width:52px;height:58px;border:1.5px solid #E0E0E0;border-radius:10px;font-size:22px;font-weight:700;text-align:center;outline:none;font-family:inherit;color:#1A1A1A;background:#fff;}
+.otp-box:focus{border-color:#E91E8C;}
+.otp-row.error .otp-box{border-color:#FF5722;}
+.otp-row.error{animation:shake .4s ease;}
+.bottom-area{flex-shrink:0;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--page-bg);}
+.btn-pink{width:100%;height:52px;background:#E8197D;color:#fff;border-radius:14px;font-size:16px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(232,25,125,.3);}
+.btn-pink:disabled{background:#E0E0E0;color:#999;box-shadow:none;}
+.btn-text{color:#E91E8C;font-size:15px;font-weight:600;padding:12px;background:none;border:none;cursor:pointer;font-family:inherit;}
+.demo-btn{background:transparent;color:#CCC;border:1px dashed #E0E0E0;border-radius:6px;padding:4px 8px;font-size:10px;opacity:.5;cursor:pointer;font-family:inherit;margin-top:8px;}
+.row-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #F0F0F0;}
+.row-item:last-child{border-bottom:none;}
+.badge-green{background:#E8F5E9;color:#2E7D32;font-size:12px;font-weight:600;padding:2px 8px;border-radius:8px;}
+.eye-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;}
+.tnc-check-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;cursor:pointer;}
+.tnc-checkbox{width:22px;height:22px;border-radius:6px;border:1.5px solid #E0E0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.tnc-checkbox.checked{background:#E91E8C;border-color:#E91E8C;}
+.tnc-check-row.error .tnc-checkbox{border-color:#FF5722;animation:shake .4s ease;}
+.info-box{background:#FFF0F7;border-radius:10px;padding:12px 14px;margin-top:12px;}
+.step-bar{display:flex;align-items:center;justify-content:center;padding:4px 16px 14px;gap:6px;}
+.step-dot{width:8px;height:8px;border-radius:4px;background:#E0E0E0;transition:all .2s;}
+.step-dot.active{background:#E91E8C;width:24px;}
+.step-dot.done{background:#E91E8C;}
+.pb-row{display:flex;align-items:flex-start;justify-content:center;padding:6px 24px 8px;}
+.pb-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;}
+.pb-circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;z-index:2;position:relative;background:#E0E0E0;color:#999;}
+.pb-circle.done{background:#E91E8C;color:#fff;}
+.pb-circle.active{background:#E91E8C;color:#fff;box-shadow:0 0 0 3px rgba(233,30,140,0.2);}
+.pb-line{position:absolute;top:13px;left:50%;width:100%;height:2px;background:#E0E0E0;z-index:1;}
+.pb-line.done{background:#E91E8C;}
+.pb-item:last-child .pb-line{display:none;}
+.pb-label{font-size:11px;color:#999;text-align:center;line-height:1.3;font-weight:500;}
+.pb-label.active{color:#E91E8C;font-weight:700;}
+.pb-label.done{color:#1A1A1A;font-weight:600;}
+.limit-input-row{display:flex;align-items:center;}
+.limit-suffix{font-size:16px;color:#1A1A1A;font-weight:600;flex-shrink:0;padding-left:8px;}
+.quick-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;}
+.quick-chip{height:38px;border-radius:10px;background:#FFF0F7;border:1.5px solid #FCD3E5;color:#E91E8C;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;padding:0;}
+.quick-chip:active{background:#FDE8F3;}
+.quick-chip.selected{background:#E91E8C;color:#fff;border-color:#E91E8C;}
+.limit-hint{font-size:11px;color:#999;margin-top:8px;line-height:1.4;}
+.card-info{background:#FFF5F9;border:1px solid #FCD3E5;border-radius:14px;margin:0 12px 12px;padding:14px;display:flex;align-items:flex-start;gap:12px;}
+.card-info-ic{flex-shrink:0;width:34px;height:34px;border-radius:17px;background:#FFE4F0;display:flex;align-items:center;justify-content:center;}
+.card-info-text{flex:1;font-size:13px;color:#1A1A1A;line-height:1.55;}
+.card-info-text b{font-weight:700;color:#1A1A1A;}
+.cam-viewfinder{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#1A1A1A;}
+.cam-frame{border:2px solid rgba(255,255,255,.3);border-radius:12px;width:calc(100% - 48px);aspect-ratio:1.586;position:relative;}
+.cam-corner{position:absolute;width:24px;height:24px;border-color:#fff;border-style:solid;border-width:0;}
+.cam-corner.tl{top:-2px;left:-2px;border-top-width:3px;border-left-width:3px;border-top-left-radius:12px;}
+.cam-corner.tr{top:-2px;right:-2px;border-top-width:3px;border-right-width:3px;border-top-right-radius:12px;}
+.cam-corner.bl{bottom:-2px;left:-2px;border-bottom-width:3px;border-left-width:3px;border-bottom-left-radius:12px;}
+.cam-corner.br{bottom:-2px;right:-2px;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:12px;}
+.cam-note{background:rgba(0,0,0,.6);padding:10px 16px;border-radius:8px;position:absolute;bottom:16px;left:16px;right:16px;font-size:13px;color:#fff;line-height:1.5;}
+.cam-note b{color:#FFD54F;}
+.cam-bottom{flex-shrink:0;background:#1A1A1A;padding:16px 0;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:12px;}
+.cam-shutter{width:64px;height:64px;border-radius:32px;background:#E8197D;border:4px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(232,25,125,.4);}
+.cam-guide-btn{background:rgba(255,255,255,.15);border:none;border-radius:20px;padding:6px 14px;color:#fff;font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit;}
+.gender-row{display:flex;gap:24px;margin-bottom:14px;}
+.gender-opt{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.gender-radio{width:20px;height:20px;border-radius:10px;border:2px solid #303233;display:flex;align-items:center;justify-content:center;}
+.gender-radio.sel{border-color:#E91E8C;background:#E91E8C;}
+.gender-radio.sel::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff;display:block;}
+.field-error{font-size:11px;color:#FF5722;margin-top:-10px;margin-bottom:10px;padding-left:2px;display:none;}
+.field-error.show{display:block;}
+.trust-banner{background:#F2F8FF;border-radius:10px;padding:12px 14px;margin:0 12px 12px;display:flex;align-items:center;gap:10px;}
+.survey-section-hdr{background:#FFF0F7;padding:10px 16px;margin-bottom:2px;}
+.survey-section-hdr-text{font-size:12px;font-weight:700;color:#E91E8C;line-height:1.4;}
+.survey-q{padding:14px 16px;border-bottom:1px solid #F0F0F0;background:#fff;}
+.survey-q:last-child{border-bottom:none;}
+.survey-q-num{display:inline-block;width:24px;height:24px;border-radius:12px;background:#E91E8C;color:#fff;font-size:11px;font-weight:700;line-height:24px;text-align:center;flex-shrink:0;margin-right:8px;}
+.survey-q-top{display:flex;align-items:flex-start;}
+.survey-q-vi{font-size:14px;font-weight:600;color:#1A1A1A;line-height:1.45;flex:1;}
+.survey-rate-row{display:flex;justify-content:space-between;margin-top:10px;gap:4px;}
+.survey-rate-btn{flex:1;height:36px;border-radius:8px;border:1.5px solid #E0E0E0;background:#fff;font-size:13px;font-weight:600;color:#999;cursor:pointer;font-family:inherit;}
+.survey-rate-btn.sel{background:#E91E8C;border-color:#E91E8C;color:#fff;}
+.survey-scale-labels{display:flex;justify-content:space-between;margin-top:5px;}
+.survey-scale-labels span{font-size:10px;color:#BBB;}
+#kb-cta{display:none;position:fixed;left:0;right:0;z-index:9999;}
+#kb-cta .bottom-area{padding-bottom:12px;}
+/* ── SOB onboarding (from Ví Chính) ── */
+.sob-hero{width:110px;height:110px;border-radius:55px;background:linear-gradient(145deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;}
+.benefit-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-top:1px solid #F0F0F0;}
+/* ── HOME (Ví điện tử from Ví Chính) ── */
+.nav-capsule{margin-left:auto;display:flex;align-items:center;background:#fff;border-radius:20px;border:1px solid #E0E0E0;overflow:hidden;height:34px;flex-shrink:0;}
+.nav-cap-btn{width:36px;height:34px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.nav-cap-div{width:1px;height:20px;background:#E0E0E0;}
+.balance-card{background:#fff;border-radius:16px;margin:0 12px 12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.bal-label{font-size:11px;color:#666;font-weight:500;margin-bottom:3px;}
+.bal-amount{font-size:20px;font-weight:800;color:#1A1A1A;letter-spacing:-0.5px;}
+.bal-icon{width:44px;height:44px;border-radius:50%;background:#FDE8F3;display:flex;align-items:center;justify-content:center;}
+.add-card{background:#fff;border-radius:16px;margin:0 12px 10px;padding:14px;display:flex;align-items:center;gap:12px;border:1.5px dashed #F5A7CC;cursor:pointer;transition:background .15s;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.add-card:active{background:#FFF0F7;}
+.add-circle{width:42px;height:42px;border-radius:50%;background:#FDE8F3;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sub-card{background:#fff;border-radius:16px;margin:0 12px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;}
+.sub-card-main{display:flex;align-items:center;gap:12px;padding:14px 14px;}
+.sub-card-main.clickable{cursor:pointer;}
+.sub-card-main.clickable:active{background:#FFF9FC;}
+.sub-ava{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.sub-info{flex:1;min-width:0;}
+.sub-name{font-size:14px;font-weight:700;color:#1A1A1A;}
+.sub-bal{font-size:13px;font-weight:600;color:#E91E8C;margin-top:1px;}
+.sub-detail{font-size:11px;color:#666;margin-top:1px;line-height:1.4;}
+.sub-actions{display:flex;border-top:1px solid #F5F5F5;}
+.sub-act-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 0;font-size:12px;font-weight:600;color:#E91E8C;background:transparent;border:none;font-family:inherit;cursor:pointer;transition:background .1s;}
+.sub-act-btn:active{background:#FFF0F7;}
+.sub-act-div{width:1px;background:#F0F0F0;align-self:stretch;}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge-on{background:#E8FAF0;color:#1B8F55;}
+.badge-off{background:#E0E0E0;color:#999;}
+.badge-pending{background:#FFF4E5;color:#E89220;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px;text-align:center;}
+.empty-icon{width:88px;height:88px;border-radius:44px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+/* ── S_DETAIL: Chi tiết Ví Phụ ── */
+.detail-hero{background:linear-gradient(135deg,#E8197D 0%,#FF6BB0 100%);margin:8px 12px 0;border-radius:16px;padding:20px 16px 18px;text-align:center;}
+.dh-ava{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.25);border:2.5px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin:0 auto 8px;}
+.dh-name{font-size:16px;font-weight:800;color:#fff;}
+.dh-phone{font-size:12px;color:rgba(255,255,255,0.8);margin-top:2px;}
+.dh-badge{display:inline-block;background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;color:#fff;margin-top:6px;}
+.dh-bal-row{display:flex;margin-top:14px;background:rgba(255,255,255,0.12);border-radius:12px;overflow:hidden;}
+.dh-bal-item{flex:1;padding:10px 0;text-align:center;}
+.dh-bal-item+.dh-bal-item{border-left:1px solid rgba(255,255,255,0.2);}
+.dh-bal-val{font-size:15px;font-weight:800;color:#fff;}
+.dh-bal-lbl{font-size:10px;color:rgba(255,255,255,0.75);margin-top:2px;}
+.detail-actions{display:flex;background:#fff;margin:0 12px;border-radius:0 0 16px 16px;box-shadow:0 3px 8px rgba(0,0,0,0.07);}
+.det-act-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 0;font-size:11px;font-weight:600;color:#E91E8C;background:transparent;border:none;font-family:inherit;cursor:pointer;transition:background .1s;}
+.det-act-btn:active{background:#FFF0F7;}
+.det-act-btn+.det-act-btn{border-left:1px solid #F0F0F0;}
+.det-act-icon{width:36px;height:36px;border-radius:50%;background:#FFF0F7;display:flex;align-items:center;justify-content:center;}
+.info-card{background:#fff;border-radius:16px;margin:12px 12px 0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #F5F5F5;}
+.info-row:last-child{border-bottom:none;}
+.info-key{font-size:12px;color:#666;}
+.info-val{font-size:12px;font-weight:700;color:#1A1A1A;}
+.info-val.pink{color:#E91E8C;}
+.txn-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #F5F5F5;}
+.txn-item:last-child{border-bottom:none;}
+.txn-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.txn-icon.in{background:#E8F5E9;}
+.txn-icon.out{background:#FFF3E0;}
+.txn-info{flex:1;}
+.txn-title{font-size:13px;font-weight:600;color:#1A1A1A;}
+.txn-date{font-size:11px;color:#999;margin-top:2px;}
+.txn-amt{font-size:13px;font-weight:700;}
+.txn-amt.in{color:#2E7D32;}
+.txn-amt.out{color:#E65100;}
+/* ── S_TOPUP: Nạp tiền numpad ── */
+.s6-body{flex:1;display:flex;flex-direction:column;overflow-y:auto;background:#F5F5F5;}
+.amt-center{text-align:center;padding:28px 24px 20px;background:#fff;margin-bottom:8px;}
+.amt-receiver{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:18px;}
+.amt-receiver-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#E91E8C,#FF6EC7);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.amt-receiver-name{font-size:14px;font-weight:600;color:#1A1A1A;}
+.amt-value{font-size:38px;font-weight:800;color:#1A1A1A;letter-spacing:-1px;border-bottom:2.5px solid #E91E8C;display:inline-block;padding-bottom:2px;min-width:80px;}
+.amt-value.zero{color:#BDBDBD;}
+.amt-note{font-size:11px;color:#E91E8C;margin-top:8px;min-height:16px;}
+.msg-card{background:#fff;border-radius:12px;margin:0 12px 8px;padding:12px 14px;}
+.msg-label{font-size:12px;color:#999;margin-bottom:6px;}
+.msg-input{width:100%;border:none;outline:none;font-size:14px;color:#1A1A1A;font-family:inherit;resize:none;background:transparent;}
+.msg-input::placeholder{color:#CCC;}
+.msg-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.msg-chip{background:#F5F5F5;border:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:500;color:#444;cursor:pointer;font-family:inherit;}
+.msg-chip:active{background:#FFF0F7;color:#E91E8C;}
+.quick-amts{display:flex;gap:8px;padding:0 12px 12px;}
+.quick-amt{flex:1;background:#fff;border:1.5px solid #E0E0E0;border-radius:20px;padding:8px 0;text-align:center;font-size:13px;font-weight:600;color:#1A1A1A;cursor:pointer;font-family:inherit;}
+.quick-amt.selected{background:#FFF0F7;border-color:#E91E8C;color:#E91E8C;}
+.numpad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:repeat(4,1fr);gap:1px;background:#E0E0E0;border-radius:12px;overflow:hidden;margin:0 12px 8px;}
+.num-key{background:#fff;padding:14px 0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;color:#1A1A1A;cursor:pointer;font-family:inherit;border:none;transition:background .1s;-webkit-tap-highlight-color:transparent;}
+.num-key:active{background:#F5F5F5;}
+.num-key.del{font-size:14px;color:#666;}
+/* ── S_TOPUP_SUCC: Topup success ── */
+@keyframes pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.check-ring{width:88px;height:88px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;animation:pop .5s cubic-bezier(.4,0,.2,1) forwards;margin-bottom:16px;}
+.suc-title{font-size:20px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;}
+.suc-amount{font-size:28px;font-weight:800;color:#E91E8C;margin:14px 0 4px;letter-spacing:-0.5px;}
+.suc-to{font-size:13px;color:#999;}
+.suc-divider{width:40px;height:3px;background:#F0F0F0;border-radius:2px;margin:18px auto;}
+.suc-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F5F5F5;}
+.suc-row:last-child{border-bottom:none;}
+.suc-key{font-size:12px;color:#999;}
+.suc-val{font-size:12px;font-weight:600;color:#1A1A1A;}
+.btn-outline{width:100%;height:52px;background:#fff;border:1.5px solid #E91E8C;color:#E91E8C;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:10px;}
+/* ── BIOMETRIC VERIFICATION (NFC + Face Match, from Ví Phụ) ── */
+.security-banner{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;margin:0 16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.security-shield{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tt40-banner{margin:8px 12px 10px;background:#FFE4E4;border:1px solid #FFC8C8;border-radius:12px;padding:11px 36px 11px 12px;display:flex;align-items:flex-start;gap:10px;position:relative;}
+.tt40-banner-ic{width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.tt40-banner-text{flex:1;font-size:12px;color:#1A1A1A;line-height:1.5;}
+.tt40-banner-close{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:10px;background:rgba(0,0,0,0.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+.cccd-illust{width:132px;height:86px;background:linear-gradient(135deg,#FF6FAE 0%,#E91E8C 100%);border-radius:9px;box-shadow:0 6px 18px rgba(233,30,140,0.28);position:relative;margin:0 auto;}
+.cccd-illust-chip{position:absolute;top:46px;left:14px;width:30px;height:24px;background:linear-gradient(135deg,#FFD580,#E8A040);border-radius:3px;border:1px solid rgba(0,0,0,0.1);}
+.cccd-illust-line1{position:absolute;top:14px;left:14px;width:56px;height:5px;background:rgba(255,255,255,0.35);border-radius:3px;}
+.cccd-illust-line2{position:absolute;top:26px;left:14px;width:40px;height:5px;background:rgba(255,255,255,0.3);border-radius:3px;}
+.cccd-illust-pic{position:absolute;top:10px;right:10px;width:24px;height:30px;background:rgba(255,255,255,0.85);border-radius:3px;}
+.bio-date{text-align:center;padding:14px 16px 6px;}
+.bio-date-1{font-size:16px;font-weight:700;color:#1A1A1A;letter-spacing:-0.2px;}
+.bio-date-2{font-size:17px;font-weight:800;color:#1A1A1A;margin-top:2px;letter-spacing:-0.2px;}
+.bio-section-label{font-size:13px;color:#666;padding:6px 16px 8px;text-align:center;}
+.bio-card{border:1.5px solid #E0E0E0;border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;background:#fff;transition:all .2s;display:flex;align-items:center;gap:11px;}
+.bio-card.selected{border-color:#E91E8C;background:#FFF0F7;}
+.bio-card-radio{width:22px;height:22px;border-radius:11px;border:2px solid #E0E0E0;flex-shrink:0;position:relative;}
+.bio-card.selected .bio-card-radio{border-color:#E91E8C;}
+.bio-card.selected .bio-card-radio::after{content:'';position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:6px;background:#E91E8C;}
+.bio-card-ic{width:36px;height:36px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bio-card-text{flex:1;min-width:0;}
+.bio-card-title{font-size:13px;font-weight:600;color:#1A1A1A;line-height:1.4;}
+.bio-card-sub{font-size:11px;color:#666;margin-top:2px;line-height:1.4;}
+.bio-cert{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+.bio-cert-badge{font-size:8px;font-weight:700;color:#666;background:#F0F0F0;border-radius:3px;padding:2px 5px;text-align:center;letter-spacing:0.3px;}
+.and-badge{display:inline-block;background:#FFF0F7;color:#E91E8C;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;letter-spacing:0.5px;margin-bottom:14px;}
+.scan-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F5F5F5;}
+.scan-step:last-child{border-bottom:none;}
+.scan-step-num{width:26px;height:26px;border-radius:13px;background:#E91E8C;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.scan-step-txt{flex:1;font-size:13px;color:#1A1A1A;line-height:1.5;}
+.scan-screen{background:#0A0A0A;color:#fff;}
+.scan-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;}
+.scan-close{width:36px;height:36px;border-radius:18px;background:rgba(255,255,255,0.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.scan-phone-big{position:relative;width:200px;height:320px;margin:14px 0 22px;background:#15151A;border:2.5px solid #2A2A30;border-radius:34px;box-shadow:0 10px 36px rgba(0,0,0,0.55),0 0 60px rgba(255,255,255,0.04);}
+.scan-phone-notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:62px;height:16px;background:#000;border-radius:9px;z-index:2;}
+.scan-phone-screen{position:absolute;inset:8px;border-radius:26px;background:linear-gradient(180deg,#0A0A0F 0%,#000 100%);overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:42px;}
+.scan-default-state{position:relative;width:104px;height:66px;display:flex;align-items:center;justify-content:center;}
+.scan-bracket-corner{position:absolute;width:20px;height:20px;border:2.5px solid #E91E8C;}
+.scan-bracket-corner.tl{top:0;left:0;border-right:none;border-bottom:none;border-radius:5px 0 0 0;}
+.scan-bracket-corner.tr{top:0;right:0;border-left:none;border-bottom:none;border-radius:0 5px 0 0;}
+.scan-bracket-corner.bl{bottom:0;left:0;border-right:none;border-top:none;border-radius:0 0 0 5px;}
+.scan-bracket-corner.br{bottom:0;right:0;border-left:none;border-top:none;border-radius:0 0 5px 0;}
+.scan-pulse{width:14px;height:14px;border-radius:7px;background:#E91E8C;animation:scan-pulse 1.5s ease-out infinite;}
+@keyframes scan-pulse{0%{transform:scale(0.6);opacity:0.85;}100%{transform:scale(2.6);opacity:0;}}
+.scan-success-state{display:flex;align-items:center;justify-content:center;}
+.scan-success-circle{width:72px;height:72px;border-radius:36px;background:#4CAF50;display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(76,175,80,0.45);animation:scan-pop .35s ease;}
+@keyframes scan-pop{0%{transform:scale(0.4);opacity:0;}60%{transform:scale(1.08);opacity:1;}100%{transform:scale(1);}}
+.scan-title{font-size:20px;font-weight:700;color:#fff;text-align:center;letter-spacing:-0.2px;margin-top:4px;}
+.scan-instruction{font-size:13px;color:rgba(255,255,255,0.7);text-align:center;line-height:1.55;margin-top:10px;padding:0 8px;}
+.face-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;background:#fff;}
+.face-circle{width:240px;height:240px;border-radius:50%;border:4px solid #E0E0E0;background:#F5F5F5;display:flex;align-items:center;justify-content:center;margin:32px 0 0;position:relative;overflow:hidden;}
+.face-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(233,30,140,0.15) 0%,transparent 100%);height:60%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px;}
+.face-instruction{background:rgba(233,30,140,0.9);color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;text-align:center;}
+.face-sub{font-size:13px;color:#666;text-align:center;margin-top:16px;line-height:1.6;padding:0 16px;}
+.ocr-guide-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:20px;padding:8px 16px;border-radius:20px;}
+/* Success card + share (copied from Ví Chính) */
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.8}}
+.check-circle{width:72px;height:72px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;animation:pulse 2s ease-in-out infinite;margin:0 auto 14px;}
+.invite-row{background:#FFF0F7;border:1.5px dashed #F5A7CC;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin:12px 0 0;cursor:pointer;}
+.invite-row:active{background:#FDE8F3;}
+.inv-label{font-size:10px;color:#999;font-weight:600;text-transform:uppercase;margin-bottom:2px;}
+.inv-link{font-size:12px;font-weight:700;color:#E91E8C;}
+.btn-outline{width:100%;height:52px;background:#fff;border:1.5px solid #E91E8C;color:#E91E8C;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:10px;}
+.sheet-overlay{position:absolute;inset:0;z-index:9000;display:none;}
+.sheet-overlay.open{display:block;}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.4);opacity:0;transition:opacity .25s ease;}
+.sheet-overlay.open .sheet-backdrop{opacity:1;}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sheet-overlay.open .sheet-panel{transform:translateY(0);}
+.sheet-handle{width:40px;height:4px;border-radius:2px;background:#E0E0E0;margin:6px auto 8px;}
+.sheet-title{font-size:16px;font-weight:700;color:#1A1A1A;text-align:center;padding:6px 0 4px;}
+.sheet-sub{font-size:12px;color:#999;text-align:center;padding:0 0 10px;}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px 0 14px;}
+.share-item{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 4px;cursor:pointer;border-radius:12px;transition:background .15s;border:none;background:transparent;font-family:inherit;}
+.share-item:active{background:#F5F5F5;}
+.share-ic{width:52px;height:52px;border-radius:26px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
+.share-lbl{font-size:12px;color:#1A1A1A;font-weight:500;text-align:center;line-height:1.2;}
+</style>
+</head>
+<body>
+<div id="phone-frame">
+<div id="phone-frame-inner">
+<div id="app">
+
+<!-- S0: Onboarding (from Ví Chính) -->
+<div id="s0" class="screen active" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 0;">
+<a href="../../index.html" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#666;text-decoration:none;background:rgba(0,0,0,0.05);padding:5px 10px;border-radius:12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 5l-7 7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Hub</a>
+<span style="font-size:14px;font-weight:600;color:#E91E8C;cursor:pointer;" onclick="goTo(1)">Bỏ qua</span>
+</div>
+</div>
+<div class="scroll" style="background:#fff;">
+<div style="text-align:center;padding:20px 32px 16px;">
+<div class="sob-hero">
+<svg width="54" height="54" viewBox="0 0 24 24" fill="none"><path d="M21 7H3a2 2 0 00-2 2v9a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2z" stroke="#E91E8C" stroke-width="1.6" stroke-linecap="round"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#E91E8C" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="13" r="2" fill="#E91E8C"/></svg>
+<div style="position:absolute;bottom:2px;right:2px;width:34px;height:34px;border-radius:17px;background:#E8F5E9;border:3px solid #fff;display:flex;align-items:center;justify-content:center;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+<div style="font-size:11px;font-weight:700;color:#E91E8C;letter-spacing:1.4px;margin-bottom:8px;">VÍ PHỤ MOMO</div>
+<div style="font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;line-height:1.3;">Cho con tự lập,<br/>bố mẹ vẫn yên tâm</div>
+<div style="font-size:14px;color:#666;line-height:1.6;margin-top:8px;">Ngăn ví riêng cho con —<br/>bố mẹ kiểm soát hoàn toàn.</div>
+</div>
+<div style="padding:0 24px 32px;">
+<div class="benefit-row">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#E91E8C" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div><div style="font-size:15px;font-weight:600;color:#1A1A1A;">An toàn từ A đến Z</div><div style="font-size:13px;color:#666;margin-top:2px;line-height:1.5;">Đặt hạn mức tháng cho con. Vượt mức là không tiêu được.</div></div>
+</div>
+<div class="benefit-row">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="#E91E8C" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="#E91E8C" stroke-width="1.8"/></svg>
+<div><div style="font-size:15px;font-weight:600;color:#1A1A1A;">Bố mẹ luôn nắm rõ</div><div style="font-size:13px;color:#666;margin-top:2px;line-height:1.5;">Xem con tiêu gì, ở đâu, lúc nào — ngay trên MoMo của bạn.</div></div>
+</div>
+<div class="benefit-row">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><rect x="4" y="11" width="16" height="10" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.4" fill="#E91E8C"/></svg>
+<div><div style="font-size:15px;font-weight:600;color:#1A1A1A;">Chặn dịch vụ rủi ro</div><div style="font-size:13px;color:#666;margin-top:2px;line-height:1.5;">Chỉ thanh toán &amp; chuyển tiền. Không Trả Sau, không Vay Nhanh.</div></div>
+</div>
+</div>
+</div>
+<div class="bottom-area" style="background:#fff;"><button class="btn-pink" onclick="goTo(1)">Khám phá ngay</button></div>
+</div>
+
+<!-- S1: Home — Ví điện tử (from Ví Chính) -->
+<div id="s1" class="screen">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 12px;">
+<div style="font-size:18px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;">Ví điện tử</div>
+<div class="nav-capsule">
+<button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+<div class="nav-cap-div"></div>
+<button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="scroll" style="padding-top:4px;background:var(--page-bg)">
+<div class="section-label">Ngăn Ví phụ của tôi</div>
+<div id="wallet-list">
+<div class="empty-state">
+<div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M21 7H3a2 2 0 00-2 2v9a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2z" stroke="#E91E8C" stroke-width="1.4" stroke-linecap="round"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#E91E8C" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="13" r="2" fill="#E91E8C" opacity="0.3"/></svg></div>
+<div style="font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:6px;">Chưa có Ngăn Ví phụ nào</div>
+<div style="font-size:13px;color:#666;line-height:1.5;">Thêm ngăn ví phụ để quản lý<br/>chi tiêu cho người thân.</div>
+</div>
+</div>
+<div class="add-card" onclick="goTo(2)">
+<div class="add-circle">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#E91E8C" stroke-width="2.2" stroke-linecap="round"/></svg>
+</div>
+<div>
+<div style="font-size:14px;font-weight:700;color:#E91E8C;">Thêm Ngăn Ví phụ</div>
+<div style="font-size:11px;color:#666;margin-top:2px;">Mời thành viên gia đình</div>
+</div>
+</div>
+<div style="height:8px;"></div>
+</div>
+<div class="bottom-area"></div>
+</div>
+
+<!-- S1: Phone -->
+<div id="s2" class="screen">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff"></div>
+<div class="nav"><button class="nav-back" onclick="goTo(1)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Thêm Ngăn Ví phụ</div><div class="nav-capsule"><button class="nav-cap-btn"><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button><div class="nav-cap-div"></div><button class="nav-cap-btn" onclick="goTo(1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle active">1</div><div class="pb-line"></div><div class="pb-label active">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle">2</div><div class="pb-line"></div><div class="pb-label">OTP</div></div>
+<div class="pb-item"><div class="pb-circle">3</div><div class="pb-line"></div><div class="pb-label">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle">4</div><div class="pb-line"></div><div class="pb-label">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
+</div>
+</div>
+<div class="scroll" style="background:#fff">
+<div style="text-align:center;padding:24px 24px 0"><div style="width:110px;height:110px;border-radius:55px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);margin:0 auto 20px;display:flex;align-items:center;justify-content:center"><svg width="48" height="48" fill="none"><rect x="14" y="6" width="20" height="36" rx="4" stroke="#E91E8C" stroke-width="2.5"/><circle cx="24" cy="36" r="2" fill="#E91E8C"/></svg></div>
+<div style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:8px">Thêm Ví Phụ mới</div>
+<div style="font-size:14px;color:#666;line-height:1.6;margin-bottom:24px">Nhập số điện thoại của người thân để tạo Ví Phụ</div></div>
+<div style="padding:0 24px"><div class="input-wrap" id="phone-wrap" onfocusin="focusWrap('phone-wrap')" onfocusout="blurWrap('phone-wrap')"><div class="input-label">Số điện thoại người thân</div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;color:#1A1A1A;font-weight:500;white-space:nowrap">🇻🇳 +84</span><input id="phone-inp" class="input-field" type="tel" inputmode="tel" placeholder="Nhập số điện thoại" maxlength="12"/></div></div><button class="demo-btn" onclick="demoPhone()">demo fill</button></div>
+</div>
+<div class="bottom-area" style="background:#fff"><button class="btn-pink" onclick="submitPhone()">Tiếp tục</button></div>
+</div>
+
+<!-- S2: OTP -->
+<div id="s3" class="screen">
+<div class="hdr-pink"><div class="status-spacer"></div><div class="nav"><button class="nav-back" onclick="goTo(2)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Xác thực OTP</div><div class="nav-right"><svg width="20" height="20" fill="none"><path d="M15 10a5 5 0 01-5 5m0 0a5 5 0 01-5-5m5 5v2m-3-1h6M10 5a2 2 0 100-4 2 2 0 000 4z" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg><div style="width:1px;height:12px;background:rgba(72,72,72,.35)"></div><svg width="20" height="20" fill="none"><path d="M3 10l1-1m0 0l6-6 6 6-6 6-6-6z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 6v8" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle active">2</div><div class="pb-line"></div><div class="pb-label active">OTP</div></div>
+<div class="pb-item"><div class="pb-circle">3</div><div class="pb-line"></div><div class="pb-label">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle">4</div><div class="pb-line"></div><div class="pb-label">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
+</div></div>
+<div class="scroll" style="background:var(--page-bg)"><div class="card" style="text-align:center"><div style="width:72px;height:72px;border-radius:36px;background:#FFF0F7;margin:0 auto 16px;display:flex;align-items:center;justify-content:center"><svg width="32" height="32" fill="none"><rect x="6" y="4" width="20" height="24" rx="3" stroke="#E91E8C" stroke-width="2"/><path d="M12 16h8M12 20h5" stroke="#E91E8C" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+<div style="font-size:18px;font-weight:800;color:#1A1A1A;margin-bottom:6px">Nhập mã OTP</div>
+<div style="font-size:13px;color:#666;line-height:1.6">Mã OTP đã được gửi đến số<br/><span style="font-weight:600;color:#1A1A1A" id="otp-phone-display">0912 345 678</span></div>
+<div class="otp-row" id="otp-row"><input class="otp-box" id="otp1" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="1" oninput="otpInput(1)" onfocus="scheduleShowKbCta()" onblur="scheduleHideKbCta()"/><input class="otp-box" id="otp2" type="tel" inputmode="numeric" maxlength="1" oninput="otpInput(2)" onfocus="scheduleShowKbCta()" onblur="scheduleHideKbCta()"/><input class="otp-box" id="otp3" type="tel" inputmode="numeric" maxlength="1" oninput="otpInput(3)" onfocus="scheduleShowKbCta()" onblur="scheduleHideKbCta()"/><input class="otp-box" id="otp4" type="tel" inputmode="numeric" maxlength="1" oninput="otpInput(4)" onfocus="scheduleShowKbCta()" onblur="scheduleHideKbCta()"/></div>
+<div style="font-size:13px;color:#666" id="otp-timer">Gửi lại mã sau <span style="color:#E91E8C;font-weight:600">60s</span></div>
+<button class="demo-btn" onclick="demoOtp()">demo fill</button></div></div>
+<div class="bottom-area"><button id="btn-otp" class="btn-pink" disabled onclick="submitOtp()">Xác nhận</button></div>
+</div>
+
+<!-- S_KYC_INTRO — màn cảnh báo định danh cho người thân (chèn giữa OTP và Verify) -->
+<div id="s_kyc_intro" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+<div class="nav"><button class="nav-back" onclick="goTo(3)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Định danh người thân</div><div style="width:36px"></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">OTP</div></div>
+<div class="pb-item"><div class="pb-circle active">3</div><div class="pb-line"></div><div class="pb-label active">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle">4</div><div class="pb-line"></div><div class="pb-label">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px 24px;text-align:center;">
+<div style="width:120px;height:120px;border-radius:60px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);margin-bottom:24px;display:flex;align-items:center;justify-content:center;position:relative;">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="9" r="3.5" stroke="#E91E8C" stroke-width="1.8"/><circle cx="17" cy="10" r="2.8" stroke="#E91E8C" stroke-width="1.6"/><path d="M2 20c.5-3 2.8-5 7-5s6.5 2 7 5" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/><path d="M15 19c.3-2 1.8-3.5 4.5-3.5S23.5 17 23.7 19" stroke="#E91E8C" stroke-width="1.6" stroke-linecap="round"/></svg>
+<div style="position:absolute;bottom:-2px;right:-2px;width:32px;height:32px;border-radius:16px;background:#F59E0B;border:3px solid #fff;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 4v4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="11.2" r="1" fill="#fff"/></svg></div>
+</div>
+<div style="font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;margin-bottom:10px;">Định danh người thân</div>
+<div style="font-size:14px;color:#666;line-height:1.6;margin-bottom:20px;">Bước tiếp theo dùng <b style="color:#1A1A1A;">CCCD và khuôn mặt của người thân</b> để xác thực — không phải của bạn.</div>
+<div style="background:#FFF8E1;border:1px solid #FFE0A6;border-radius:14px;padding:14px;width:100%;text-align:left;">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#F59E0B"/><path d="M8 4v4.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.2" r="0.9" fill="white"/></svg><span style="font-size:13px;font-weight:700;color:#7A4A00;">Bạn cần chuẩn bị:</span></div>
+<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;"><div style="width:22px;height:22px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:#E91E8C;">1</div><div style="font-size:13px;color:#1A1A1A;line-height:1.5;"><b>CCCD của người thân</b> — không phải CCCD của bạn.</div></div>
+<div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:22px;height:22px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:#E91E8C;">2</div><div style="font-size:13px;color:#1A1A1A;line-height:1.5;"><b>Người thân đang ở cạnh bạn</b> để chụp khuôn mặt trực tiếp.</div></div>
+</div>
+</div>
+<div class="bottom-area" style="background:#fff;"><button class="btn-pink" onclick="goTo(4)">Bắt đầu xác thực</button></div>
+</div>
+
+<!-- S5: SOCR_INTRO — Chọn phương thức xác thực sinh trắc học -->
+<div id="s5" class="screen">
+<div class="hdr-pink"><div class="status-spacer"></div><div class="nav"><button class="nav-back" onclick="goTo(13)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Xác thực sinh trắc học</div><div class="nav-capsule"><button class="nav-cap-btn"><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button><div class="nav-cap-div"></div><button class="nav-cap-btn" onclick="goTo(1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">OTP</div></div>
+<div class="pb-item"><div class="pb-circle active">3</div><div class="pb-line"></div><div class="pb-label active">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle">4</div><div class="pb-line"></div><div class="pb-label">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
+</div></div>
+<div class="scroll" style="background:var(--page-bg)">
+<div class="tt40-banner" id="tt40-banner">
+<div class="tt40-banner-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#E0455B" stroke-width="1.6" fill="#FFF5F5"/><path d="M9 2h6v3H9z" fill="#E0455B"/><path d="M12 10v4" stroke="#E0455B" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="#E0455B"/></svg></div>
+<div class="tt40-banner-text">Xác thực sinh trắc học theo <b>Thông Tư 40</b> để giao dịch an toàn trên MoMo.</div>
+<button class="tt40-banner-close" onclick="document.getElementById('tt40-banner').style.display='none';"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18L18 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+</div>
+<div style="display:flex;justify-content:center;padding:6px 0 0;">
+<div class="cccd-illust">
+<div class="cccd-illust-line1"></div>
+<div class="cccd-illust-line2"></div>
+<div class="cccd-illust-chip"></div>
+<div class="cccd-illust-pic"></div>
+</div>
+</div>
+<div class="bio-date">
+<div class="bio-date-1">Xác thực sinh trắc học trước</div>
+<div class="bio-date-2">01/01/2026</div>
+</div>
+<div class="bio-section-label">Chọn phương thức xác thực:</div>
+<div style="padding:0 16px;">
+<div id="verify-opt-chip" class="bio-card selected" onclick="selVerify('chip')">
+<div class="bio-card-radio"></div>
+<div class="bio-card-ic" style="background:#FFE4F0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" fill="#E91E8C" opacity="0.18" stroke="#E91E8C" stroke-width="1.6"/><rect x="6" y="9" width="7" height="6" rx="1" fill="#E91E8C" opacity="0.5"/><path d="M16 10h3M16 13h3" stroke="#E91E8C" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+<div class="bio-card-text"><div class="bio-card-title">Xác thực bằng CCCD gắn chip</div><div class="bio-card-sub">(Dành cho thiết bị hỗ trợ NFC)</div></div>
+</div>
+<div id="verify-opt-vneid" class="bio-card" onclick="selVerify('vneid')">
+<div class="bio-card-radio"></div>
+<div class="bio-card-ic" style="background:#E8F5E9;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3z" fill="#4CAF50" opacity="0.85" stroke="#2E7D32" stroke-width="1.2"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="bio-card-text"><div class="bio-card-title">Xác thực qua tài khoản VNeID</div><div class="bio-card-sub">(Cần định danh VNeID mức 2)</div></div>
+</div>
+<div id="verify-opt-help" class="bio-card" onclick="selVerify('help')">
+<div class="bio-card-radio"></div>
+<div class="bio-card-ic" style="background:#FFF0E0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#E89220" stroke-width="1.6"/><circle cx="17" cy="9" r="2.5" stroke="#E89220" stroke-width="1.6"/><path d="M3 19c0-3 2.5-5 6-5s6 2 6 5" stroke="#E89220" stroke-width="1.6" stroke-linecap="round"/><path d="M14 18c0-2 1.5-3.5 4-3.5s3 1.5 3 3.5" stroke="#E89220" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+<div class="bio-card-text"><div class="bio-card-title">Nhờ người thân hỗ trợ hoặc đến các điểm đối tác của MoMo</div></div>
+</div>
+</div>
+<div class="security-banner" style="margin-top:10px;">
+<div class="security-shield"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#E91E8C" opacity="0.15" stroke="#E91E8C" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div style="flex:1;"><div style="font-size:12px;color:#666;line-height:1.5;">An toàn tài sản &amp; Bảo mật thông tin của bạn là ưu tiên hàng đầu của MoMo.</div><div style="font-size:12px;font-weight:600;color:#E91E8C;margin-top:4px;">Tìm hiểu thêm &gt;</div></div>
+<div class="bio-cert"><div class="bio-cert-badge">NCSC</div><div class="bio-cert-badge">Secure</div></div>
+</div>
+<div style="height:8px;"></div>
+</div>
+<div class="bottom-area"><button class="btn-pink" onclick="goTo(5)">Xác thực ngay</button></div>
+</div>
+
+<!-- S6: SOCR_FRONT — Hướng dẫn quét chip Android -->
+<div id="s6" class="screen">
+<div class="hdr-pink"><div class="status-spacer"></div><div class="nav"><button class="nav-back" onclick="goTo(4)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Xác thực trực tiếp</div><div class="nav-capsule"><button class="nav-cap-btn"><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button><div class="nav-cap-div"></div><button class="nav-cap-btn" onclick="goTo(1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button></div></div></div>
+<div class="scroll" style="background:var(--page-bg)">
+<div class="card" style="margin-top:10px;text-align:center;padding:18px 16px;">
+<div class="and-badge">THIẾT BỊ ANDROID</div>
+<div style="position:relative;width:170px;height:150px;margin:0 auto 14px;">
+<div style="position:absolute;top:62px;left:6px;width:130px;height:82px;background:linear-gradient(135deg,#FFF0F7,#FDE8F3);border-radius:8px;border:1.5px solid #E91E8C;transform:rotate(-8deg);box-shadow:0 4px 14px rgba(233,30,140,0.18);">
+<div style="margin:10px 0 0 10px;width:30px;height:22px;background:linear-gradient(135deg,#FFD580,#E8A040);border-radius:3px;"></div>
+<div style="margin:8px 12px 0;height:6px;background:#FDE8F3;border-radius:3px;"></div>
+<div style="margin:6px 12px 0;width:60%;height:6px;background:#FDE8F3;border-radius:3px;"></div>
+</div>
+<div style="position:absolute;top:5px;right:6px;width:72px;height:124px;background:#1A1A1A;border-radius:14px;border:3px solid #333;box-shadow:0 8px 18px rgba(0,0,0,0.25);">
+<div style="margin:5px;width:56px;height:100px;background:linear-gradient(135deg,#E91E8C,#FF6FAE);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M2 8c4-4 16-4 20 0M5 12c2.5-2.5 11.5-2.5 14 0M8 16c1.5-1.5 6.5-1.5 8 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="20" r="1.2" fill="#fff"/></svg>
+</div>
+</div>
+</div>
+<div style="font-size:16px;font-weight:700;color:#1A1A1A;letter-spacing:-0.2px;line-height:1.4;margin-bottom:16px;">Hướng dẫn xác thực trên<br/>thiết bị Android</div>
+<div style="text-align:left;">
+<div class="scan-step"><div class="scan-step-num">1</div><div class="scan-step-txt">Đặt thiết bị áp sát mặt sau CCCD nơi có chip</div></div>
+<div class="scan-step"><div class="scan-step-num">2</div><div class="scan-step-txt">Di chuyển từ từ cho đến khi xác minh xong</div></div>
+<div class="scan-step"><div class="scan-step-num">3</div><div class="scan-step-txt">Giữ chặt khi đang xác minh để đảm bảo độ chính xác</div></div>
+</div>
+</div>
+</div>
+<div class="bottom-area"><button class="btn-pink" onclick="goTo(6)">Bắt đầu quét</button><button class="btn-outline" onclick="goTo(4)" style="width:100%;height:52px;background:#fff;border:1.5px solid #E91E8C;color:#E91E8C;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:10px;">Hướng dẫn</button></div>
+</div>
+
+<!-- S7: SOCR_BACK — Quét chip NFC (dark) -->
+<div id="s7" class="screen scan-screen">
+<div style="flex-shrink:0;">
+<div class="status-spacer" style="background:transparent;"></div>
+<div style="display:flex;align-items:center;justify-content:flex-end;padding:4px 16px 0;">
+<button class="scan-close" onclick="goTo(4)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18L18 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button>
+</div>
+</div>
+<div class="scan-body">
+<div class="scan-phone-big">
+<div class="scan-phone-notch"></div>
+<div class="scan-phone-screen">
+<div id="scan-state-default" class="scan-default-state">
+<div class="scan-bracket-corner tl"></div>
+<div class="scan-bracket-corner tr"></div>
+<div class="scan-bracket-corner bl"></div>
+<div class="scan-bracket-corner br"></div>
+<div class="scan-pulse"></div>
+</div>
+<div id="scan-state-success" class="scan-success-state" style="display:none;">
+<div class="scan-success-circle"><svg width="42" height="42" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</div>
+</div>
+</div>
+<div class="scan-title" id="scan-title">Tìm vị trí quét</div>
+<div class="scan-instruction" id="scan-instr">Áp sát chip vào mặt sau của thẻ và di chuyển từ từ đến khi thẻ được quét xong</div>
+<div id="scan-demo-wrap" style="margin-top:14px;">
+<button class="demo-btn" onclick="demoScan()" style="background:rgba(255,255,255,0.08);color:#aaa;border-color:rgba(255,255,255,0.2);">demo scan</button>
+</div>
+</div>
+<div class="bottom-area" style="background:transparent;"><button id="scan-cta" class="btn-outline" style="border-color:rgba(255,255,255,0.5);color:#fff;background:transparent;width:100%;height:52px;border:1.5px solid rgba(255,255,255,0.5);border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;" onclick="goTo(4)">Hủy</button></div>
+</div>
+
+<!-- S8: SFACE_INTRO — Xác thực khuôn mặt (Face Match) -->
+<div id="s8" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+<div style="display:flex;align-items:center;padding:4px 16px 0;">
+<button class="nav-back" onclick="goTo(6)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div style="flex:1;text-align:center;font-size:16px;font-weight:700;color:#1A1A1A;">Xác thực khuôn mặt</div>
+<div style="width:44px;"></div>
+</div>
+</div>
+<div class="face-body">
+<div class="face-circle">
+<svg width="80" height="80" viewBox="0 0 24 24" fill="none" opacity="0.15"><circle cx="12" cy="8" r="5" stroke="#1A1A1A" stroke-width="1.5"/><path d="M20 21v-2a8 8 0 00-16 0v2" stroke="#1A1A1A" stroke-width="1.5"/></svg>
+<div class="face-overlay"><div class="face-instruction">Đưa khuôn mặt vào trong khung tròn</div></div>
+</div>
+<div class="face-sub">Hình ảnh của bạn được dùng để xác thực và giúp nâng cao trải nghiệm cho bạn</div>
+<div style="margin-top:24px;">
+<div class="ocr-guide-btn" style="color:#1A1A1A;background:#F5F5F5;" onclick="goTo(4)">Xem hướng dẫn</div>
+</div>
+<div style="margin-top:8px;font-size:13px;color:#666;">Bạn gặp vấn đề? <span style="color:#E91E8C;font-weight:600;cursor:pointer;">Gửi phản hồi</span></div>
+<div style="margin-top:24px;">
+<button class="demo-btn" onclick="goTo(8)">demo capture</button>
+</div>
+</div>
+</div>
+
+<!-- S9: SFACE_SCAN — Xác thực thành công (eKYC success) -->
+<div id="s9" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+<div class="nav" style="padding-bottom:0;">
+<div style="width:44px;"></div>
+<div class="nav-title">Xác thực tài khoản</div>
+<div class="nav-capsule"><button class="nav-cap-btn"><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button><div class="nav-cap-div"></div><button class="nav-cap-btn" onclick="goTo(1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button></div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 32px;text-align:center;">
+<div style="width:88px;height:88px;border-radius:44px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative;">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#E91E8C" stroke-width="1.8"/><path d="M20 21v-2a8 8 0 00-16 0v2" stroke="#E91E8C" stroke-width="1.8"/></svg>
+<div style="position:absolute;bottom:0;right:0;width:28px;height:28px;border-radius:14px;background:#4CAF50;border:3px solid #fff;display:flex;align-items:center;justify-content:center;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+<div style="font-size:20px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;">Chúc mừng</div>
+<div style="font-size:14px;color:#666;line-height:1.6;margin-top:10px;">Xác thực thông tin thành công. Tiếp tục các bước tiếp theo để sử dụng các dịch vụ của MoMo.</div>
+</div>
+<div class="bottom-area" style="background:#fff;"><button class="btn-pink" onclick="goTo(10)">Tiếp tục</button></div>
+</div>
+
+<!-- S10: (orphaned placeholder — flow skips this) -->
+<div id="s10" class="screen"></div>
+
+<!-- S11: Setup hạn mức & dịch vụ -->
+<div id="s11" class="screen">
+<div class="hdr-pink"><div class="status-spacer"></div><div class="nav"><button class="nav-back" onclick="goTo(9)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Thiết lập Ví Phụ</div><div class="nav-right"><svg width="20" height="20" fill="none"><path d="M15 10a5 5 0 01-5 5m0 0a5 5 0 01-5-5m5 5v2m-3-1h6M10 5a2 2 0 100-4 2 2 0 000 4z" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg><div style="width:1px;height:12px;background:rgba(72,72,72,.35)"></div><svg width="20" height="20" fill="none"><circle cx="10" cy="10" r="8" stroke="#1A1A1A" stroke-width="1.5"/><line x1="10" y1="6" x2="10" y2="10" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="#1A1A1A"/></svg></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">OTP</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle active">4</div><div class="pb-line"></div><div class="pb-label active">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
+</div></div>
+<div class="scroll" style="background:var(--page-bg);padding:6px 0 10px">
+<div class="section-label">Hạn mức giao dịch</div>
+<div class="card">
+<div style="font-size:13px;color:#666;line-height:1.55;padding-bottom:12px">Thiết lập hạn mức chi tiêu cho Ví Phụ được thêm. Bạn có thể thay đổi sau trong phần cài đặt.</div>
+<div id="limit-wrap" class="input-wrap" style="margin-bottom:8px">
+<label class="input-label">Hạn mức / tháng</label>
+<div class="limit-input-row">
+<input id="limit-inp" class="input-field" type="tel" inputmode="numeric" placeholder="Nhập số tiền (tối đa 2.000.000)" oninput="fmtLimit()" onfocus="focusWrap('limit-wrap');scheduleShowKbCta();" onblur="blurWrap('limit-wrap');scheduleHideKbCta();"/>
+<span class="limit-suffix">₫</span>
+</div>
+</div>
+<div class="quick-chips">
+<button class="quick-chip" data-val="500000" onclick="pickLimit(500000)">500K</button>
+<button class="quick-chip" data-val="1000000" onclick="pickLimit(1000000)">1tr</button>
+<button class="quick-chip" data-val="1500000" onclick="pickLimit(1500000)">1.5tr</button>
+<button class="quick-chip" data-val="2000000" onclick="pickLimit(2000000)">2tr</button>
+</div>
+<div class="limit-hint">Tổng chi tiêu tối đa mỗi tháng, không vượt quá 2.000.000 ₫</div>
+</div>
+<div class="section-label">Dịch vụ được phép sử dụng</div>
+<div class="card-info">
+<div class="card-info-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="11" width="16" height="10" rx="2" fill="#E91E8C"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg></div>
+<div class="card-info-text">Ví Phụ chỉ được phép sử dụng các dịch vụ <b>chuyển tiền, thanh toán</b>. Không được phép sử dụng các <b>dịch vụ tài chính</b> trên MoMo (Ví Trả Sau, Vay Nhanh,...).</div>
+</div>
+<div style="text-align:center;padding:4px 0 8px"><button class="demo-btn" onclick="demoFillS2()">demo fill</button></div>
+</div>
+<div class="bottom-area"><button class="btn-pink" id="btn2" onclick="submitS2()">Tiếp tục</button></div>
+</div>
+
+<!-- S10: Review & TnC -->
+<div id="s12" class="screen">
+<div class="hdr-pink"><div class="status-spacer"></div><div class="nav"><button class="nav-back" onclick="goTo(10)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Xác nhận thông tin</div><div class="nav-right"><svg width="20" height="20" fill="none"><path d="M15 10a5 5 0 01-5 5m0 0a5 5 0 01-5-5m5 5v2m-3-1h6M10 5a2 2 0 100-4 2 2 0 000 4z" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg><div style="width:1px;height:12px;background:rgba(72,72,72,.35)"></div><svg width="20" height="20" fill="none"><path d="M3 10l1-1m0 0l6-6 6 6-6 6-6-6z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 6v8" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">OTP</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle active">5</div><div class="pb-label active">Xác nhận</div></div>
+</div></div>
+<div class="scroll" style="background:var(--page-bg)">
+<div class="section-label">Thông tin Ví Phụ</div>
+<div class="card">
+<div class="row-item"><div style="width:40px;height:40px;border-radius:20px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" fill="none"><path d="M10 2a8 8 0 108 8 8 8 0 00-8-8zm0 3a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm0 11a6 6 0 01-5-2.7c.02-1.66 3.34-2.57 5-2.57s4.98.91 5 2.57A6 6 0 0110 16z" fill="#E91E8C"/></svg></div><div style="flex:1"><div style="font-size:13px;color:#666">Số điện thoại</div><div style="font-size:15px;font-weight:600;color:#1A1A1A;margin-top:2px" id="review-phone">0912 345 678</div></div></div>
+<div class="row-item"><div style="width:40px;height:40px;border-radius:20px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" fill="none"><path d="M10 2a8 8 0 108 8 8 8 0 00-8-8zm0 3a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm0 11a6 6 0 01-5-2.7c.02-1.66 3.34-2.57 5-2.57s4.98.91 5 2.57A6 6 0 0110 16z" fill="#E91E8C"/></svg></div><div style="flex:1"><div style="font-size:13px;color:#666">Họ tên</div><div style="font-size:15px;font-weight:600;color:#1A1A1A;margin-top:2px" id="review-name">NGUYỄN VĂN A</div></div></div>
+<div class="row-item"><div style="width:40px;height:40px;border-radius:20px;background:#FFF0F7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" fill="none"><rect x="3" y="5" width="14" height="10" rx="2" stroke="#E91E8C" stroke-width="1.5"/></svg></div><div style="flex:1"><div style="font-size:13px;color:#666">CCCD</div><div style="font-size:15px;font-weight:600;color:#1A1A1A;margin-top:2px" id="review-cccd">079 xxx xxx 456</div></div><span class="badge-green">Đã xác thực</span></div>
+</div>
+<div class="section-label">Điều khoản & Điều kiện</div>
+<div class="card">
+<div class="tnc-check-row" id="tnc-row-momo" onclick="toggleTnc('momo')"><div class="tnc-checkbox"><svg class="tnc-check-svg" width="14" height="14" fill="none" style="display:none"><path d="M3 7l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-size:13px;color:#1A1A1A;line-height:1.5">Tôi đã đọc và đồng ý với <span style="color:#E91E8C;font-weight:600">Điều khoản sử dụng MoMo</span></div></div>
+<div class="tnc-check-row" id="tnc-row-viphu" onclick="toggleTnc('viphu')" style="margin-top:10px"><div class="tnc-checkbox"><svg class="tnc-check-svg" width="14" height="14" fill="none" style="display:none"><path d="M3 7l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-size:13px;color:#1A1A1A;line-height:1.5">Tôi đã đọc và đồng ý với <span style="color:#E91E8C;font-weight:600">Điều khoản sử dụng Ví Phụ</span></div></div>
+</div></div>
+<div class="bottom-area"><button class="btn-pink" onclick="submitReview()">Xác nhận & Tạo Ví Phụ</button></div>
+</div>
+
+<!-- S12: Success — Final screen (copied from Ví Chính S4) -->
+<div id="s14" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;"><div class="status-spacer" style="background:#fff;"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;text-align:center;">
+<div style="background:#fff;border-radius:16px;padding:28px 20px;width:100%;box-shadow:0 2px 10px rgba(0,0,0,0.07);margin-bottom:14px;">
+<div class="check-circle"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16l5.5 5.5L24 10" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div style="font-size:18px;font-weight:800;color:#1A1A1A;margin-bottom:8px;">Thêm Ngăn Ví phụ thành công!</div>
+<div style="font-size:13px;color:#666;line-height:1.6;">Tin nhắn mời đã được gửi. Người thân có thể kích hoạt ngay!</div>
+<div class="invite-row" onclick="openShareSheet()">
+<div style="width:36px;height:36px;border-radius:50%;background:#FDE8F3;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg></div>
+<div style="flex:1;"><div class="inv-label">Link mời kích hoạt</div><div class="inv-link" id="inv-lnk">momo.vn/vi-phu/abc123</div></div>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#E91E8C" stroke-width="1.8"/></svg>
+</div>
+</div>
+</div>
+<div class="bottom-area" style="background:#fff;">
+<button class="btn-pink" onclick="goTo(1)">Về trang ví</button>
+<button class="btn-outline" onclick="openShareSheet()">Chia sẻ</button>
+</div>
+</div>
+
+<!-- S_DETAIL: Chi tiết Ví Phụ -->
+<div id="s_detail" class="screen" style="background:var(--page-bg);">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div class="nav">
+<button class="nav-back" onclick="goTo(1)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="nav-title" id="s_detail-nav-title">Chi tiết Ví phụ</div>
+<div class="nav-capsule">
+<button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+<div class="nav-cap-div"></div>
+<button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="scroll" style="background:var(--page-bg);">
+<div class="detail-hero">
+<div class="dh-ava" id="s_detail-ava">BA</div>
+<div class="dh-name" id="s_detail-name">Bé An</div>
+<div class="dh-phone" id="s_detail-phone">0987 654 321</div>
+<div class="dh-badge" id="s_detail-status">Đang hoạt động</div>
+<div class="dh-bal-row">
+<div class="dh-bal-item"><div class="dh-bal-val" id="s_detail-bal">200.000 ₫</div><div class="dh-bal-lbl">Số dư</div></div>
+<div class="dh-bal-item"><div class="dh-bal-val" id="s_detail-limit">1tr</div><div class="dh-bal-lbl">Hạn mức/tháng</div></div>
+<div class="dh-bal-item"><div class="dh-bal-val" id="s_detail-spent">50K</div><div class="dh-bal-lbl">Đã dùng tháng này</div></div>
+</div>
+</div>
+<div class="detail-actions">
+<button class="det-act-btn" onclick="openTopup(currentDetail)">
+<div class="det-act-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7-7 7 7" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+Nạp tiền
+</button>
+<button class="det-act-btn" onclick="openLimitSheet()">
+<div class="det-act-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M4 6h16M4 18h10" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="18" r="2.5" stroke="#E91E8C" stroke-width="1.8"/></svg></div>
+Điều chỉnh hạn mức
+</button>
+<button class="det-act-btn" id="lock-btn" onclick="toggleLockWallet()">
+<div class="det-act-icon" id="lock-btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+<span id="lock-btn-label">Khóa ví phụ</span>
+</button>
+</div>
+<div class="info-card">
+<div class="info-row"><span class="info-key">Hạn mức / tháng</span><span class="info-val pink" id="s_detail-monthlimit">1.000.000 ₫</span></div>
+<div class="info-row"><span class="info-key">Dịch vụ được phép</span><span class="info-val">Chuyển tiền, thanh toán</span></div>
+<div class="info-row">
+<span class="info-key">Trạng thái</span>
+<span class="badge badge-on" id="s_detail-badge">Hoạt động</span>
+</div>
+</div>
+<div class="section-label">Lịch sử giao dịch</div>
+<div class="card" style="padding:0;overflow:hidden;">
+<div id="txn-list"></div>
+</div>
+<div style="height:16px;"></div>
+</div>
+<div class="bottom-area"></div>
+</div>
+
+<!-- S_TOPUP: Nạp tiền numpad -->
+<div id="s_topup" class="screen" style="background:var(--page-bg);">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div class="nav">
+<button class="nav-back" onclick="goTo(14)"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="nav-title">Nạp tiền Ví phụ</div>
+<div class="nav-capsule">
+<button class="nav-cap-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 18h18M3 12h18M3 6h18" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+<div class="nav-cap-div"></div>
+<button class="nav-cap-btn" onclick="goTo(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="s6-body">
+<div class="amt-center">
+<div class="amt-receiver">
+<div class="amt-receiver-avatar" id="s_topup-recv-ava">BA</div>
+<div class="amt-receiver-name" id="s_topup-recv-name">Bé An</div>
+</div>
+<div style="text-align:center;">
+<span class="amt-value zero" id="amt-display">0đ</span>
+</div>
+<div class="amt-note" id="amt-note"></div>
+</div>
+<div class="msg-card">
+<div class="msg-label">Lời nhắn (0/160)</div>
+<textarea class="msg-input" id="msg-input" rows="1" placeholder="Nhập hoặc chọn bên dưới" maxlength="160"></textarea>
+<div class="msg-chips">
+<button class="msg-chip" onclick="setMsg('Ba gửi tiền nha con')">Ba gửi tiền nha con</button>
+<button class="msg-chip" onclick="setMsg('Tiền tiêu vặt tháng này')">Tiền tiêu vặt tháng này</button>
+<button class="msg-chip" onclick="setMsg('Con dùng tiết kiệm nha!')">Con dùng tiết kiệm nha!</button>
+</div>
+</div>
+<div class="quick-amts">
+<button class="quick-amt" onclick="setPreset('200000',this)">200K</button>
+<button class="quick-amt" onclick="setPreset('500000',this)">500K</button>
+<button class="quick-amt" onclick="setPreset('1000000',this)">1 triệu</button>
+</div>
+<div class="numpad">
+<button class="num-key" onclick="numPress('1')">1</button>
+<button class="num-key" onclick="numPress('2')">2</button>
+<button class="num-key" onclick="numPress('3')">3</button>
+<button class="num-key" onclick="numPress('4')">4</button>
+<button class="num-key" onclick="numPress('5')">5</button>
+<button class="num-key" onclick="numPress('6')">6</button>
+<button class="num-key" onclick="numPress('7')">7</button>
+<button class="num-key" onclick="numPress('8')">8</button>
+<button class="num-key" onclick="numPress('9')">9</button>
+<button class="num-key" onclick="numPress('000')" style="font-size:13px;">000</button>
+<button class="num-key" onclick="numPress('0')">0</button>
+<button class="num-key del" onclick="numDel()">
+<svg width="20" height="16" viewBox="0 0 24 18" fill="none"><path d="M9 3H21a2 2 0 012 2v8a2 2 0 01-2 2H9l-7-6 7-6z" stroke="#666" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 7l-4 4M11 7l4 4" stroke="#666" stroke-width="1.8" stroke-linecap="round"/></svg>
+</button>
+</div>
+</div>
+<div class="bottom-area">
+<button class="btn-pink" id="btn-topup" disabled onclick="confirmTopup()">Nạp tiền</button>
+</div>
+</div>
+
+<!-- S_TOPUP_SUCC: Nạp tiền thành công -->
+<div id="s_topup_succ" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 20px 0;text-align:center;">
+<div class="check-ring">
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 20l7 7L30 13" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div class="suc-title">Nạp tiền thành công!</div>
+<div class="suc-amount" id="suc-amount">+200.000 ₫</div>
+<div class="suc-to">đã nạp vào ngăn ví <span id="suc-to-name" style="font-weight:600;color:#1A1A1A;">—</span></div>
+<div class="suc-divider"></div>
+<div style="width:100%;background:#fff;border-radius:14px;padding:4px 0;">
+<div class="suc-row"><span class="suc-key">Từ</span><span class="suc-val">Ví chính MoMo</span></div>
+<div class="suc-row"><span class="suc-key">Đến</span><span class="suc-val" id="suc-dest">—</span></div>
+<div class="suc-row"><span class="suc-key">Thời gian</span><span class="suc-val" id="suc-time">—</span></div>
+<div class="suc-row" style="border:none;"><span class="suc-key">Mã GD</span><span class="suc-val" id="suc-txnid">—</span></div>
+</div>
+</div>
+<div class="bottom-area" style="background:#fff;">
+<button class="btn-pink" onclick="goTo(1)">Hoàn thành</button>
+<button class="btn-outline" onclick="goTo(14)">Xem chi tiết ví phụ</button>
+</div>
+</div>
+
+</div>
+<!-- SHARE BOTTOM SHEET (copied from Ví Chính) -->
+<div id="share-sheet" class="sheet-overlay">
+<div class="sheet-backdrop" onclick="closeShareSheet()"></div>
+<div class="sheet-panel">
+<div class="sheet-handle"></div>
+<div class="sheet-title">Chia sẻ link mời</div>
+<div class="sheet-sub" id="share-link-preview">momo.vn/vi-phu/abc123</div>
+<div class="share-grid">
+<button class="share-item" onclick="shareVia('messenger')"><div class="share-ic" style="background:linear-gradient(135deg,#00B2FF,#006AFF);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.7 1.3 5.2 3.4 6.8v3.3l3.1-1.7c.9.3 1.9.4 2.9.4l.6.0c5.5 0 10-4.1 10-9.2 0-5.1-4.5-9.2-10-9.2zm.9 12L10.5 11l-4.4 2.6 4.9-5.2 2.5 2.6L17.6 8l-4.7 6z" fill="#fff"/></svg></div><div class="share-lbl">Messenger</div></button>
+<button class="share-item" onclick="shareVia('zalo')"><div class="share-ic" style="background:#0068FF;"><span style="font-size:22px;font-weight:800;color:#fff;font-style:italic;letter-spacing:-1px;">Zalo</span></div><div class="share-lbl">Zalo</div></button>
+<button class="share-item" onclick="shareVia('sms')"><div class="share-ic" style="background:#34C759;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" fill="#fff"/></svg></div><div class="share-lbl">Tin nhắn</div></button>
+<button class="share-item" onclick="shareVia('telegram')"><div class="share-ic" style="background:linear-gradient(135deg,#2AABEE,#229ED9);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21.4 4.5L2.6 11.7c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.1.8.7.8.4 0 .6-.2.9-.4l2.1-2 4.4 3.2c.8.4 1.4.2 1.6-.7l2.9-13.7c.3-1.2-.5-1.7-1.2-1.5z" fill="#fff"/></svg></div><div class="share-lbl">Telegram</div></button>
+<button class="share-item" onclick="shareVia('copy')"><div class="share-ic" style="background:#F5F5F5;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="#666" stroke-width="1.8"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#666" stroke-width="1.8"/></svg></div><div class="share-lbl">Sao chép</div></button>
+<button class="share-item" onclick="shareVia('more')"><div class="share-ic" style="background:#F5F5F5;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="1.8" fill="#666"/><circle cx="12" cy="12" r="1.8" fill="#666"/><circle cx="18" cy="12" r="1.8" fill="#666"/></svg></div><div class="share-lbl">Khác</div></button>
+</div>
+</div>
+</div>
+<!-- LIMIT ADJUST BOTTOM SHEET -->
+<div id="limit-sheet" class="sheet-overlay">
+<div class="sheet-backdrop" onclick="closeLimitSheet()"></div>
+<div class="sheet-panel">
+<div class="sheet-handle"></div>
+<div class="sheet-title">Điều chỉnh hạn mức</div>
+<div class="sheet-sub">Tổng chi tiêu tối đa mỗi tháng, không vượt quá 2.000.000 ₫</div>
+<div id="ls-wrap" class="input-wrap" style="margin:6px 0 8px;">
+<label class="input-label">Hạn mức / tháng</label>
+<div class="limit-input-row">
+<input id="ls-inp" class="input-field" type="tel" inputmode="numeric" placeholder="Nhập số tiền (tối đa 2.000.000)" oninput="fmtLs()"/>
+<span class="limit-suffix">₫</span>
+</div>
+</div>
+<div class="quick-chips" style="margin-bottom:14px;">
+<button class="quick-chip" data-ls-val="500000" onclick="pickLs(500000)">500K</button>
+<button class="quick-chip" data-ls-val="1000000" onclick="pickLs(1000000)">1tr</button>
+<button class="quick-chip" data-ls-val="1500000" onclick="pickLs(1500000)">1.5tr</button>
+<button class="quick-chip" data-ls-val="2000000" onclick="pickLs(2000000)">2tr</button>
+</div>
+<button class="btn-pink" id="ls-save" onclick="saveLimitAdjust()">Lưu</button>
+<button class="btn-text" onclick="closeLimitSheet()" style="margin-top:4px;">Hủy</button>
+</div>
+</div>
+<div id="kb-cta"></div>
+</div><!-- /phone-frame-inner -->
+</div><!-- /phone-frame -->
+<script>
+'use strict';
+var SCREENS=['s0','s1','s2','s3','s5','s6','s7','s8','s9','s10','s11','s12','s14','s_kyc_intro','s_detail','s_topup','s_topup_succ'];
+var whiteScreens={0:1,2:1,12:1,13:1,16:1};
+var darkScreens={6:1};
+var currentScreen=0;var otpTimerInterval=null;
+var tncChecked={momo:false,viphu:false};
+
+function goTo(n){hideKbCta();if(otpTimerInterval){clearInterval(otpTimerInterval);otpTimerInterval=null;}var tc=document.getElementById('theme-color');if(darkScreens[n]){tc.setAttribute('content','#1A1A1A');document.body.style.background='#1A1A1A';document.documentElement.style.background='#1A1A1A';}else if(whiteScreens[n]){tc.setAttribute('content','#FFFFFF');document.body.style.background='#FFFFFF';document.documentElement.style.background='#FFFFFF';}else if(n===9){tc.setAttribute('content','#FFE4F0');document.body.style.background='#E0E0E0';document.documentElement.style.background='#E0E0E0';}else{tc.setAttribute('content','#FFE4F0');document.body.style.background='#F5F5F5';document.documentElement.style.background='#F5F5F5';}for(var i=0;i<SCREENS.length;i++){var el=document.getElementById(SCREENS[i]);if(i===n){el.classList.remove('leaving');el.classList.add('active');}else if(i===currentScreen){el.classList.remove('active');el.classList.add('leaving');(function(e){setTimeout(function(){e.classList.remove('leaving');},350);})(el);}else{el.classList.remove('active','leaving');}}currentScreen=n;if(n===1)renderWalletList();if(n===3)startOtpTimer();if(n===6)setScanState(false);}
+function selVerify(t){var ids=['verify-opt-chip','verify-opt-vneid','verify-opt-help'];var map={chip:'verify-opt-chip',vneid:'verify-opt-vneid',help:'verify-opt-help'};for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.classList.remove('selected');}var sel=document.getElementById(map[t]);if(sel)sel.classList.add('selected');}
+function setScanState(success){var sDef=document.getElementById('scan-state-default');var sOk=document.getElementById('scan-state-success');var title=document.getElementById('scan-title');var instr=document.getElementById('scan-instr');var demo=document.getElementById('scan-demo-wrap');var cta=document.getElementById('scan-cta');if(!sDef||!sOk||!title||!cta)return;if(success){sDef.style.display='none';sOk.style.display='flex';title.textContent='Quét thành công';if(instr)instr.style.display='none';if(demo)demo.style.display='none';cta.className='btn-pink';cta.removeAttribute('style');cta.textContent='Quét thành công';cta.onclick=function(){goTo(7);};}else{sDef.style.display='flex';sOk.style.display='none';title.textContent='Tìm vị trí quét';if(instr)instr.style.display='block';if(demo)demo.style.display='block';cta.className='btn-outline';cta.style.borderColor='rgba(255,255,255,0.5)';cta.style.color='#fff';cta.style.background='transparent';cta.style.width='100%';cta.style.height='52px';cta.style.border='1.5px solid rgba(255,255,255,0.5)';cta.style.borderRadius='14px';cta.style.fontSize='16px';cta.style.fontWeight='700';cta.style.fontFamily='inherit';cta.style.cursor='pointer';cta.textContent='Hủy';cta.onclick=function(){goTo(4);};}}
+function demoScan(){setScanState(true);}
+function focusWrap(id){var el=document.getElementById(id);el.classList.add('focused');el.classList.remove('error');scheduleShowKbCta();}
+function blurWrap(id){document.getElementById(id).classList.remove('focused');scheduleHideKbCta();}
+function highlightError(id){var w=document.getElementById(id);if(!w)return;w.classList.remove('error');void w.offsetWidth;w.classList.add('error');var inp=w.querySelector('input');if(inp)inp.focus();}
+function submitPhone(){var v=document.getElementById('phone-inp').value.replace(/\D/g,'');if(v.length<9){highlightError('phone-wrap');return;}var f=v.replace(/(\d{4})(\d{3})(\d{3})/,'$1 $2 $3');document.getElementById('otp-phone-display').textContent=f;document.getElementById('review-phone').textContent=f;goTo(3);}
+function demoPhone(){document.getElementById('phone-inp').value='0912345678';}
+function otpInput(n){var b=document.getElementById('otp'+n);document.getElementById('otp-row').classList.remove('error');var v=b.value.replace(/\D/g,'');b.value=v.slice(0,1);if(v.length>0&&n<4)document.getElementById('otp'+(n+1)).focus();var f=true;for(var i=1;i<=4;i++){if(!document.getElementById('otp'+i).value){f=false;break;}}document.getElementById('btn-otp').disabled=!f;}
+function submitOtp(){var f=true;for(var i=1;i<=4;i++){if(!document.getElementById('otp'+i).value){f=false;break;}}if(!f){var r=document.getElementById('otp-row');r.classList.remove('error');void r.offsetWidth;r.classList.add('error');document.getElementById('otp1').focus();return;}goTo(13);}
+function demoOtp(){for(var i=0;i<4;i++)document.getElementById('otp'+(i+1)).value=''+(i+1);document.getElementById('btn-otp').disabled=false;}
+function startOtpTimer(){var s=60;var el=document.getElementById('otp-timer');for(var i=1;i<=4;i++)document.getElementById('otp'+i).value='';document.getElementById('btn-otp').disabled=true;el.innerHTML='Gửi lại mã sau <span style="color:#E91E8C;font-weight:600">60s</span>';otpTimerInterval=setInterval(function(){s--;if(s<=0){clearInterval(otpTimerInterval);otpTimerInterval=null;el.innerHTML='<button class="btn-text" onclick="startOtpTimer()" style="padding:0">Gửi lại mã</button>';}else{el.innerHTML='Gửi lại mã sau <span style="color:#E91E8C;font-weight:600">'+s+'s</span>';}},1000);}
+function selectGender(g){var gn=document.getElementById('g-nam');var gf=document.getElementById('g-nu');if(g==='nam'){gn.classList.add('sel');gf.classList.remove('sel');}else{gf.classList.add('sel');gn.classList.remove('sel');}}
+function onOcrInput(){var v=document.getElementById('ocr-cccd').value.replace(/\D/g,'');document.getElementById('ocr-cccd-err').classList.toggle('show',v.length>0&&(v.length<6||v.length>14));}
+function demoOcrFill(){document.getElementById('ocr-cccd').value='079203012456';document.getElementById('ocr-cccd-err').classList.remove('show');}
+function toggleTnc(key){tncChecked[key]=!tncChecked[key];var row=document.getElementById('tnc-row-'+key);var box=row.querySelector('.tnc-checkbox');var svg=row.querySelector('.tnc-check-svg');row.classList.remove('error');if(tncChecked[key]){box.classList.add('checked');svg.style.display='block';}else{box.classList.remove('checked');svg.style.display='none';}}
+var wallets=[{
+  ava:'BA',name:'Bé An',phone:'0987 654 321',
+  bal:200000,limit:1000000,spent:50000,
+  statusLabel:'Hoạt động',status:'Đang hoạt động',badgeClass:'badge-on',
+  txns:[
+    {type:'out',title:'Thanh toán Highlands',date:'Hôm qua, 16:42',amt:'-50.000 ₫'},
+    {type:'in',title:'Nạp từ ví chính',date:'02/05/2026, 09:30',amt:'+250.000 ₫'}
+  ]
+}];
+var currentDetail=0;var amtRaw='';
+function fmtVND(n){return n.toLocaleString('vi-VN')+' ₫';}
+function fmtVNDShort(n){if(n>=1000000)return(n/1000000).toFixed(1).replace(/\.0$/,'')+'tr';if(n>=1000)return Math.round(n/1000)+'K';return''+n;}
+function makeInit(name){var p=(name||'').trim().split(/\s+/);var s='';for(var i=0;i<p.length&&s.length<2;i++){if(p[i].length>0)s+=p[i][0].toUpperCase();}return s||'??';}
+function renderWalletList(){
+  var c=document.getElementById('wallet-list');
+  if(!c||wallets.length===0)return;
+  var html='';
+  for(var i=0;i<wallets.length;i++){
+    var w=wallets[i];
+    var isPending=(w.badgeClass==='badge-pending');
+    if(isPending){
+      html+='<div class="sub-card">'
+        +'<div class="sub-card-main">'
+        +'<div class="sub-ava" style="background:#FFF4E5;color:#E89220;">'+w.ava+'</div>'
+        +'<div class="sub-info">'
+        +'<div class="sub-name">'+w.name+'</div>'
+        +'<div class="sub-detail">'+w.phone+'</div>'
+        +'<div class="sub-detail">Hạn mức '+fmtVNDShort(w.limit)+'/tháng</div>'
+        +'</div>'
+        +'<span class="badge '+w.badgeClass+'">'+w.statusLabel+'</span>'
+        +'</div></div>';
+    }else{
+      html+='<div class="sub-card">'
+        +'<div class="sub-card-main clickable" onclick="openDetail('+i+')">'
+        +'<div class="sub-ava" style="background:#FFF0F7;color:#E91E8C;">'+w.ava+'</div>'
+        +'<div class="sub-info">'
+        +'<div class="sub-name">'+w.name+'</div>'
+        +'<div class="sub-bal">'+fmtVND(w.bal)+'</div>'
+        +'<div class="sub-detail">Hạn mức '+fmtVNDShort(w.limit)+'/tháng</div>'
+        +'</div>'
+        +'<span class="badge '+w.badgeClass+'">'+(w.statusLabel||'Hoạt động')+'</span>'
+        +'</div>'
+        +'<div class="sub-actions">'
+        +'<button class="sub-act-btn" onclick="openTopup('+i+')">'
+        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7-7 7 7" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Nạp tiền</button>'
+        +'<div class="sub-act-div"></div>'
+        +'<button class="sub-act-btn" onclick="openDetail('+i+')">'
+        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" stroke="#E91E8C" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="#E91E8C" stroke-width="1.8"/></svg> Xem chi tiết</button>'
+        +'</div></div>';
+    }
+  }
+  c.innerHTML=html;
+}
+function submitReview(){var missing=null;if(!tncChecked.momo)missing='tnc-row-momo';else if(!tncChecked.viphu)missing='tnc-row-viphu';if(missing){var r=document.getElementById(missing);r.classList.remove('error');void r.offsetWidth;r.classList.add('error');return;}var name=(document.getElementById('review-name').textContent||'Ngăn Ví phụ').trim();var phone=(document.getElementById('review-phone').textContent||'').trim();wallets.push({ava:makeInit(name),name:name,phone:phone,limit:monthLimitVal||1000000,statusLabel:'Chờ kích hoạt',badgeClass:'badge-pending'});goTo(12);}
+function toggleSvc(id){var el=document.getElementById(id);var isOn=el.classList.contains('on');var knob=el.querySelector('div');if(isOn){el.classList.remove('on');el.style.background='#D0D0D0';knob.style.right='auto';knob.style.left='2px';}else{el.classList.add('on');el.style.background='#4CAF50';knob.style.left='auto';knob.style.right='2px';}}
+function onLimitChange(){}
+var monthLimitVal=0;var LIMIT_MAX=2000000;
+function clearWrapError(id){var w=document.getElementById(id);if(w)w.classList.remove('error');}
+function updateChips(val){var chips=document.querySelectorAll('.quick-chip');for(var i=0;i<chips.length;i++){var cv=parseInt(chips[i].getAttribute('data-val'),10);if(cv===val)chips[i].classList.add('selected');else chips[i].classList.remove('selected');}}
+function fmtLimit(){var el=document.getElementById('limit-inp');var raw=el.value.replace(/\D/g,'');clearWrapError('limit-wrap');if(raw===''){el.value='';monthLimitVal=0;updateChips(0);return;}var num=parseInt(raw,10);if(num>LIMIT_MAX)num=LIMIT_MAX;el.value=num.toLocaleString('vi-VN');monthLimitVal=num;updateChips(num);}
+function pickLimit(val){monthLimitVal=val;document.getElementById('limit-inp').value=val.toLocaleString('vi-VN');updateChips(val);clearWrapError('limit-wrap');}
+function submitS2(){if(!monthLimitVal){highlightError('limit-wrap');return;}goTo(11);}
+function demoFillS2(){pickLimit(1000000);}
+function openDetail(idx){
+  currentDetail=idx;
+  var w=wallets[idx];if(!w)return;
+  document.getElementById('s_detail-nav-title').textContent='Chi tiết ví '+w.name;
+  document.getElementById('s_detail-ava').textContent=w.ava;
+  document.getElementById('s_detail-name').textContent=w.name;
+  document.getElementById('s_detail-phone').textContent=w.phone;
+  document.getElementById('s_detail-status').textContent=w.status||w.statusLabel;
+  document.getElementById('s_detail-bal').textContent=fmtVND(w.bal||0);
+  document.getElementById('s_detail-limit').textContent=fmtVNDShort(w.limit||0);
+  document.getElementById('s_detail-spent').textContent=fmtVNDShort(w.spent||0);
+  document.getElementById('s_detail-monthlimit').textContent=fmtVND(w.limit||0);
+  var badge=document.getElementById('s_detail-badge');
+  badge.textContent=w.statusLabel||'Hoạt động';
+  badge.className='badge '+(w.badgeClass||'badge-on');
+  var txns=w.txns||[];
+  var html='';
+  if(txns.length===0){html='<div style="padding:24px 16px;text-align:center;font-size:13px;color:#999;">Chưa có giao dịch nào</div>';}
+  for(var i=0;i<txns.length;i++){
+    var t=txns[i];
+    var ic=t.type==='in'?'#2E7D32':'#E65100';
+    var ip=t.type==='in'
+      ?'<path d="M12 19V5M5 12l7 7 7-7" stroke="'+ic+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+      :'<path d="M12 5v14M5 12l7-7 7 7" stroke="'+ic+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    html+='<div class="txn-item">'
+      +'<div class="txn-icon '+t.type+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none">'+ip+'</svg></div>'
+      +'<div class="txn-info"><div class="txn-title">'+t.title+'</div><div class="txn-date">'+t.date+'</div></div>'
+      +'<div class="txn-amt '+t.type+'">'+t.amt+'</div>'
+      +'</div>';
+  }
+  document.getElementById('txn-list').innerHTML=html;
+  goTo(14);
+}
+function toggleLockWallet(){
+  var w=wallets[currentDetail];if(!w)return;
+  var locked=(w.badgeClass==='badge-off');
+  if(locked){w.status='Đang hoạt động';w.statusLabel='Hoạt động';w.badgeClass='badge-on';}
+  else{w.status='Đã khóa';w.statusLabel='Đã khóa';w.badgeClass='badge-off';}
+  document.getElementById('s_detail-status').textContent=w.status;
+  var badge=document.getElementById('s_detail-badge');
+  badge.textContent=w.statusLabel;
+  badge.className='badge '+w.badgeClass;
+  var lbl=document.getElementById('lock-btn-label');
+  var ic=document.getElementById('lock-btn-icon');
+  if(w.badgeClass==='badge-off'){
+    lbl.textContent='Mở khóa ví';
+    ic.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M8 11V7a4 4 0 017.5-1.5" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  }else{
+    lbl.textContent='Khóa ví phụ';
+    ic.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#E91E8C" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  }
+}
+var lsVal=0;var LS_MAX=2000000;
+function openLimitSheet(){
+  var w=wallets[currentDetail];if(!w)return;
+  lsVal=w.limit||0;
+  var inp=document.getElementById('ls-inp');
+  inp.value=lsVal?lsVal.toLocaleString('vi-VN'):'';
+  var chips=document.querySelectorAll('#limit-sheet .quick-chip');
+  for(var i=0;i<chips.length;i++){
+    var cv=parseInt(chips[i].getAttribute('data-ls-val'),10);
+    if(cv===lsVal)chips[i].classList.add('selected');else chips[i].classList.remove('selected');
+  }
+  document.getElementById('ls-save').disabled=!lsVal;
+  document.getElementById('limit-sheet').classList.add('open');
+}
+function closeLimitSheet(){document.getElementById('limit-sheet').classList.remove('open');}
+function fmtLs(){
+  var el=document.getElementById('ls-inp');
+  var raw=el.value.replace(/\D/g,'');
+  if(raw===''){el.value='';lsVal=0;lsUpdateChips(0);document.getElementById('ls-save').disabled=true;return;}
+  var num=parseInt(raw,10);if(num>LS_MAX)num=LS_MAX;
+  el.value=num.toLocaleString('vi-VN');
+  lsVal=num;lsUpdateChips(num);
+  document.getElementById('ls-save').disabled=!num;
+}
+function pickLs(val){
+  lsVal=val;
+  document.getElementById('ls-inp').value=val.toLocaleString('vi-VN');
+  lsUpdateChips(val);
+  document.getElementById('ls-save').disabled=!val;
+}
+function lsUpdateChips(val){
+  var chips=document.querySelectorAll('#limit-sheet .quick-chip');
+  for(var i=0;i<chips.length;i++){
+    var cv=parseInt(chips[i].getAttribute('data-ls-val'),10);
+    if(cv===val)chips[i].classList.add('selected');else chips[i].classList.remove('selected');
+  }
+}
+function saveLimitAdjust(){
+  if(!lsVal)return;
+  var w=wallets[currentDetail];if(!w)return;
+  w.limit=lsVal;
+  document.getElementById('s_detail-limit').textContent=fmtVNDShort(w.limit);
+  document.getElementById('s_detail-monthlimit').textContent=fmtVND(w.limit);
+  closeLimitSheet();
+}
+function openTopup(idx){
+  currentDetail=idx;
+  amtRaw='';updateAmtDisplay();
+  var qs=document.querySelectorAll('.quick-amt');for(var i=0;i<qs.length;i++)qs[i].classList.remove('selected');
+  var w=wallets[idx];
+  if(w){
+    document.getElementById('s_topup-recv-name').textContent=w.name;
+    document.getElementById('s_topup-recv-ava').textContent=w.ava;
+  }
+  var mi=document.getElementById('msg-input');if(mi)mi.value='';
+  goTo(15);
+}
+function numPress(v){
+  if(amtRaw.length>=10)return;
+  if(amtRaw===''||amtRaw==='0'){amtRaw=(v==='000')?'0':v;}
+  else amtRaw+=v;
+  amtRaw=String(parseInt(amtRaw,10)||0);
+  updateAmtDisplay();
+  var qs=document.querySelectorAll('.quick-amt');for(var i=0;i<qs.length;i++)qs[i].classList.remove('selected');
+}
+function numDel(){
+  if(amtRaw.length<=1)amtRaw='0';
+  else amtRaw=amtRaw.substring(0,amtRaw.length-1);
+  updateAmtDisplay();
+}
+function setPreset(val,el){
+  amtRaw=String(parseInt(val,10));
+  updateAmtDisplay();
+  var qs=document.querySelectorAll('.quick-amt');for(var i=0;i<qs.length;i++)qs[i].classList.remove('selected');
+  if(el)el.classList.add('selected');
+}
+function setMsg(t){var mi=document.getElementById('msg-input');if(mi)mi.value=t;}
+function updateAmtDisplay(){
+  var n=parseInt(amtRaw,10)||0;
+  var el=document.getElementById('amt-display');
+  if(n===0){el.textContent='0đ';el.classList.add('zero');}
+  else{el.textContent=n.toLocaleString('vi-VN')+'đ';el.classList.remove('zero');}
+  var note='';
+  if(n>0&&n<10000)note='Tối thiểu 10.000 ₫';
+  if(n>10000000)note='Tối đa 10.000.000 ₫';
+  document.getElementById('amt-note').textContent=note;
+  document.getElementById('btn-topup').disabled=!(n>=10000&&n<=10000000);
+}
+function confirmTopup(){
+  var n=parseInt(amtRaw,10)||0;
+  var w=wallets[currentDetail];if(!w)return;
+  w.bal=(w.bal||0)+n;
+  if(!w.txns)w.txns=[];
+  w.txns.unshift({
+    type:'in',title:'Nạp từ ví chính',
+    date:'Hôm nay, '+new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}),
+    amt:'+'+n.toLocaleString('vi-VN')+' ₫'
+  });
+  document.getElementById('suc-amount').textContent='+'+n.toLocaleString('vi-VN')+' ₫';
+  document.getElementById('suc-to-name').textContent=w.name;
+  document.getElementById('suc-dest').textContent=w.name;
+  document.getElementById('suc-txnid').textContent='MOM'+Date.now().toString().slice(-10);
+  var now=new Date();
+  document.getElementById('suc-time').textContent=
+    ('0'+now.getDate()).slice(-2)+'/'+
+    ('0'+(now.getMonth()+1)).slice(-2)+'/'+
+    now.getFullYear()+' '+
+    ('0'+now.getHours()).slice(-2)+':'+
+    ('0'+now.getMinutes()).slice(-2);
+  goTo(16);
+}
+function openShareSheet(){var lnk=document.getElementById('inv-lnk');var preview=document.getElementById('share-link-preview');if(lnk&&preview)preview.textContent=lnk.textContent;document.getElementById('share-sheet').classList.add('open');}
+function closeShareSheet(){document.getElementById('share-sheet').classList.remove('open');}
+function shareVia(platform){var lnk=document.getElementById('inv-lnk');var url=lnk?lnk.textContent:'';if(platform==='copy'&&navigator.clipboard){navigator.clipboard.writeText(url).catch(function(){});}closeShareSheet();}
+var kbOrigArea=null;var kbHideTimer=null;var kbShowTimer=null;var kbObserver=null;var kbLastOffsetTop=0;
+function kbSyncState(){if(!kbOrigArea)return;var el=document.getElementById('kb-cta');var ob=kbOrigArea.querySelectorAll('button');var cb=el.querySelectorAll('button');for(var i=0;i<Math.min(ob.length,cb.length);i++)cb[i].disabled=ob[i].disabled;}
+function startKbObserver(){if(!kbOrigArea||kbObserver)return;kbObserver=new MutationObserver(kbSyncState);kbObserver.observe(kbOrigArea,{subtree:true,attributes:true,attributeFilter:['disabled']});}
+function stopKbObserver(){if(kbObserver){kbObserver.disconnect();kbObserver=null;}}
+function showKbCta(){if(kbOrigArea)return;var scr=document.querySelector('.screen.active');if(!scr)return;var orig=scr.querySelector('.bottom-area');if(!orig)return;kbOrigArea=orig;var el=document.getElementById('kb-cta');el.innerHTML='';el.appendChild(orig.cloneNode(true));el.style.display='block';orig.style.visibility='hidden';startKbObserver();setTimeout(updateKbCtaPos,0);}
+function hideKbCta(){if(kbShowTimer){clearTimeout(kbShowTimer);kbShowTimer=null;}if(kbHideTimer){clearTimeout(kbHideTimer);kbHideTimer=null;}stopKbObserver();var el=document.getElementById('kb-cta');el.style.display='none';el.style.top='';el.innerHTML='';if(kbOrigArea){kbOrigArea.style.visibility='';kbOrigArea=null;}kbLastOffsetTop=0;}
+function updateKbCtaPos(){var vv=window.visualViewport;var el=document.getElementById('kb-cta');if(!vv||el.style.display==='none')return;el.style.top=(vv.offsetTop+vv.height-(el.offsetHeight||80))+'px';el.style.bottom='auto';}
+function scheduleShowKbCta(){if(kbHideTimer){clearTimeout(kbHideTimer);kbHideTimer=null;}if(kbShowTimer){clearTimeout(kbShowTimer);kbShowTimer=null;}kbShowTimer=setTimeout(function(){kbShowTimer=null;showKbCta();},350);}
+function scheduleHideKbCta(){if(kbShowTimer){clearTimeout(kbShowTimer);kbShowTimer=null;}kbHideTimer=setTimeout(function(){kbHideTimer=null;var vv=window.visualViewport;if(vv&&Math.round(window.innerHeight-vv.height)>100)return;hideKbCta();},200);}
+if(window.visualViewport){window.visualViewport.addEventListener('resize',function(){var kbH=Math.round(window.innerHeight-window.visualViewport.height);if(kbH<100)hideKbCta();else if(kbOrigArea)updateKbCtaPos();});window.visualViewport.addEventListener('scroll',function(){var ot=Math.round(window.visualViewport.offsetTop);if(ot!==kbLastOffsetTop){kbLastOffsetTop=ot;updateKbCtaPos();}});}
+document.addEventListener('touchmove',function(e){if(!e.target.closest('.scroll'))e.preventDefault();},{passive:false});
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(function(){});
+</script>
+</body>
+</html>

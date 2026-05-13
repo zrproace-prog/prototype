@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#FFFFFF"/>
+<title>MoMo — Ví Phụ Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--page-bg:#F5F5F5;--sat:env(safe-area-inset-top,0px);--pink:#E91E8C;--pink-btn:#E8197D;--pink-pale:#FFF0F7;--pink-bg:#FDE8F3;--divider:#F0F0F0;--input-border:#E0E0E0;--text-main:#1A1A1A;--text-sub:#666666;--text-hint:#999999;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{min-height:calc(100% + env(safe-area-inset-top));overflow:hidden;background:#FFFFFF;font-family:'Be Vietnam Pro',-apple-system,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%;}
+body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFFFFF;}
+
+/* iPhone 15 Pro simulator on desktop */
+@media (min-width:600px){
+  html,body{overflow:auto;background:#0f0f13;height:100%;}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 40%,#1a1a2e 0%,#0f0f13 70%);}
+  #phone-frame{position:relative;width:393px;height:852px;border-radius:55px;background:#1c1c1e;padding:4px;flex-shrink:0;transform:translateZ(0);box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 0 0 3px #2a2a2e,0 0 0 4px rgba(255,255,255,0.05),0 20px 60px rgba(0,0,0,0.6),0 40px 100px rgba(0,0,0,0.4),0 0 120px rgba(100,100,120,0.08);}
+  #phone-frame-inner{position:relative;width:100%;height:100%;border-radius:51px;overflow:hidden;background:#F5F5F5;}
+  #phone-frame-inner::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:126px;height:37px;background:#000;border-radius:24px;z-index:10000;}
+  #phone-frame-inner::after{content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(255,255,255,0.25);border-radius:3px;z-index:10000;}
+  #phone-frame::before{content:'';position:absolute;top:168px;right:-7px;width:4px;height:96px;background:linear-gradient(180deg,#3a3a3e 0%,#2a2a2e 50%,#3a3a3e 100%);border-radius:0 3px 3px 0;box-shadow:1px 0 2px rgba(0,0,0,0.3);z-index:10;}
+  #phone-frame::after{content:'';position:absolute;top:178px;left:-7px;width:4px;height:64px;background:linear-gradient(180deg,#3a3a3e 0%,#2a2a2e 50%,#3a3a3e 100%);border-radius:3px 0 0 3px;box-shadow:-1px 0 2px rgba(0,0,0,0.3);z-index:10;}
+  #app{position:absolute;inset:0;border-radius:51px;overflow:hidden;}
+  .screen{position:absolute;inset:0;}
+  .status-spacer{height:59px!important;}
+  .bottom-area{padding-bottom:28px!important;}
+}
+@media (max-width:599px){#phone-frame,#phone-frame-inner{position:fixed;inset:0;overflow:hidden;}}
+#app{position:absolute;inset:0;overflow:hidden;}
+@media(max-width:599px){#app{position:fixed;}}
+
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(100%);transition:opacity .3s ease,transform .32s cubic-bezier(.4,0,.2,1);will-change:transform,opacity;overflow:hidden;}
+.screen.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.screen.leaving{opacity:0;transform:translateX(-30px);pointer-events:none;}
+
+.hdr-pink{background:linear-gradient(180deg,#FFE4F0 0%,#FFF5F9 40%,#F5F5F5 100%);flex-shrink:0;}
+.status-spacer{flex-shrink:0;height:max(calc(var(--sat) + 4px),24px);}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px;gap:8px;min-height:50px;position:relative;}
+.nav-title{flex:1;text-align:center;font-size:16px;font-weight:700;color:#1A1A1A;position:absolute;left:50%;transform:translateX(-50%);}
+.nav-back{width:36px;height:34px;border-radius:20px;background:rgba(0,0,0,0.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;min-width:36px;}
+.nav-right-capsule{display:flex;align-items:center;background:#fff;border-radius:20px;border:1px solid #E0E0E0;overflow:hidden;height:34px;flex-shrink:0;}
+.nav-right-capsule button{width:36px;height:34px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.nav-right-capsule .divider-v{width:1px;height:20px;background:#E0E0E0;}
+.card-rows{background:#fff;border-radius:16px;margin:0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.txn-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--divider);}
+.txn-row:last-child{border-bottom:none;}
+.txn-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.txn-body{flex:1;min-width:0;}
+.txn-title{font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:2px;}
+.txn-sub{font-size:11px;color:#666;}
+.txn-amount{font-size:13px;font-weight:700;flex-shrink:0;}
+.txn-out{color:#FF5722;}
+.txn-in{color:#4CAF50;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+.scroll::-webkit-scrollbar{display:none;}
+
+.card{background:#fff;border-radius:16px;margin:0 12px 12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.input-wrap{border:1.5px solid var(--input-border);border-radius:10px;padding:8px 14px 10px;margin-bottom:14px;background:#fff;position:relative;}
+.input-wrap.focused{border-color:#E91E8C;}
+.input-label{font-size:12px;font-weight:500;color:#999;margin-bottom:2px;display:block;}
+.input-wrap.focused .input-label{color:#E91E8C;}
+.input-row{display:flex;align-items:center;gap:8px;}
+.input-row input{flex:1;font-size:16px;font-weight:400;color:#1A1A1A;border:none;background:transparent;outline:none;-webkit-appearance:none;font-family:'Be Vietnam Pro',sans-serif;}
+.input-row input::placeholder{color:#CCC;}
+.phone-prefix{font-size:15px;font-weight:500;color:#1A1A1A;padding-right:10px;border-right:1px solid #E0E0E0;white-space:nowrap;}
+.input-clear{width:20px;height:20px;border-radius:50%;background:#CCC;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;}
+.input-eye{background:none;border:none;cursor:pointer;font-size:18px;padding:2px;}
+.input-err{font-size:12px;color:#FF5722;margin-top:-10px;margin-bottom:10px;}
+
+.btn-pink{width:100%;height:52px;background:#E8197D;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(232,25,125,0.3);font-family:'Be Vietnam Pro',sans-serif;}
+.btn-pink:disabled{background:#E0E0E0;color:#999;box-shadow:none;cursor:not-allowed;}
+.btn-demo{display:block;text-align:center;margin:10px auto 0;font-size:11px;color:#CCC;font-weight:400;background:none;border:1px dashed #E0E0E0;border-radius:6px;cursor:pointer;padding:4px 10px;opacity:0.6;font-family:inherit;}
+.bottom-area{flex-shrink:0;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--page-bg);}
+
+.otp-row{display:flex;gap:10px;justify-content:center;margin:16px 0;}
+.otp-cell{width:52px;height:58px;border:1.5px solid #E0E0E0;border-radius:10px;font-size:22px;font-weight:700;text-align:center;color:#1A1A1A;background:#fff;outline:none;-webkit-appearance:none;font-family:'Be Vietnam Pro',sans-serif;transition:border-color .2s;}
+.otp-cell:focus{border-color:#E91E8C;}
+.otp-cell.filled{border-color:#E91E8C;background:#FFF0F7;}
+.resend-row{display:flex;align-items:center;margin-top:10px;}
+.resend-btn{font-size:13px;font-weight:600;color:#E91E8C;background:none;border:none;cursor:pointer;}
+.resend-timer{font-size:13px;color:#999;}
+.security-strip{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;margin:0 12px 10px;}
+.security-strip span{font-size:11px;color:#999;}
+.sec-tag{background:#F0F0F0;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600;color:#666;}
+
+.face-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;background:#fff;}
+.face-circle{width:240px;height:240px;border-radius:50%;border:4px solid #E0E0E0;background:#F5F5F5;display:flex;align-items:center;justify-content:center;margin:32px 0 0;position:relative;overflow:hidden;}
+.face-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(233,30,140,0.15) 0%,transparent 100%);height:60%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px;}
+.face-instruction{background:rgba(233,30,140,0.9);color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;text-align:center;}
+.face-sub{font-size:13px;color:#666;text-align:center;margin-top:16px;line-height:1.6;padding:0 16px;}
+.guide-pill{display:inline-flex;align-items:center;gap:6px;background:#F5F5F5;color:#1A1A1A;border:none;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:20px;padding:8px 16px;border-radius:20px;}
+
+/* Hub back link */
+.hub-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#666;text-decoration:none;background:rgba(0,0,0,0.05);padding:5px 10px;border-radius:12px;}
+</style>
+</head>
+<body>
+<div id="phone-frame"><div id="phone-frame-inner"><div id="app">
+
+<!-- Global success toast (overlay) -->
+<div id="toast-success" style="position:absolute;top:80px;left:50%;transform:translate(-50%,-30px);background:rgba(34,34,34,0.95);color:#fff;padding:12px 20px;border-radius:30px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;box-shadow:0 10px 28px rgba(0,0,0,0.32);opacity:0;pointer-events:none;transition:opacity .26s ease,transform .26s ease;z-index:10001;white-space:nowrap;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4CAF50"/><path d="M7 12l3.5 3.5L17 9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span>Xác thực khuôn mặt thành công</span>
+</div>
+
+<!-- S0: PHONE -->
+<div id="S0" class="screen active">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div class="nav">
+<a class="hub-link" href="../../index.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 5l-7 7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Hub</a>
+<div class="nav-title">Đăng nhập Ví Phụ</div>
+<div style="width:54px"></div>
+</div>
+</div>
+<div class="scroll">
+<div class="card">
+<div style="text-align:center;padding:6px 0 14px;">
+<div style="font-size:40px;margin-bottom:8px;">📱</div>
+<div style="font-size:17px;font-weight:800;color:#1A1A1A;margin-bottom:5px;">Nhập số điện thoại</div>
+<div style="font-size:13px;color:#666;line-height:1.6;">Nhập số điện thoại Ba đã đăng ký<br/>để truy cập Ngăn Ví Phụ của bạn</div>
+</div>
+<div class="input-wrap" id="phoneWrap">
+<label class="input-label">Số điện thoại</label>
+<div class="input-row">
+<span class="phone-prefix">🇻🇳 +84</span>
+<input id="phoneInput" type="tel" inputmode="tel" placeholder="Nhập số điện thoại" autocomplete="off" oninput="onPhoneInput()" onfocus="focusWrap('phoneWrap')" onblur="blurWrap('phoneWrap')"/>
+<button class="input-clear" id="phoneClear" style="display:none" onclick="clearPhone()">✕</button>
+</div>
+</div>
+</div>
+<div class="security-strip"><span>🔒</span><span>An toàn tài sản</span><span class="sec-tag">PCI DSS</span><span class="sec-tag">SSL</span></div>
+<div style="text-align:center;padding-bottom:12px;"><button class="btn-demo" onclick="demoPhone()">demo fill</button></div>
+</div>
+<div class="bottom-area"><button class="btn-pink" id="btnS0" disabled onclick="goTo(1)">Tiếp tục</button></div>
+</div>
+
+<!-- S1: OTP -->
+<div id="S1" class="screen">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div class="nav">
+<button class="nav-back" onclick="goTo(0)"><svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1.5L1.5 7.5L7.5 13.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="nav-title">Xác minh OTP</div>
+<div class="nav-right-capsule">
+<button><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button>
+<div class="divider-v"></div>
+<button onclick="goTo(0)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="scroll">
+<div class="card">
+<div style="text-align:center;padding:6px 0 14px;">
+<div style="font-size:40px;margin-bottom:8px;">💬</div>
+<div style="font-size:17px;font-weight:800;color:#1A1A1A;margin-bottom:5px;">Nhập mã OTP</div>
+<div style="font-size:13px;color:#666;line-height:1.6;">Mã xác minh đã gửi đến<br/><span style="font-weight:700;color:#1A1A1A" id="phoneDisplay">0xx xxx xxxx</span></div>
+</div>
+<div class="otp-row" id="otpRow">
+<input class="otp-cell" id="o_0" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" oninput="otpIn(0)" onkeydown="otpKey(event,0)"/>
+<input class="otp-cell" id="o_1" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="otpIn(1)" onkeydown="otpKey(event,1)"/>
+<input class="otp-cell" id="o_2" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="otpIn(2)" onkeydown="otpKey(event,2)"/>
+<input class="otp-cell" id="o_3" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="otpIn(3)" onkeydown="otpKey(event,3)"/>
+</div>
+<div class="resend-row">
+<span class="resend-timer" id="timerEl">Gửi lại OTP (<span id="cntEl">60</span>s)</span>
+<button class="resend-btn" id="resendBtn" style="display:none" onclick="startTimer()">Gửi lại mã</button>
+<button style="background:none;border:none;font-size:13px;font-weight:600;color:#E91E8C;cursor:pointer;margin-left:auto;font-family:inherit;">Đổi SĐT</button>
+</div>
+</div>
+<div style="text-align:center;padding-bottom:12px;"><button class="btn-demo" onclick="demoOtp()">demo fill</button></div>
+</div>
+<div class="bottom-area"><button class="btn-pink" id="btnS1" disabled onclick="goTo(2)">Xác minh</button></div>
+</div>
+
+<!-- S2: PASSWORD -->
+<div id="S2" class="screen">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div class="nav">
+<button class="nav-back" onclick="goTo(1)"><svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1.5L1.5 7.5L7.5 13.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="nav-title">Tạo mật khẩu</div>
+<div class="nav-right-capsule">
+<button><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button>
+<div class="divider-v"></div>
+<button onclick="goTo(0)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="scroll">
+<div class="card">
+<div style="text-align:center;padding:6px 0 14px;">
+<div style="font-size:40px;margin-bottom:8px;">🔐</div>
+<div style="font-size:17px;font-weight:800;color:#1A1A1A;margin-bottom:5px;">Tạo mật khẩu mới</div>
+<div style="font-size:13px;color:#666;line-height:1.6;">Mật khẩu phải có ít nhất 8 ký tự</div>
+</div>
+<div class="input-wrap" id="pw1Wrap">
+<label class="input-label">Mật khẩu mới</label>
+<div class="input-row">
+<input id="pw1" type="password" autocomplete="new-password" placeholder="Nhập mật khẩu" oninput="onPwInput()" onfocus="focusWrap('pw1Wrap')" onblur="blurWrap('pw1Wrap')"/>
+<button class="input-eye" id="eye1" onclick="toggleEye('pw1','eye1')">👁️</button>
+</div>
+</div>
+<div class="input-wrap" id="pw2Wrap">
+<label class="input-label">Xác nhận mật khẩu</label>
+<div class="input-row">
+<input id="pw2" type="password" autocomplete="new-password" placeholder="Nhập lại mật khẩu" oninput="onPwInput()" onfocus="focusWrap('pw2Wrap')" onblur="blurWrap('pw2Wrap')"/>
+<button class="input-eye" id="eye2" onclick="toggleEye('pw2','eye2')">👁️</button>
+</div>
+</div>
+<div id="pwErr" style="display:none" class="input-err">⚠️ Mật khẩu không khớp</div>
+</div>
+<div style="text-align:center;padding-bottom:12px;"><button class="btn-demo" onclick="demoPw()">demo fill</button></div>
+</div>
+<div class="bottom-area"><button class="btn-pink" id="btnS2" disabled onclick="goTo(3)">Tiếp tục</button></div>
+</div>
+
+<!-- S3: FACE MATCH INTRO -->
+<div id="S3" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+<div class="nav" style="padding-bottom:6px;">
+<button class="nav-back" onclick="goTo(2)"><svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1.5L1.5 7.5L7.5 13.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="nav-title">Đối chiếu khuôn mặt</div>
+<div style="width:36px;"></div>
+</div>
+</div>
+<div class="face-body">
+<div style="margin-top:10px;background:#FFF0F7;border:1px solid #FCD3E5;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;width:100%;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#E91E8C" opacity="0.15" stroke="#E91E8C" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="font-size:12px;color:#1A1A1A;line-height:1.45;">Đối chiếu khuôn mặt với ảnh trên <b>CCCD của bạn</b> để xác nhận chính chủ Ví Phụ.</div>
+</div>
+<div class="face-circle">
+<svg width="80" height="80" viewBox="0 0 24 24" fill="none" opacity="0.15"><circle cx="12" cy="8" r="5" stroke="#1A1A1A" stroke-width="1.5"/><path d="M20 21v-2a8 8 0 00-16 0v2" stroke="#1A1A1A" stroke-width="1.5"/></svg>
+<div class="face-overlay"><div class="face-instruction">Đưa khuôn mặt vào trong khung tròn</div></div>
+</div>
+<div class="face-sub">Hình ảnh khuôn mặt sẽ được so khớp với dữ liệu eKYC đã đăng ký cho Ví Phụ của bạn.</div>
+<button class="guide-pill" onclick="alert('Hướng dẫn: Giữ điện thoại ngang tầm mắt, đảm bảo đủ ánh sáng.')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1A1A1A" stroke-width="1.6"/><path d="M9 9c0-1.5 1.3-3 3-3s3 1.3 3 3-3 1.5-3 4M12 17h.01" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/></svg> Xem hướng dẫn</button>
+<div style="margin-top:8px;font-size:13px;color:#666;">Bạn gặp vấn đề? <span style="color:#E91E8C;font-weight:600;cursor:pointer;">Gửi phản hồi</span></div>
+<div style="margin-top:24px;"><button class="btn-demo" onclick="showToastAndGo(6)">demo capture</button></div>
+</div>
+</div>
+
+<!-- S4: NGĂN VÍ PHỤ ĐÃ ĐƯỢC KÍCH HOẠT (copied from Ví Phụ S8) -->
+<div id="S4" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;background:#fff;">
+<div class="status-spacer" style="background:#fff;"></div>
+<div class="nav" style="position:relative;background:#fff;">
+<div style="width:36px;"></div>
+<div class="nav-title">Ngăn Ví Phụ MoMo</div>
+<div class="nav-right-capsule">
+<button><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button>
+<div class="divider-v"></div>
+<button onclick="goTo(0)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="scroll" style="background:#fff;">
+<div style="display:flex;justify-content:center;gap:6px;padding:12px 0 6px;font-size:26px;">
+<span>🎉</span><span>🥳</span><span>🎊</span>
+</div>
+<div style="display:flex;justify-content:center;margin-bottom:16px;">
+<div style="width:72px;height:72px;border-radius:50%;background:#4CAF50;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(76,175,80,0.3);">
+<svg width="32" height="24" viewBox="0 0 34 26" fill="none"><path d="M2 13L12 23L32 2" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+<div style="text-align:center;padding:0 24px 20px;">
+<div style="font-size:19px;font-weight:800;color:#1A1A1A;margin-bottom:8px;line-height:1.3;">Ngăn Ví Phụ đã được kích hoạt!</div>
+<div style="font-size:13px;color:#666;line-height:1.6;">Chúc mừng! Bạn đã hoàn tất liên kết Ngăn<br/>Ví Phụ với tài khoản MoMo thành công.</div>
+</div>
+<div style="margin:0 12px 12px;background:#fff;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #F5F5F5;">
+<span style="font-size:13px;color:#666;">Số điện thoại</span>
+<span style="font-size:13px;font-weight:600;color:#1A1A1A;" id="sucPhone">0912 345 678</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #F5F5F5;">
+<span style="font-size:13px;color:#666;">Chủ Ví Chính</span>
+<span style="font-size:13px;font-weight:600;color:#1A1A1A;" id="sucName">Nguyễn Văn An</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;">
+<span style="font-size:13px;color:#666;">Hạn mức tháng</span>
+<span style="font-size:13px;font-weight:600;color:#1A1A1A;">2.000.000 đ</span>
+</div>
+</div>
+<div style="margin:0 12px 16px;background:#FFF8E1;border:1px solid #FFE0A6;border-radius:12px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px;"><circle cx="8" cy="8" r="7" fill="#F59E0B"/><path d="M8 4v4.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.2" r="0.9" fill="white"/></svg>
+<div style="font-size:12px;color:#7A4A00;line-height:1.5;">Ví Phụ chỉ dùng để <b>thanh toán và giao dịch</b>. Không thể sử dụng các dịch vụ tài chính như Ví Trả Sau, Vay nhanh, Đầu tư, Bảo hiểm.</div>
+</div>
+<div style="height:8px;"></div>
+</div>
+<div class="bottom-area" style="background:#fff;">
+<button class="btn-pink" onclick="goTo(5)">Vào Ngăn Ví Phụ của tôi</button>
+</div>
+</div>
+
+<!-- S5: HOME VÍ PHỤ (copied from Ví Phụ/index.html S10) -->
+<div id="S5" class="screen">
+<div class="hdr-pink">
+<div class="status-spacer"></div>
+<div class="nav" style="position:relative;">
+<button class="nav-back" onclick="goTo(4)">
+<svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1.5L1.5 7.5L7.5 13.5" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div class="nav-title" style="font-size:15px;">Thông tin Ngăn Ví Phụ</div>
+<div class="nav-right-capsule">
+<button><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button>
+<div class="divider-v"></div>
+<button onclick="goTo(0)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<div class="scroll">
+<div style="margin:10px 12px 12px;border-radius:16px;background:linear-gradient(135deg,#E91E8C 0%,#FF6EC7 100%);box-shadow:0 4px 16px rgba(233,30,140,0.28);position:relative;overflow:hidden;">
+<div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.1);pointer-events:none;"></div>
+<div style="padding:12px 12px 12px;position:relative;">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+<div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.4);">VA</div>
+<div style="flex:1;min-width:0;">
+<div style="font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Nguyễn Văn An</div>
+<div style="font-size:11px;color:rgba(255,255,255,0.8);margin-top:1px;">0945 464 576</div>
+</div>
+<div style="display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 8px;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;">
+<svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="font-size:10px;font-weight:600;color:#fff;">Đang liên kết</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+<div style="min-width:0;">
+<div style="font-size:10px;color:rgba(255,255,255,0.75);font-weight:500;margin-bottom:2px;">Số dư</div>
+<div style="display:flex;align-items:baseline;gap:2px;flex-wrap:nowrap;">
+<span style="font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;" id="homeBalance">200.000</span>
+<span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.85);">đ</span>
+<button style="background:none;border:none;cursor:pointer;padding:0 0 0 2px;display:flex;align-items:center;" onclick="toggleBalance()">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="rgba(255,255,255,0.65)" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.65)" stroke-width="2"/></svg>
+</button>
+</div>
+</div>
+<button style="height:30px;padding:0 8px;background:#fff;border:none;border-radius:8px;display:flex;align-items:center;gap:3px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.12);flex-shrink:0;">
+<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="#E91E8C" stroke-width="2.4" stroke-linecap="round"/></svg>
+<span style="font-size:11px;font-weight:700;color:#E91E8C;white-space:nowrap;">Yêu cầu nạp tiền</span>
+</button>
+</div>
+</div>
+</div>
+<div class="card" style="padding:14px;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+<div style="font-size:13px;font-weight:700;color:#1A1A1A;">Hạn mức chi tháng này</div>
+<div style="font-size:11px;font-weight:600;color:#666;">62%</div>
+</div>
+<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:10px;">
+<span style="font-size:18px;font-weight:800;color:#E91E8C;letter-spacing:-0.3px;">1.250.000 đ</span>
+<span style="font-size:12px;color:#999;">/ 2.000.000 đ</span>
+</div>
+<div style="height:6px;background:#F5F5F5;border-radius:3px;overflow:hidden;">
+<div style="width:62%;height:100%;background:linear-gradient(90deg,#E91E8C,#FF6FAE);border-radius:3px;"></div>
+</div>
+</div>
+<div style="margin:0 12px 12px;background:#fff;border-radius:16px;padding:14px 12px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+<div style="font-size:13px;font-weight:700;color:#1A1A1A;padding:0 4px 12px;">Dịch vụ</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px 4px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:48px;height:48px;border-radius:50%;background:#FFEAEA;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FF5722" stroke-width="2"/><path d="M12 7v10M9.5 10h4a1.5 1.5 0 010 3H10a1.5 1.5 0 000 3h4.5" stroke="#FF5722" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:11px;font-weight:500;color:#1A1A1A;text-align:center;line-height:1.3;">Chuyển tiền</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:48px;height:48px;border-radius:50%;background:#E3F2FD;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 10l9-6 9 6v1H3v-1z" stroke="#2196F3" stroke-width="2" stroke-linejoin="round"/><path d="M5 11v8M10 11v8M14 11v8M19 11v8M3 20h18" stroke="#2196F3" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:11px;font-weight:500;color:#1A1A1A;text-align:center;line-height:1.3;">Chuyển tiền<br/>ngân hàng</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:48px;height:48px;border-radius:50%;background:#FFE4F0;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" stroke="#E91E8C" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke="#E91E8C" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke="#E91E8C" stroke-width="2"/><rect x="15" y="15" width="4" height="4" fill="#E91E8C"/></svg></div><span style="font-size:11px;font-weight:500;color:#1A1A1A;text-align:center;line-height:1.3;">Quét QR</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:48px;height:48px;border-radius:50%;background:#E3F2FD;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="2" stroke="#2196F3" stroke-width="2"/><path d="M10 18h4M14 7l-2 2 2 2" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:11px;font-weight:500;color:#1A1A1A;text-align:center;line-height:1.3;">Nạp tiền<br/>điện thoại</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:48px;height:48px;border-radius:50%;background:#E0F2F1;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 3h12a1 1 0 011 1v17l-2.5-1.5L14 21l-2.5-1.5L9 21l-2.5-1.5L4 21V4a1 1 0 011-1z" stroke="#009688" stroke-width="2" stroke-linejoin="round"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#009688" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:11px;font-weight:500;color:#1A1A1A;text-align:center;line-height:1.3;">Thanh toán<br/>hóa đơn</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:48px;height:48px;border-radius:50%;background:#E3F2FD;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M2 12a10 10 0 0120 0" stroke="#1E88E5" stroke-width="2" stroke-linecap="round"/><path d="M6 12a6 6 0 0112 0" stroke="#1E88E5" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="#1E88E5"/></svg></div><span style="font-size:11px;font-weight:500;color:#1A1A1A;text-align:center;line-height:1.3;">Data 4G/5G</span></div>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px 4px;">
+<span style="font-size:13px;font-weight:700;color:#1A1A1A;">Giao dịch gần đây</span>
+<button style="font-size:12px;font-weight:600;color:#E91E8C;background:none;border:none;cursor:pointer;">Xem tất cả</button>
+</div>
+<div class="card-rows">
+<div class="txn-row"><div class="txn-icon" style="background:#E8F5E9;">💰</div><div class="txn-body"><div class="txn-title">Ví Chính vừa cấp tiền</div><div class="txn-sub">Nguyễn Văn An · 2 giờ trước</div></div><div class="txn-amount txn-in">+200.000 đ</div></div>
+<div class="txn-row"><div class="txn-icon" style="background:#FCE4EC;">🛒</div><div class="txn-body"><div class="txn-title">Thanh toán siêu thị</div><div class="txn-sub">Circle K · Hôm nay, 14:32</div></div><div class="txn-amount txn-out">-85.000 đ</div></div>
+<div class="txn-row"><div class="txn-icon" style="background:#EDE7F6;">🎓</div><div class="txn-body"><div class="txn-title">Thanh toán học phí</div><div class="txn-sub">Đại học FPT · Hôm qua</div></div><div class="txn-amount txn-out">-8.500.000 đ</div></div>
+<div class="txn-row"><div class="txn-icon" style="background:#E3F2FD;">🍜</div><div class="txn-body"><div class="txn-title">Đặt đồ ăn GrabFood</div><div class="txn-sub">Hôm qua, 12:20</div></div><div class="txn-amount txn-out">-125.000 đ</div></div>
+</div>
+<div style="height:8px;"></div>
+</div>
+</div>
+
+<!-- SHOME: MoMo Home flash (~1.1s, auto-advance to SREDIRECT) -->
+<div id="SHOME" class="screen" style="background:linear-gradient(180deg,#E8F2D5 0%,#F0F8E0 70%,#FAFAFA 100%);">
+<div class="status-spacer" style="background:transparent;"></div>
+<div style="flex-shrink:0;padding:6px 16px 12px;display:flex;align-items:center;gap:10px;">
+<div style="flex:1;height:38px;background:#fff;border-radius:20px;display:flex;align-items:center;gap:8px;padding:0 14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#999" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="#999" stroke-width="2" stroke-linecap="round"/></svg>
+<span style="font-size:12px;color:#999;">Tìm số tài khoản ngân hàng</span>
+</div>
+<div style="position:relative;width:36px;height:36px;border-radius:50%;background:#A9B89A;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+<span style="position:absolute;top:-3px;right:-4px;background:#E91E8C;color:#fff;font-size:8px;font-weight:700;border-radius:8px;padding:1px 4px;">37</span>
+</div>
+<div style="position:relative;width:36px;height:36px;border-radius:50%;background:#A9B89A;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 8a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H10l-5 4v-4a4 4 0 01-2-4V8z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+<span style="position:absolute;top:-3px;right:-4px;background:#E91E8C;color:#fff;font-size:8px;font-weight:700;border-radius:8px;padding:1px 4px;">3</span>
+</div>
+</div>
+<div style="flex-shrink:0;padding:0 16px 14px;display:flex;justify-content:space-around;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+<div style="width:46px;height:46px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12h12M11 7l5 5-5 5" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<span style="font-size:11px;font-weight:600;color:#1A1A1A;">Nạp/Rút</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+<div style="width:46px;height:46px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="14" height="14" rx="2" stroke="#E91E8C" stroke-width="2"/><circle cx="18" cy="8" r="3" fill="#E91E8C"/><path d="M17 7l1 1 2-2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+</div>
+<span style="font-size:11px;font-weight:600;color:#1A1A1A;">Nhận tiền</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+<div style="width:46px;height:46px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" stroke="#E91E8C" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke="#E91E8C" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke="#E91E8C" stroke-width="2"/><rect x="15" y="15" width="4" height="4" fill="#E91E8C"/></svg>
+</div>
+<span style="font-size:11px;font-weight:600;color:#1A1A1A;">QR Thanh toán</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+<div style="width:46px;height:46px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7z" stroke="#E91E8C" stroke-width="2" stroke-linejoin="round"/><path d="M4 7l8-4 8 4" stroke="#E91E8C" stroke-width="2" stroke-linejoin="round"/></svg>
+</div>
+<span style="font-size:11px;font-weight:600;color:#1A1A1A;">Ví tiện ích</span>
+</div>
+</div>
+<div class="scroll" style="background:transparent;">
+<div style="margin:0 12px 12px;background:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+<div style="display:flex;align-items:center;gap:24px;margin-bottom:8px;">
+<div style="display:flex;align-items:center;gap:8px;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z" stroke="#999" stroke-width="1.8"/><line x1="3" y1="3" x2="21" y2="21" stroke="#999" stroke-width="1.8"/></svg>
+<div style="font-size:13px;font-weight:700;color:#1A1A1A;">Ví MoMo</div>
+<div style="width:20px;height:20px;border-radius:50%;background:#E91E8C;display:flex;align-items:center;justify-content:center;"><span style="font-size:7px;font-weight:800;color:#fff;letter-spacing:-0.3px;">MoMo</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:6px;flex:1;">
+<div style="font-size:13px;font-weight:700;color:#E91E8C;">Ví Trả Sau</div>
+<div style="font-size:11px;font-weight:600;color:#E91E8C;background:#FFE4F0;padding:1px 6px;border-radius:8px;">Dự phòng 5Tr</div>
+</div>
+</div>
+<div style="display:flex;gap:6px;align-items:center;">
+<div style="font-size:18px;font-weight:800;color:#1A1A1A;letter-spacing:3px;">*********</div>
+</div>
+<div style="margin-top:10px;padding:10px 12px;background:#F0F7FF;border-radius:10px;display:flex;align-items:center;gap:8px;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#2196F3" stroke-width="1.8"/><path d="M8 13l3-3 3 3 3-3" stroke="#2196F3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="font-size:13px;font-weight:600;color:#2196F3;flex:1;">Trung Tâm Tài Chính của bạn</span>
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+<div style="padding:6px 16px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 4px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:50%;background:#FFEAEA;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FF5722" stroke-width="1.8"/><path d="M12 7v10M9 10h4.5a1.5 1.5 0 010 3H10a1.5 1.5 0 000 3h5" stroke="#FF5722" stroke-width="1.8" stroke-linecap="round"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Chuyển tiền</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:50%;background:#E3F2FD;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 10l9-6 9 6v1H3v-1z" stroke="#2196F3" stroke-width="1.8" stroke-linejoin="round"/><path d="M5 11v8M10 11v8M14 11v8M19 11v8M3 20h18" stroke="#2196F3" stroke-width="1.8" stroke-linecap="round"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Chuyển tiền<br/>Ngân hàng</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4CAF50" stroke-width="1.8"/><path d="M9 8h6M9 12h6M9 16h4" stroke="#4CAF50" stroke-width="1.8" stroke-linecap="round"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Quản lý chi<br/>tiêu</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:50%;background:#E3F2FD;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="2" stroke="#2196F3" stroke-width="1.8"/><path d="M10 18h4M14 7l-2 2 2 2" stroke="#2196F3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Nạp tiền điện<br/>thoại</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#7E57C2,#5E35B1);display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19V8m6 11V5m6 14v-7m4 7V11" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M3 4l5 5 5-5 5 5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Chứng Chỉ<br/>Quỹ</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:50%;background:#FCE4EC;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#E91E8C" stroke-width="1.8"/><circle cx="17" cy="9" r="2.5" stroke="#E91E8C" stroke-width="1.8"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M15 20c0-2 2-3.5 4-3.5s3 1 3 3.5" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Quỹ</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#42A5F5,#1E88E5);display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M2 12a10 10 0 0120 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M6 12a6 6 0 0112 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="#fff"/></svg></div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Data 4G/5G</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:42px;height:42px;border-radius:50%;background:#E1F5FE;display:flex;align-items:center;justify-content:center;font-size:22px;">🎬</div><span style="font-size:10px;color:#1A1A1A;text-align:center;line-height:1.2;">Mua vé xem<br/>phim</span></div>
+</div>
+<div style="height:30px;"></div>
+</div>
+<div style="flex-shrink:0;background:#fff;border-top:1px solid #F0F0F0;display:flex;align-items:center;padding:6px 0 10px;">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:22px;height:22px;border-radius:5px;background:#E91E8C;display:flex;align-items:center;justify-content:center;"><span style="font-size:8px;font-weight:800;color:#fff;letter-spacing:-0.3px;">MoMo</span></div><span style="font-size:9px;font-weight:700;color:#E91E8C;">MoMo</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="14" rx="2" stroke="#999" stroke-width="1.8"/><path d="M4 10h16M8 3v6M16 3v6" stroke="#999" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:9px;font-weight:500;color:#999;">Ưu đãi</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;"><div style="width:42px;height:42px;border-radius:50%;background:#E91E8C;display:flex;align-items:center;justify-content:center;margin-top:-14px;box-shadow:0 4px 14px rgba(232,25,125,0.35);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7V5a1 1 0 011-1h2M4 17v2a1 1 0 001 1h2M20 7V5a1 1 0 00-1-1h-2M20 17v2a1 1 0 01-1 1h-2M8 8h8v8H8z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:9px;font-weight:600;color:#E91E8C;">Quét mọi QR</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#999" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="#999" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:9px;font-weight:500;color:#999;">Lịch sử GD</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="4" stroke="#999" stroke-width="1.8"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" stroke="#999" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:9px;font-weight:500;color:#999;">Tôi</span></div>
+</div>
+</div>
+
+<!-- SREDIRECT: Full-screen overlay redirecting back to Premap miniapp -->
+<div id="SREDIRECT" class="screen" style="background:#fff;">
+<div style="flex-shrink:0;">
+<div class="status-spacer" style="background:#fff;"></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center;">
+<div style="position:relative;width:210px;height:200px;margin-bottom:28px;">
+<div style="position:absolute;right:4px;top:6px;width:128px;height:172px;background:linear-gradient(135deg,#FF8DC7 0%,#E91E8C 100%);border-radius:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(232,25,125,0.32);">
+<div style="width:84px;height:128px;background:rgba(255,255,255,0.18);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+<svg width="50" height="50" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" fill="#fff"/><circle cx="12" cy="9" r="2.6" fill="#E91E8C"/></svg>
+</div>
+</div>
+<div style="position:absolute;left:0;top:24px;width:46px;height:46px;border-radius:50%;background:#fff;border:2.5px solid #4CAF50;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,0.08);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" fill="#4CAF50"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>
+</div>
+<div style="position:absolute;left:6px;top:84px;width:46px;height:46px;border-radius:50%;background:#fff;border:2.5px solid #FF7043;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,0.08);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" fill="#FF7043"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>
+</div>
+<div style="position:absolute;left:24px;top:142px;width:46px;height:46px;border-radius:50%;background:#fff;border:2.5px solid #29B6F6;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,0.08);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" fill="#29B6F6"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>
+</div>
+</div>
+<div style="font-size:20px;font-weight:800;color:#1A1A1A;line-height:1.3;margin-bottom:12px;letter-spacing:-0.3px;">Chào mừng đến với Ví Phụ</div>
+<div style="font-size:14px;color:#666;line-height:1.6;">Ví Phụ của bạn đã được kích hoạt. Hãy khám phá và trải nghiệm Ví Phụ MoMo bạn nhé!</div>
+</div>
+<div class="bottom-area" style="background:#fff;">
+<button class="btn-pink" onclick="goTo(5)">Tiếp tục</button>
+</div>
+</div>
+
+</div></div></div>
+
+<script>
+'use strict';
+var SCREENS=['S0','S1','S2','S3','S4','S5','SHOME','SREDIRECT'];
+var cur=0;var timerInt=null;var balanceVisible=true;
+function toggleBalance(){balanceVisible=!balanceVisible;var el=document.getElementById('homeBalance');if(el)el.textContent=balanceVisible?'200.000':'•••••••';}
+function goTo(n){
+  if(n<0||n>=SCREENS.length)return;
+  var c=document.getElementById(SCREENS[cur]);var nx=document.getElementById(SCREENS[n]);
+  if(!c||!nx)return;
+  c.classList.remove('active');c.classList.add('leaving');
+  var old=c;setTimeout(function(){old.classList.remove('leaving');},380);
+  nx.classList.add('active');cur=n;
+  var sc=nx.querySelector('.scroll');if(sc)sc.scrollTop=0;
+  if(n===1){startTimer();var ph=document.getElementById('phoneInput').value;if(ph){var m='0'+ph.substring(0,2)+'x xxx x'+ph.substring(ph.length-2);document.getElementById('phoneDisplay').textContent=m;}}
+  if(n===2){document.getElementById('pw1').value='';document.getElementById('pw2').value='';document.getElementById('btnS2').disabled=true;document.getElementById('pwErr').style.display='none';}
+  if(n===6){setTimeout(function(){if(cur===6)goTo(7);},1100);}
+}
+function focusWrap(id){document.getElementById(id).classList.add('focused');}
+function blurWrap(id){document.getElementById(id).classList.remove('focused');}
+function showToastAndGo(targetIdx){
+  var t=document.getElementById('toast-success');
+  if(!t){goTo(targetIdx);return;}
+  t.style.opacity='1';t.style.transform='translate(-50%,0)';
+  setTimeout(function(){
+    t.style.opacity='0';t.style.transform='translate(-50%,-30px)';
+    goTo(targetIdx);
+  },1000);
+}
+
+/* Phone */
+function onPhoneInput(){var v=document.getElementById('phoneInput').value.replace(/\D/g,'');document.getElementById('phoneInput').value=v;document.getElementById('phoneClear').style.display=v?'flex':'none';document.getElementById('btnS0').disabled=v.length<9;}
+function clearPhone(){document.getElementById('phoneInput').value='';document.getElementById('phoneClear').style.display='none';document.getElementById('btnS0').disabled=true;}
+function demoPhone(){document.getElementById('phoneInput').value='912345678';onPhoneInput();}
+
+/* OTP */
+function otpIn(idx){var el=document.getElementById('o_'+idx);var v=el.value.replace(/\D/g,'');el.value=v.slice(0,1);if(v&&idx<3)document.getElementById('o_'+(idx+1)).focus();updateOtp();}
+function otpKey(e,idx){if(e.key==='Backspace'&&!document.getElementById('o_'+idx).value&&idx>0)document.getElementById('o_'+(idx-1)).focus();}
+function updateOtp(){var all=true;for(var i=0;i<4;i++){var v=document.getElementById('o_'+i).value;if(v)document.getElementById('o_'+i).classList.add('filled');else{document.getElementById('o_'+i).classList.remove('filled');all=false;}}document.getElementById('btnS1').disabled=!all;}
+function demoOtp(){var d='1234';for(var i=0;i<4;i++)document.getElementById('o_'+i).value=d[i];updateOtp();}
+function startTimer(){if(timerInt)clearInterval(timerInt);var s=60;document.getElementById('timerEl').style.display='inline';document.getElementById('resendBtn').style.display='none';document.getElementById('cntEl').textContent=s;timerInt=setInterval(function(){s--;document.getElementById('cntEl').textContent=s;if(s<=0){clearInterval(timerInt);timerInt=null;document.getElementById('timerEl').style.display='none';document.getElementById('resendBtn').style.display='inline';}},1000);}
+
+/* Password */
+function onPwInput(){var p1=document.getElementById('pw1').value;var p2=document.getElementById('pw2').value;var ok=p1.length>=8&&p1===p2;var mismatch=p2.length>0&&p1!==p2;document.getElementById('pwErr').style.display=mismatch?'block':'none';document.getElementById('btnS2').disabled=!ok;}
+function toggleEye(inputId,btnId){var inp=document.getElementById(inputId);inp.type=inp.type==='password'?'text':'password';document.getElementById(btnId).textContent=inp.type==='password'?'👁️':'🙈';}
+function demoPw(){document.getElementById('pw1').value='matkhau123';document.getElementById('pw2').value='matkhau123';onPwInput();}
+</script>
+</body>
+</html>
