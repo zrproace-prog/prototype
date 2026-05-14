@@ -304,6 +304,14 @@ body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFF;}
 .scan-step-num{width:26px;height:26px;border-radius:13px;background:#E91E8C;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .scan-step-txt{flex:1;font-size:13px;color:#1A1A1A;line-height:1.5;}
 .scan-screen{background:#0A0A0A;color:#fff;}
+.scan-screen.success{background:#fff;color:#1A1A1A;}
+.scan-screen.success .scan-title{color:#1A1A1A;}
+.scan-screen.success .scan-instruction{color:#666;}
+.scan-screen.success .scan-phone-big{background:#FFF5F9;border-color:#FDE8F3;box-shadow:0 10px 36px rgba(233,30,140,0.18),0 0 60px rgba(233,30,140,0.06);}
+.scan-screen.success .scan-phone-screen{background:linear-gradient(180deg,#FFF5F9 0%,#FDE8F3 100%);}
+.scan-screen.success .scan-phone-notch{background:#FDE8F3;}
+.scan-screen.success .scan-close{background:rgba(0,0,0,0.06);}
+.scan-screen.success .scan-close svg path{stroke:#1A1A1A;}
 .scan-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;}
 .scan-close{width:36px;height:36px;border-radius:18px;background:rgba(255,255,255,0.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .scan-phone-big{position:relative;width:200px;height:320px;margin:14px 0 22px;background:#15151A;border:2.5px solid #2A2A30;border-radius:34px;box-shadow:0 10px 36px rgba(0,0,0,0.55),0 0 60px rgba(255,255,255,0.04);}
@@ -350,6 +358,34 @@ body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFF;}
 .share-item:active{background:#F5F5F5;}
 .share-ic{width:52px;height:52px;border-radius:26px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
 .share-lbl{font-size:12px;color:#1A1A1A;font-weight:500;text-align:center;line-height:1.2;}
+/* ── Birth certificate upload (s10) ── */
+.bc-hero{display:flex;justify-content:center;padding:14px 0 8px;}
+.bc-illust{width:108px;height:132px;background:linear-gradient(160deg,#FFF5F9 0%,#FFE4F0 100%);border:1.5px solid #F5A7CC;border-radius:10px;position:relative;box-shadow:0 8px 22px rgba(233,30,140,0.18);}
+.bc-illust::before{content:'';position:absolute;top:0;left:0;right:0;height:24px;background:#E91E8C;border-radius:9px 9px 0 0;}
+.bc-illust-seal{position:absolute;bottom:10px;right:10px;width:26px;height:26px;border-radius:13px;background:#E91E8C;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(233,30,140,0.35);}
+.bc-illust-line{position:absolute;left:12px;height:5px;background:rgba(233,30,140,0.18);border-radius:3px;}
+.bc-illust-line.l1{top:38px;width:58px;}
+.bc-illust-line.l2{top:52px;width:74px;}
+.bc-illust-line.l3{top:66px;width:50px;}
+.bc-illust-line.l4{top:80px;width:66px;}
+.bc-drop{margin:6px 0 2px;border:1.6px dashed #F5A7CC;background:#FFF5F9;border-radius:14px;padding:18px 16px 16px;text-align:center;cursor:pointer;transition:background .15s;}
+.bc-drop:active{background:#FDE8F3;}
+.bc-drop.filled{border-style:solid;border-color:#E91E8C;background:#fff;padding:14px;text-align:left;cursor:default;}
+.bc-drop-title{font-size:14px;font-weight:700;color:#1A1A1A;margin-top:6px;}
+.bc-drop-sub{font-size:12px;color:#666;line-height:1.5;margin-top:4px;}
+.bc-actions{display:flex;gap:10px;margin-top:14px;}
+.bc-act-btn{flex:1;height:46px;border-radius:12px;border:1.5px solid #E91E8C;background:#fff;color:#E91E8C;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.bc-act-btn:active{background:#FFF0F7;}
+.bc-thumb-row{display:flex;align-items:center;gap:12px;}
+.bc-thumb{width:64px;height:78px;border-radius:8px;background:linear-gradient(160deg,#FFF5F9 0%,#FFE4F0 100%);border:1px solid #F5A7CC;flex-shrink:0;position:relative;overflow:hidden;}
+.bc-thumb::before{content:'';position:absolute;top:0;left:0;right:0;height:14px;background:#E91E8C;}
+.bc-thumb::after{content:'';position:absolute;top:22px;left:8px;width:32px;height:3px;background:rgba(233,30,140,0.25);border-radius:2px;box-shadow:0 8px 0 rgba(233,30,140,0.2),0 16px 0 rgba(233,30,140,0.18),0 24px 0 rgba(233,30,140,0.16);}
+.bc-thumb-info{flex:1;min-width:0;}
+.bc-thumb-name{font-size:13px;font-weight:700;color:#1A1A1A;display:flex;align-items:center;gap:6px;}
+.bc-thumb-meta{font-size:11px;color:#666;margin-top:3px;}
+.bc-thumb-actions{display:flex;gap:14px;margin-top:6px;}
+.bc-thumb-link{font-size:12px;font-weight:600;color:#E91E8C;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;}
+.bc-thumb-link.muted{color:#999;}
 </style>
 </head>
 <body>
@@ -666,11 +702,52 @@ body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFF;}
 <div style="font-size:20px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;">Chúc mừng</div>
 <div style="font-size:14px;color:#666;line-height:1.6;margin-top:10px;">Xác thực thông tin thành công. Tiếp tục các bước tiếp theo để sử dụng các dịch vụ của MoMo.</div>
 </div>
-<div class="bottom-area" style="background:#fff;"><button class="btn-pink" onclick="goTo(10)">Tiếp tục</button></div>
+<div class="bottom-area" style="background:#fff;"><button class="btn-pink" onclick="goTo(9)">Tiếp tục</button></div>
 </div>
 
-<!-- S10: (orphaned placeholder — flow skips this) -->
-<div id="s10" class="screen"></div>
+<!-- S10: Tải lên giấy khai sinh — verify quan hệ thân nhân -->
+<div id="s10" class="screen">
+<div class="hdr-pink"><div class="status-spacer"></div><div class="nav"><button class="nav-back" onclick="goTo(8)"><svg width="20" height="20" fill="none"><path d="M13 16l-6-6 6-6" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-title">Bổ sung giấy khai sinh</div><div class="nav-capsule"><button class="nav-cap-btn"><svg width="18" height="16" viewBox="0 0 18 16" fill="none"><path d="M9 1C5.5 1 2.5 3.8 2.5 7.2c0 1.8.8 3.4 2 4.5V14l2.5-1.5c.6.2 1.3.3 2 .3 3.5 0 6.5-2.8 6.5-6.1C15.5 3.8 12.5 1 9 1z" stroke="#1A1A1A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6.5" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="9" cy="7.2" r="1" fill="#1A1A1A"/><circle cx="11.5" cy="7.2" r="1" fill="#1A1A1A"/></svg></button><div class="nav-cap-div"></div><button class="nav-cap-btn" onclick="goTo(1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 7L8 1L15 7V15H10V10H6V15H1V7Z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg></button></div></div>
+<div class="pb-row">
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">Nhập SĐT</div></div>
+<div class="pb-item"><div class="pb-circle done">&#10003;</div><div class="pb-line done"></div><div class="pb-label done">OTP</div></div>
+<div class="pb-item"><div class="pb-circle active">3</div><div class="pb-line"></div><div class="pb-label active">Xác thực</div></div>
+<div class="pb-item"><div class="pb-circle">4</div><div class="pb-line"></div><div class="pb-label">Hạn mức</div></div>
+<div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
+</div></div>
+<div class="scroll" style="background:var(--page-bg);padding:6px 0 10px;">
+<div class="bc-hero">
+<div class="bc-illust">
+<div class="bc-illust-line l1"></div>
+<div class="bc-illust-line l2"></div>
+<div class="bc-illust-line l3"></div>
+<div class="bc-illust-line l4"></div>
+<div class="bc-illust-seal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.39 4.84L20 7.6l-4 3.9.94 5.5L12 14.4l-4.94 2.6L8 11.5l-4-3.9 5.61-.76L12 2z" fill="#fff"/></svg></div>
+</div>
+</div>
+<div style="text-align:center;padding:4px 24px 12px;">
+<div style="font-size:17px;font-weight:800;color:#1A1A1A;letter-spacing:-0.2px;">Tải lên giấy khai sinh</div>
+<div style="font-size:13px;color:#666;line-height:1.6;margin-top:6px;">Để xác minh quan hệ thân nhân, MoMo cần ảnh giấy khai sinh của người được tạo Ví Phụ.</div>
+</div>
+<div class="card" style="padding:14px;">
+<div id="bc-drop" class="bc-drop" onclick="bcPickFile()">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5l5 5" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg>
+<div class="bc-drop-title">Tải ảnh giấy khai sinh</div>
+<div class="bc-drop-sub">Định dạng JPG, PNG hoặc PDF — tối đa 10MB</div>
+</div>
+<div class="bc-actions">
+<button class="bc-act-btn" onclick="demoBcUpload('camera')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 7h3l2-3h8l2 3h3a1 1 0 011 1v11a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z" stroke="#E91E8C" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" stroke="#E91E8C" stroke-width="1.6"/></svg> Chụp ảnh</button>
+<button class="bc-act-btn" onclick="demoBcUpload('gallery')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#E91E8C" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.5" stroke="#E91E8C" stroke-width="1.6"/><path d="M21 16l-5-5-8 8" stroke="#E91E8C" stroke-width="1.6" stroke-linejoin="round"/></svg> Thư viện</button>
+</div>
+</div>
+<div class="card-info">
+<div class="card-info-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z" stroke="#E91E8C" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="card-info-text">Ảnh giấy khai sinh chỉ được dùng để <b>xác minh quan hệ thân nhân</b> với người mở Ví Phụ. Thông tin được mã hoá và lưu trữ theo quy định bảo mật của MoMo.</div>
+</div>
+<div style="text-align:center;padding:4px 0 8px;"><button class="demo-btn" onclick="demoBcUpload('gallery')">demo upload</button></div>
+</div>
+<div class="bottom-area"><button class="btn-pink" id="bc-cta" disabled onclick="submitBc()">Tiếp tục</button></div>
+</div>
 
 <!-- S11: Setup hạn mức & dịch vụ -->
 <div id="s11" class="screen">
@@ -682,31 +759,39 @@ body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFF;}
 <div class="pb-item"><div class="pb-circle active">4</div><div class="pb-line"></div><div class="pb-label active">Hạn mức</div></div>
 <div class="pb-item"><div class="pb-circle">5</div><div class="pb-label">Xác nhận</div></div>
 </div></div>
-<div class="scroll" style="background:var(--page-bg);padding:6px 0 10px">
-<div class="section-label">Hạn mức giao dịch</div>
-<div class="card">
-<div style="font-size:13px;color:#666;line-height:1.55;padding-bottom:12px">Thiết lập hạn mức chi tiêu cho Ví Phụ được thêm. Bạn có thể thay đổi sau trong phần cài đặt.</div>
-<div id="limit-wrap" class="input-wrap" style="margin-bottom:8px">
+<div class="scroll" style="background:var(--page-bg);padding:2px 0 6px">
+<div class="section-label" style="padding:8px 16px 4px">Hạn mức giao dịch</div>
+<div class="card" style="padding:12px 14px;margin-bottom:8px">
+<div id="limit-wrap" class="input-wrap" style="margin-bottom:6px;padding:6px 12px 8px">
 <label class="input-label">Hạn mức / tháng</label>
 <div class="limit-input-row">
 <input id="limit-inp" class="input-field" type="tel" inputmode="numeric" placeholder="Nhập số tiền (tối đa 2.000.000)" oninput="fmtLimit()" onfocus="focusWrap('limit-wrap');scheduleShowKbCta();" onblur="blurWrap('limit-wrap');scheduleHideKbCta();"/>
 <span class="limit-suffix">₫</span>
 </div>
 </div>
-<div class="quick-chips">
+<div class="quick-chips" style="margin-top:4px">
 <button class="quick-chip" data-val="500000" onclick="pickLimit(500000)">500K</button>
 <button class="quick-chip" data-val="1000000" onclick="pickLimit(1000000)">1tr</button>
 <button class="quick-chip" data-val="1500000" onclick="pickLimit(1500000)">1.5tr</button>
 <button class="quick-chip" data-val="2000000" onclick="pickLimit(2000000)">2tr</button>
 </div>
-<div class="limit-hint">Tổng chi tiêu tối đa mỗi tháng, không vượt quá 2.000.000 ₫</div>
 </div>
-<div class="section-label">Dịch vụ được phép sử dụng</div>
-<div class="card-info">
-<div class="card-info-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="11" width="16" height="10" rx="2" fill="#E91E8C"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg></div>
-<div class="card-info-text">Ví Phụ chỉ được phép sử dụng các dịch vụ <b>chuyển tiền, thanh toán</b>. Không được phép sử dụng các <b>dịch vụ tài chính</b> trên MoMo (Ví Trả Sau, Vay Nhanh,...).</div>
+<div class="section-label" style="padding:6px 16px 4px">Điều cần biết về Ví Phụ</div>
+<div class="card" style="padding:0;margin-bottom:6px">
+<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid #F5F5F5;">
+<div style="flex-shrink:0;width:28px;height:28px;border-radius:14px;background:#FFE4F0;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="11" width="16" height="10" rx="2" fill="#E91E8C"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg></div>
+<div style="flex:1;font-size:12px;color:#1A1A1A;line-height:1.45;">Chỉ dùng <b>chuyển tiền, thanh toán</b>. Không dùng được <b>dịch vụ tài chính</b> (Trả Sau, Vay Nhanh,...).</div>
 </div>
-<div style="text-align:center;padding:4px 0 8px"><button class="demo-btn" onclick="demoFillS2()">demo fill</button></div>
+<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid #F5F5F5;">
+<div style="flex-shrink:0;width:28px;height:28px;border-radius:14px;background:#FFE4F0;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v13" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/><path d="M7 11l5 5 5-5" stroke="#E91E8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20h16" stroke="#E91E8C" stroke-width="2" stroke-linecap="round"/></svg></div>
+<div style="flex:1;font-size:12px;color:#1A1A1A;line-height:1.45;">Chỉ <b>nhận tiền từ Ví Chính</b>. Không nhận từ tài khoản, ngân hàng hay nguồn khác.</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;">
+<div style="flex-shrink:0;width:28px;height:28px;border-radius:14px;background:#FFE4F0;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z" stroke="#E91E8C" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#E91E8C" stroke-width="2"/></svg></div>
+<div style="flex:1;font-size:12px;color:#1A1A1A;line-height:1.45;"><b>Lịch sử giao dịch</b> được chia sẻ với Ví Chính, xem được bất kỳ lúc nào.</div>
+</div>
+</div>
+<div style="text-align:center;padding:2px 0 6px"><button class="demo-btn" onclick="demoFillS2()">demo fill</button></div>
 </div>
 <div class="bottom-area"><button class="btn-pink" id="btn2" onclick="submitS2()">Tiếp tục</button></div>
 </div>
@@ -732,6 +817,7 @@ body{margin:0;padding:0;height:100%;overflow:hidden;background:#FFF;}
 <div class="card">
 <div class="tnc-check-row" id="tnc-row-momo" onclick="toggleTnc('momo')"><div class="tnc-checkbox"><svg class="tnc-check-svg" width="14" height="14" fill="none" style="display:none"><path d="M3 7l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-size:13px;color:#1A1A1A;line-height:1.5">Tôi đã đọc và đồng ý với <span style="color:#E91E8C;font-weight:600">Điều khoản sử dụng MoMo</span></div></div>
 <div class="tnc-check-row" id="tnc-row-viphu" onclick="toggleTnc('viphu')" style="margin-top:10px"><div class="tnc-checkbox"><svg class="tnc-check-svg" width="14" height="14" fill="none" style="display:none"><path d="M3 7l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-size:13px;color:#1A1A1A;line-height:1.5">Tôi đã đọc và đồng ý với <span style="color:#E91E8C;font-weight:600">Điều khoản sử dụng Ví Phụ</span></div></div>
+<div class="tnc-check-row" id="tnc-row-privacy" onclick="toggleTnc('privacy')" style="margin-top:10px"><div class="tnc-checkbox"><svg class="tnc-check-svg" width="14" height="14" fill="none" style="display:none"><path d="M3 7l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-size:13px;color:#1A1A1A;line-height:1.5">Tôi đã đọc và đồng ý với <span style="color:#E91E8C;font-weight:600">Chính sách quyền riêng tư của MoMo</span></div></div>
 </div></div>
 <div class="bottom-area"><button class="btn-pink" onclick="submitReview()">Xác nhận & Tạo Ví Phụ</button></div>
 </div>
@@ -952,11 +1038,11 @@ var SCREENS=['s0','s1','s2','s3','s5','s6','s7','s8','s9','s10','s11','s12','s14
 var whiteScreens={0:1,2:1,12:1,13:1,16:1};
 var darkScreens={6:1};
 var currentScreen=0;var otpTimerInterval=null;
-var tncChecked={momo:false,viphu:false};
+var tncChecked={momo:false,viphu:false,privacy:false};
 
-function goTo(n){hideKbCta();if(otpTimerInterval){clearInterval(otpTimerInterval);otpTimerInterval=null;}var tc=document.getElementById('theme-color');if(darkScreens[n]){tc.setAttribute('content','#1A1A1A');document.body.style.background='#1A1A1A';document.documentElement.style.background='#1A1A1A';}else if(whiteScreens[n]){tc.setAttribute('content','#FFFFFF');document.body.style.background='#FFFFFF';document.documentElement.style.background='#FFFFFF';}else if(n===9){tc.setAttribute('content','#FFE4F0');document.body.style.background='#E0E0E0';document.documentElement.style.background='#E0E0E0';}else{tc.setAttribute('content','#FFE4F0');document.body.style.background='#F5F5F5';document.documentElement.style.background='#F5F5F5';}for(var i=0;i<SCREENS.length;i++){var el=document.getElementById(SCREENS[i]);if(i===n){el.classList.remove('leaving');el.classList.add('active');}else if(i===currentScreen){el.classList.remove('active');el.classList.add('leaving');(function(e){setTimeout(function(){e.classList.remove('leaving');},350);})(el);}else{el.classList.remove('active','leaving');}}currentScreen=n;if(n===1)renderWalletList();if(n===3)startOtpTimer();if(n===6)setScanState(false);}
+function goTo(n){hideKbCta();if(otpTimerInterval){clearInterval(otpTimerInterval);otpTimerInterval=null;}var tc=document.getElementById('theme-color');if(darkScreens[n]){tc.setAttribute('content','#1A1A1A');document.body.style.background='#1A1A1A';document.documentElement.style.background='#1A1A1A';}else if(whiteScreens[n]){tc.setAttribute('content','#FFFFFF');document.body.style.background='#FFFFFF';document.documentElement.style.background='#FFFFFF';}else{tc.setAttribute('content','#FFE4F0');document.body.style.background='#F5F5F5';document.documentElement.style.background='#F5F5F5';}for(var i=0;i<SCREENS.length;i++){var el=document.getElementById(SCREENS[i]);if(i===n){el.classList.remove('leaving');el.classList.add('active');}else if(i===currentScreen){el.classList.remove('active');el.classList.add('leaving');(function(e){setTimeout(function(){e.classList.remove('leaving');},350);})(el);}else{el.classList.remove('active','leaving');}}currentScreen=n;if(n===1)renderWalletList();if(n===3)startOtpTimer();if(n===6)setScanState(false);}
 function selVerify(t){var ids=['verify-opt-chip','verify-opt-vneid','verify-opt-help'];var map={chip:'verify-opt-chip',vneid:'verify-opt-vneid',help:'verify-opt-help'};for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.classList.remove('selected');}var sel=document.getElementById(map[t]);if(sel)sel.classList.add('selected');}
-function setScanState(success){var sDef=document.getElementById('scan-state-default');var sOk=document.getElementById('scan-state-success');var title=document.getElementById('scan-title');var instr=document.getElementById('scan-instr');var demo=document.getElementById('scan-demo-wrap');var cta=document.getElementById('scan-cta');if(!sDef||!sOk||!title||!cta)return;if(success){sDef.style.display='none';sOk.style.display='flex';title.textContent='Quét thành công';if(instr)instr.style.display='none';if(demo)demo.style.display='none';cta.className='btn-pink';cta.removeAttribute('style');cta.textContent='Quét thành công';cta.onclick=function(){goTo(7);};}else{sDef.style.display='flex';sOk.style.display='none';title.textContent='Tìm vị trí quét';if(instr)instr.style.display='block';if(demo)demo.style.display='block';cta.className='btn-outline';cta.style.borderColor='rgba(255,255,255,0.5)';cta.style.color='#fff';cta.style.background='transparent';cta.style.width='100%';cta.style.height='52px';cta.style.border='1.5px solid rgba(255,255,255,0.5)';cta.style.borderRadius='14px';cta.style.fontSize='16px';cta.style.fontWeight='700';cta.style.fontFamily='inherit';cta.style.cursor='pointer';cta.textContent='Hủy';cta.onclick=function(){goTo(4);};}}
+function setScanState(success){var sDef=document.getElementById('scan-state-default');var sOk=document.getElementById('scan-state-success');var title=document.getElementById('scan-title');var instr=document.getElementById('scan-instr');var demo=document.getElementById('scan-demo-wrap');var cta=document.getElementById('scan-cta');var scr=document.getElementById('s7');var tc=document.getElementById('theme-color');if(!sDef||!sOk||!title||!cta)return;if(success){if(scr)scr.classList.add('success');if(tc)tc.setAttribute('content','#FFFFFF');document.body.style.background='#FFFFFF';document.documentElement.style.background='#FFFFFF';sDef.style.display='none';sOk.style.display='flex';title.textContent='Quét thành công';if(instr)instr.style.display='none';if(demo)demo.style.display='none';cta.className='btn-pink';cta.removeAttribute('style');cta.textContent='Tiếp tục';cta.onclick=function(){goTo(7);};}else{if(scr)scr.classList.remove('success');if(tc)tc.setAttribute('content','#1A1A1A');document.body.style.background='#1A1A1A';document.documentElement.style.background='#1A1A1A';sDef.style.display='flex';sOk.style.display='none';title.textContent='Tìm vị trí quét';if(instr)instr.style.display='block';if(demo)demo.style.display='block';cta.className='btn-outline';cta.style.borderColor='rgba(255,255,255,0.5)';cta.style.color='#fff';cta.style.background='transparent';cta.style.width='100%';cta.style.height='52px';cta.style.border='1.5px solid rgba(255,255,255,0.5)';cta.style.borderRadius='14px';cta.style.fontSize='16px';cta.style.fontWeight='700';cta.style.fontFamily='inherit';cta.style.cursor='pointer';cta.textContent='Hủy';cta.onclick=function(){goTo(4);};}}
 function demoScan(){setScanState(true);}
 function focusWrap(id){var el=document.getElementById(id);el.classList.add('focused');el.classList.remove('error');scheduleShowKbCta();}
 function blurWrap(id){document.getElementById(id).classList.remove('focused');scheduleHideKbCta();}
@@ -971,15 +1057,7 @@ function selectGender(g){var gn=document.getElementById('g-nam');var gf=document
 function onOcrInput(){var v=document.getElementById('ocr-cccd').value.replace(/\D/g,'');document.getElementById('ocr-cccd-err').classList.toggle('show',v.length>0&&(v.length<6||v.length>14));}
 function demoOcrFill(){document.getElementById('ocr-cccd').value='079203012456';document.getElementById('ocr-cccd-err').classList.remove('show');}
 function toggleTnc(key){tncChecked[key]=!tncChecked[key];var row=document.getElementById('tnc-row-'+key);var box=row.querySelector('.tnc-checkbox');var svg=row.querySelector('.tnc-check-svg');row.classList.remove('error');if(tncChecked[key]){box.classList.add('checked');svg.style.display='block';}else{box.classList.remove('checked');svg.style.display='none';}}
-var wallets=[{
-  ava:'BA',name:'Bé An',phone:'0987 654 321',
-  bal:200000,limit:1000000,spent:50000,
-  statusLabel:'Hoạt động',status:'Đang hoạt động',badgeClass:'badge-on',
-  txns:[
-    {type:'out',title:'Thanh toán Highlands',date:'Hôm qua, 16:42',amt:'-50.000 ₫'},
-    {type:'in',title:'Nạp từ ví chính',date:'02/05/2026, 09:30',amt:'+250.000 ₫'}
-  ]
-}];
+var wallets=[];
 var currentDetail=0;var amtRaw='';
 function fmtVND(n){return n.toLocaleString('vi-VN')+' ₫';}
 function fmtVNDShort(n){if(n>=1000000)return(n/1000000).toFixed(1).replace(/\.0$/,'')+'tr';if(n>=1000)return Math.round(n/1000)+'K';return''+n;}
@@ -1024,7 +1102,7 @@ function renderWalletList(){
   }
   c.innerHTML=html;
 }
-function submitReview(){var missing=null;if(!tncChecked.momo)missing='tnc-row-momo';else if(!tncChecked.viphu)missing='tnc-row-viphu';if(missing){var r=document.getElementById(missing);r.classList.remove('error');void r.offsetWidth;r.classList.add('error');return;}var name=(document.getElementById('review-name').textContent||'Ngăn Ví phụ').trim();var phone=(document.getElementById('review-phone').textContent||'').trim();wallets.push({ava:makeInit(name),name:name,phone:phone,limit:monthLimitVal||1000000,statusLabel:'Chờ kích hoạt',badgeClass:'badge-pending'});goTo(12);}
+function submitReview(){var missing=null;if(!tncChecked.momo)missing='tnc-row-momo';else if(!tncChecked.viphu)missing='tnc-row-viphu';else if(!tncChecked.privacy)missing='tnc-row-privacy';if(missing){var r=document.getElementById(missing);r.classList.remove('error');void r.offsetWidth;r.classList.add('error');return;}var name=(document.getElementById('review-name').textContent||'Ngăn Ví phụ').trim();var phone=(document.getElementById('review-phone').textContent||'').trim();if(wallets.length===0){wallets.push({ava:'BA',name:'Bé An',phone:'0987 654 321',bal:200000,limit:1000000,spent:50000,statusLabel:'Đang hoạt động',status:'Đang hoạt động',badgeClass:'badge-on',txns:[{type:'out',title:'Thanh toán Highlands',date:'Hôm qua, 16:42',amt:'-50.000 ₫'},{type:'in',title:'Nạp từ ví chính',date:'02/05/2026, 09:30',amt:'+250.000 ₫'}]});}wallets.push({ava:makeInit(name),name:name,phone:phone,limit:monthLimitVal||1000000,statusLabel:'Chờ kích hoạt',badgeClass:'badge-pending'});goTo(12);}
 function toggleSvc(id){var el=document.getElementById(id);var isOn=el.classList.contains('on');var knob=el.querySelector('div');if(isOn){el.classList.remove('on');el.style.background='#D0D0D0';knob.style.right='auto';knob.style.left='2px';}else{el.classList.add('on');el.style.background='#4CAF50';knob.style.left='auto';knob.style.right='2px';}}
 function onLimitChange(){}
 var monthLimitVal=0;var LIMIT_MAX=2000000;
@@ -1033,6 +1111,43 @@ function updateChips(val){var chips=document.querySelectorAll('.quick-chip');for
 function fmtLimit(){var el=document.getElementById('limit-inp');var raw=el.value.replace(/\D/g,'');clearWrapError('limit-wrap');if(raw===''){el.value='';monthLimitVal=0;updateChips(0);return;}var num=parseInt(raw,10);if(num>LIMIT_MAX)num=LIMIT_MAX;el.value=num.toLocaleString('vi-VN');monthLimitVal=num;updateChips(num);}
 function pickLimit(val){monthLimitVal=val;document.getElementById('limit-inp').value=val.toLocaleString('vi-VN');updateChips(val);clearWrapError('limit-wrap');}
 function submitS2(){if(!monthLimitVal){highlightError('limit-wrap');return;}goTo(11);}
+function bcPickFile(){demoBcUpload('gallery');}
+function demoBcUpload(src){
+  var drop=document.getElementById('bc-drop');
+  var cta=document.getElementById('bc-cta');
+  if(!drop||!cta)return;
+  var label=(src==='camera')?'Chụp từ máy ảnh':'Chọn từ thư viện';
+  drop.classList.add('filled');
+  drop.onclick=null;
+  drop.innerHTML=''
+    +'<div class="bc-thumb-row">'
+    +'<div class="bc-thumb"></div>'
+    +'<div class="bc-thumb-info">'
+    +'<div class="bc-thumb-name">giay-khai-sinh.jpg '
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4CAF50"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    +'</div>'
+    +'<div class="bc-thumb-meta">'+label+' · 1.8 MB</div>'
+    +'<div class="bc-thumb-actions">'
+    +'<button class="bc-thumb-link" onclick="demoBcUpload(\''+src+'\')">Đổi ảnh</button>'
+    +'<button class="bc-thumb-link muted" onclick="resetBc()">Xoá</button>'
+    +'</div>'
+    +'</div>'
+    +'</div>';
+  cta.disabled=false;
+}
+function resetBc(){
+  var drop=document.getElementById('bc-drop');
+  var cta=document.getElementById('bc-cta');
+  if(!drop||!cta)return;
+  drop.classList.remove('filled');
+  drop.onclick=bcPickFile;
+  drop.innerHTML=''
+    +'<svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5l5 5" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3" stroke="#E91E8C" stroke-width="1.8" stroke-linecap="round"/></svg>'
+    +'<div class="bc-drop-title">Tải ảnh giấy khai sinh</div>'
+    +'<div class="bc-drop-sub">Định dạng JPG, PNG hoặc PDF — tối đa 10MB</div>';
+  cta.disabled=true;
+}
+function submitBc(){var cta=document.getElementById('bc-cta');if(cta&&cta.disabled)return;goTo(10);}
 function demoFillS2(){pickLimit(1000000);}
 function openDetail(idx){
   currentDetail=idx;
@@ -1213,5 +1328,6 @@ if(window.visualViewport){window.visualViewport.addEventListener('resize',functi
 document.addEventListener('touchmove',function(e){if(!e.target.closest('.scroll'))e.preventDefault();},{passive:false});
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(function(){});
 </script>
+<script src="/screen-export.js"></script>
 </body>
 </html>
